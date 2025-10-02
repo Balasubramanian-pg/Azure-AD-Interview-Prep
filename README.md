@@ -1,5 +1,7 @@
 # Azure-AD-Interview-Prep
 Active Directory tf is that?
+
+
 Here’s a **comprehensive cheat sheet** for **Active Directory (AD), Azure Active Directory (Azure AD), Single Sign-On (SSO), and Role-Based Access Control (RBAC)**, tailored for interviews and quick reference:
 
 ## **1. Active Directory (AD) Basics**
