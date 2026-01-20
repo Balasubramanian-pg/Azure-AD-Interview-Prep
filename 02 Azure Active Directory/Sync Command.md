@@ -1,100 +1,102 @@
-# SYNC COMMAND
+# [Sync Command](02 Azure Active Directory/Sync Command.md)
 
-# Introduction  
+Canonical documentation for [Sync Command](02 Azure Active Directory/Sync Command.md). This document defines concepts, terminology, and standard usage.
 
-The Sync Command refers to a process or mechanism used to synchronize data, tasks, or states across multiple systems, devices, or environments. This practice ensures consistency and real-time updates, minimizing discrepancies. Common applications include software development workflows, cloud storage systems, database replication, and collaborative tools. Understanding how Sync Commands operate is crucial for maintaining efficient data management, resolving conflicts, and ensuring reliability in distributed systems.  
+## Purpose
+The [Sync Command](02 Azure Active Directory/Sync Command.md) exists to resolve state divergence between two or more distinct data entities. In distributed systems, decoupled architectures, or tiered storage environments, data naturally drifts over time due to localized updates, network latency, or independent processing. 
 
----
+The primary purpose of a [Sync Command](02 Azure Active Directory/Sync Command.md) is to perform **reconciliation**: the process of identifying differences (deltas) and applying the necessary operations to bring the target state into alignment with the source state (or to bring both into a unified state). It ensures data integrity, consistency, and availability across disparate environments.
 
-# Core Concepts  
+> [!NOTE]
+> This documentation is intended to be implementation-agnostic and authoritative.
 
-### 1. **Key Components**  
-- **Source**: The origin point where data or configurations originate.  
-- **Destination**: The target system or location where synchronization occurs.  
-- **Triggers**: Events or conditions that initiate a sync (e.g., manual triggers, scheduled intervals, or event-driven actions).  
-- **Data Transfer**: Methods for moving data between source and destination, such as full sync (entire dataset) or incremental sync (only updates).  
-- **Conflict Resolution**: Strategies to handle conflicting changes made simultaneously to the same data (e.g., "last write wins," manual resolution, or merging).  
+## Scope
+Clarify what is in scope and out of scope for this topic.
 
-### 2. **Types of Synchronization**  
-- **One-Way Sync**: Data flows only from source to destination.  
-- **Two-Way Sync**: Bi-directional updates, where changes made to either source or destination propagate to the other.  
-- **Merge Sync**: Combines updates from both systems, requiring conflict resolution logic.  
+**In scope:**
+* **State Reconciliation:** The logic of comparing and aligning datasets.
+* **Directionality:** The flow of data (unidirectional vs. bidirectional).
+* **Conflict Resolution:** Theoretical approaches to handling overlapping changes.
+* **Atomicity and Integrity:** Ensuring the sync process leaves the system in a valid state.
 
-### 3. **Conflict Resolution Strategies**  
-- **Versioning**: Track modifications via timestamps or version numbers.  
-- **Manual Intervention**: Require human input to resolve conflicting changes.  
-- **Merge Algorithms**: Automatically reconcile differences (e.g., Git merge strategies).  
-- **Priority Rules**: Assign higher precedence to specific sources (e.g., user edits over automated updates).  
+**Out of scope:**
+* **Specific Vendor Implementations:** CLI syntax for specific tools (e.g., `rsync`, `git sync`, `aws s3 sync`).
+* **Hardware-level Synchronization:** Low-level CPU clock synchronization or memory barriers.
+* **UI/UX Design:** The visual representation of sync progress bars or buttons.
 
-### 4. **Common Triggers**  
-- **Manual Trigger**: Users explicitly run the command (e.g., `git pull`).  
-- **Scheduled Sync**: Automated at specified intervals (e.g., cron jobs).  
-- **Event-Driven Sync**: Real-time, triggered by events (e.g., cloud storage updates via APIs).  
+## Definitions
+| Term | Definition |
+|------|------------|
+| **Source** | The entity designated as the "truth" or the origin of the data to be propagated. |
+| **Target** | The entity that receives updates to match the source; also referred to as the "Destination." |
+| **State Drift** | The degree of divergence between the source and target since the last successful synchronization. |
+| **Delta** | The specific set of changes (additions, modifications, deletions) required to align two states. |
+| **Idempotency** | The property where a command can be executed multiple times without changing the result beyond the initial application. |
+| **Reconciliation** | The algorithmic process of comparing states and determining the necessary actions to achieve consistency. |
+| **Conflict** | A scenario where both source and target have changed the same data point in incompatible ways since the last sync. |
 
-### 5. **Synchronization Mechanisms**  
-- **Full Sync**: Transfers all data, ensuring a complete overwrite of the destination.  
-- **Incremental Sync**: Only transfers changes (e.g., deltas), improving efficiency.  
-- **Hybrid Sync**: Combines full and incremental approaches for phased updates.  
+## Core Concepts
 
----
+### 1. Directionality
+*   **Unidirectional (Push/Pull):** Data flows in one direction. The source overwrites or updates the target.
+*   **Bidirectional (Two-way):** Changes from both entities are merged. This requires more complex conflict resolution logic.
 
-# Examples  
+### 2. Granularity
+*   **Full Sync:** The entire dataset is compared and transferred. This is highly reliable but resource-intensive.
+*   **Incremental Sync:** Only the changes (deltas) since the last known synchronization point are transferred. This is efficient but relies on accurate change tracking.
 
-### Example 1: Database Replication  
-**Scenario**: Keeping two databases in sync for fault tolerance.  
-**Command**: `rsync -avz --delete source_db destination_db` (Linux/UNIX)  
-**Concepts**:  
-- **Source**: Primary database.  
-- **Destination**: Secondary database.  
-- **Trigger**: Scheduled cron job every 5 minutes.  
-- **Mechanism**: Incremental sync via `rsync`’s delta transfer algorithm.  
+### 3. Trigger Mechanisms
+*   **Event-Driven:** Sync is triggered by a change in the source (e.g., a file save or database write).
+*   **Scheduled:** Sync occurs at defined intervals (e.g., cron jobs).
+*   **Manual:** Sync is initiated by an external actor or administrator.
 
-### Example 2: Cloud Storage Synchronization  
-**Scenario**: Syncing files across Google Drive and Dropbox.  
-**Command**:  
-```bash
-# Using rclone (a command-line sync tool)
-rclone sync /path/to/local/folder drive:remote_folder --bwlimit 10M
-```  
-**Key Points**:  
-- **Conflict Resolution**: If a file exists in both locations, rclone defaults to the newer file unless configured otherwise.  
-- **Event-Driven**: Triggers on file additions/deletions if using a watch command (`--watch`).  
+## Standard Model
+The standard model for a [Sync Command](02 Azure Active Directory/Sync Command.md) follows a four-phase lifecycle:
 
-### Example 3: Version Control System (VCS)  
-**Scenario**: Pulling latest commits in Git.  
-**Command**:  
-```bash
-git pull origin main
-```  
-**Concepts**:  
-- **One-Way Sync**: Updates local repository from remote.  
-- **Conflict Resolution**: Merges remote changes but prompts manual resolution for conflicting files.  
+1.  **Discovery:** The system identifies the current state of both the source and the target.
+2.  **Comparison:** An algorithm (often using checksums, timestamps, or version vectors) identifies the deltas.
+3.  **Transfer/Application:** The identified deltas are transmitted and applied to the target.
+4.  **Verification:** The system confirms that the target now matches the source (often via a post-sync hash check).
 
-### Example 4: API-Driven Sync  
-**Scenario**: Synchronizing customer data between a CRM and a marketing tool.  
-**API Call**:  
-```bash
-curl -X POST https://api.marketingtool.com/sync \
--H "Authorization: Bearer <token>" \
--d @customer_data.json
-```  
-**Key Points**:  
-- **Incremental Sync**: Only new/updated customer records are sent using filters like `last_updated >= today()`.  
-- **Triggers**: Webhook notifications from the CRM when data changes.  
+## Common Patterns
 
----
+### Mirroring
+The target is made to be an exact replica of the source. Any files or data present on the target but not the source are deleted. This is the strictest form of unidirectional sync.
 
-# Summary  
+### Delta Encoding
+To save bandwidth, only the specific bytes or blocks that have changed within a file are transmitted, rather than the entire file.
 
-The Sync Command is a foundational tool for maintaining consistency across systems, requiring careful consideration of triggers, data transfer methods, and conflict resolution. Key takeaways include:  
+### Checkpoint/Watermarking
+The system maintains a "high-water mark" (such as a timestamp or transaction ID). The next sync command only requests data with a marker greater than the last recorded checkpoint.
 
-1. **Purpose**: Ensuring data integrity, availability, and real-time updates in distributed environments.  
-2. **Core Components**: Source, destination, triggers, and conflict-resolution strategies are essential for a robust synchronization strategy.  
-3. **Types of Sync**: Choose between one-way, two-way, or merge syncing based on use case.  
-4. **Conflict Resolution**: Automate with versioning or merging, or require manual intervention for critical data.  
-5. **Applications**: From databases and cloud storage to version control and APIs, sync commands are versatile and critical for modern workflows.  
+## Anti-Patterns
 
-Understanding these concepts helps in designing efficient, scalable, and reliable synchronization systems tailored to specific requirements.
+### Blind Overwrite
+Executing a sync without first verifying the state of the target. This can lead to "lost updates" if the target contained independent changes that were not accounted for.
 
----
-*Generated by Puter.js & Qwen*
+### Circular Synchronization
+In multi-node systems, a configuration where Node A syncs to Node B, and Node B syncs back to Node A without proper loop detection, leading to infinite data loops or "echoes."
+
+### Lack of Idempotency
+Designing a sync command that creates duplicate records if interrupted and restarted. A sync command should always be safe to retry.
+
+### Dependency on System Clocks
+Relying solely on local system timestamps for reconciliation. Clock skew between different servers can lead to incorrect "last writer wins" decisions.
+
+## Edge Cases
+
+*   **Network Partitioning:** If the connection drops mid-sync, the system must decide whether to roll back (atomicity) or allow a partial sync (resumability).
+*   **Race Conditions:** If the source data is modified *while* the sync command is reading it, the resulting target state may be inconsistent.
+*   **Deleted Item Tracking:** In incremental syncs, identifying that an item was deleted (rather than just missing) often requires "tombstones" or a persistent deletion log.
+*   **Permission Mismatches:** The sync command may successfully move data but fail to replicate metadata like ownership, permissions, or attributes, leading to functional failures.
+
+## Related Topics
+*   **Eventual Consistency:** A theoretical guarantee that all nodes will eventually match if no new updates are made.
+*   **Idempotency in APIs:** The design of operations that can be repeated safely.
+*   **Conflict-free Replicated Data Types (CRDTs):** Data structures that resolve conflicts automatically by design.
+*   **Version Control Systems:** Specialized implementations of sync commands for source code.
+
+## Change Log
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0 | 2026-01-20 | Initial AI-generated canonical documentation |
