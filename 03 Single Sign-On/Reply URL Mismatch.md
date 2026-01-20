@@ -1,74 +1,80 @@
-# REPLY URL MISMATCH
+# [Reply URL Mismatch](03 Single Sign-On/Reply URL Mismatch.md)
 
-### Introduction  
-A "Reply URL Mismatch" error occurs in authentication and authorization workflows when the URL returned by a service (e.g., an application, API, or identity provider) does not match the URL configured or expected by the client or service provider. This discrepancy often arises in systems like OAuth2, SAML, OpenID Connect, and Single Sign-On (SSO) setups, leading to failed authentication/authorization attempts. Understanding this issue is critical for developers and security teams to ensure secure and seamless user experiences.  
+Canonical documentation for [Reply URL Mismatch](03 Single Sign-On/Reply URL Mismatch.md). This document defines concepts, terminology, and standard usage.
 
----
+## Purpose
+The concept of the [Reply URL Mismatch](03 Single Sign-On/Reply URL Mismatch.md) exists to enforce security boundaries during the delegation of authorization and identity. In modern federated identity protocols (such as [OAuth 2.0](03 Single Sign-On/OAuth 2.0.md) and OpenID Connect), the "Reply URL" (or Redirect URI) serves as the designated destination where an Authorization Server (AS) sends sensitive data—including authorization codes and access tokens—after a user has successfully authenticated.
 
-### Core Concepts  
-#### 1. **Redirect URI**  
-The **redirect URI** (also called callback URL) is the endpoint where users are sent after an authentication/authorization process. For example, in OAuth2, the client app specifies this URL to receive an authorization code or token.  
+A mismatch occurs when the destination requested during a runtime transaction does not align with the pre-registered destinations known to the Authorization Server. This mechanism addresses the "Open Redirector" vulnerability, preventing malicious actors from intercepting security tokens by redirecting them to an unauthorized or attacker-controlled endpoint.
 
-#### 2. **Service Provider Configuration**  
-Service providers (e.g., Google, Azure AD, or custom IDPs) enforce strict validation of redirect URIs to prevent unauthorized redirections. These URLs must be explicitly registered and configured in advance.  
+> [!NOTE]
+> This documentation is intended to be implementation-agnostic and authoritative.
 
-#### 3. **Mismatch Causes**  
-Common reasons for mismatch include:  
-- **Typographical errors** in the URL (e.g., `https://api.example.com/callback` vs `https://api.examplecom/cb`).  
-- **Mismatched protocols** (HTTP vs HTTPS).  
-- **Port number discrepancies** (e.g., `:8080` vs `:443`).  
-- **Path mismatches** (e.g., `/callback` vs `/auth/callback`).  
-- **Domain mismatches** (e.g., `api.example.com` vs `staging.example.com`).  
-- **Wildcard mismatches** (e.g., configuring `*.example.com` but using `auth.example.com`).  
+## Scope
+Clarify what is in scope and out of scope for this topic.
 
-#### 4. **Security Implications**  
-A reply URL mismatch exposes the system to:  
-- Man-in-the-middle (MITM) attacks if an attacker redirects users to a malicious URL.  
-- Unauthorized access due to incorrect token exchange.  
-- Failed user sessions, degrading reliability and user trust.  
+**In scope:**
+* The theoretical framework of URI validation in delegated authorization.
+* Security implications of URI redirection.
+* Standard validation logic (exact matching vs. pattern matching).
+* Protocol-level requirements for Client and Authorization Server interaction.
 
-#### 5. **Solutions**  
-To resolve mismatches:  
-- **Verify registration**: Check if the configured redirect URI matches exactly (case-sensitive) on the service provider.  
-- **Use wildcards sparingly**: Some providers allow `https://*.example.com` to cover subdomains, but this reduces security.  
-- **Implement HTTPS**: Ensure URLs use HTTPS to prevent interception.  
-- **Test thoroughly**: Validate all environments (development, staging, production) separately.  
-- **Update client configurations**: Ensure the client app sends the correct redirect URI in authorization requests.  
+**Out of scope:**
+* Specific vendor error codes (e.g., Microsoft AADSTS50011, Google "Error 400: redirect_uri_mismatch").
+* Implementation-specific UI/UX for registering URLs.
+* Network-level routing or DNS resolution issues.
 
-#### 6. **Diagnostic Tools**  
-- **Network debugging tools** (e.g., browser DevTools, Postman) to inspect request/response URLs.  
-- **Service provider logs** to identify rejected requests.  
-- **3rd-party URL validation tools** (e.g., SSL validation checks for HTTPS compliance).  
+## Definitions
+Provide precise definitions for key terms.
 
----
+| Term | Definition |
+|------|------------|
+| **Authorization Server (AS)** | The engine that issues tokens to the client after successfully authenticating the resource owner and obtaining authorization. |
+| **Client (Application)** | The entity requesting access to protected resources on behalf of the resource owner. |
+| **Redirect URI / Reply URL** | The endpoint on the Client application where the AS sends the user-agent back with the authorization response. |
+| **Registration** | The administrative process of informing the AS of valid Redirect URIs before any runtime requests are made. |
+| **Exact Match** | A validation requirement where the requested URI must be identical to the registered URI, character-for-character. |
+| **Open Redirector** | A security flaw where an application takes a parameter and redirects the user to that parameter without sufficient validation. |
 
-### Examples  
+## Core Concepts
+The [Reply URL Mismatch](03 Single Sign-On/Reply URL Mismatch.md) is a failure of the **Trust Handshake**. The fundamental ideas include:
 
-#### Example 1: OAuth2 Redirect Mismatch  
-- **Scenario**: A client app uses `https://app.example.com/callback` in its authorization request.  
-- **Issue**: The service provider (e.g., Google OAuth) has `https://app.example.com/CB` configured (case-sensitive path mismatch).  
-- **Resolution**: Update the service provider’s configuration to use `/callback` instead of `/CB`.
+1.  **Pre-registration of Intent:** The Client must declare its valid callback endpoints during an out-of-band registration phase. This establishes a "whitelist" of trusted destinations.
+2.  **Runtime Validation:** During an authorization request, the Client sends a `redirect_uri` parameter. The AS compares this parameter against the registered whitelist.
+3.  **Integrity of the Response:** If the URIs do not match, the AS must terminate the request and must not redirect the user-agent to the unverified URI, as doing so could leak credentials.
 
-#### Example 2: SAML SP URL Mismatch  
-- **Scenario**: A SAML SP (service provider) expects an `AssertionConsumerServiceURL` of `https://login.example.com/saml`.  
-- **Issue**: The Identity Provider (IdP) sends the user to `https://login.example.com/SAML` (uppercase path).  
-- **Resolution**: Configure the IdP to use the lowercase URL or update the SP configuration to match the case.
+## Standard Model
+The generally accepted model for preventing [Reply URL Mismatch](03 Single Sign-On/Reply URL Mismatch.md)es follows the **Strict Validation Model**:
 
-#### Example 3: Port Number Discrepancy  
-- **Scenario**: A client app runs on `localhost:3000` during local development.  
-- **Issue**: The service provider is configured with `http://localhost:8080` (mismatched port).  
-- **Resolution**: Update the SP configuration to include `localhost:3000`, or use a reverse proxy to standardize the port.
+*   **Protocol Requirement:** The `redirect_uri` is an absolute URI.
+*   **Comparison Logic:** The AS performs a binary string comparison. Any variation in scheme (http vs https), host, port, path, or query parameters results in a mismatch.
+*   **State Management:** To handle dynamic data (like return paths within an app), the `state` parameter is used instead of modifying the Redirect URI.
+*   **Failure State:** Upon a mismatch, the AS displays an error to the user on its own domain and halts the flow. It does not redirect back to the faulty URI.
 
----
+## Common Patterns
+*   **Static URI Mapping:** A 1:1 mapping where each environment (Dev, Staging, Production) has a single, fixed Redirect URI.
+*   **Multiple Registered URIs:** Allowing a single Client ID to have multiple registered URIs to support different entry points or platforms (e.g., web vs. mobile deep links).
+*   **Localhost Exception:** Some models allow relaxed port matching for `localhost` or `127.0.0.1` to facilitate local development, though this is increasingly discouraged in favor of exact port matching.
 
-### Summary  
-A **Reply URL Mismatch** is a critical security and usability issue stemming from misconfigured or mismatched redirect URIs between clients and service providers. To mitigate this:  
-1. **Validate URLs**: Check protocol, domain, port, and path exactly.  
-2. **Use HTTPS**: Ensure encryption and compliance with modern security standards.  
-3. **Test across environments**: Confirm consistency in development, staging, and production setups.  
-4. **Leverage wildcards judiciously**: Balance flexibility with security by restricting domain coverage.  
+## Anti-Patterns
+*   **Wildcard Matching:** Using asterisks (e.g., `https://*.example.com`) to match subdomains. This significantly increases the attack surface, as any compromised subdomain can then intercept tokens.
+*   **Path Traversal Permissiveness:** Allowing any path under a registered domain (e.g., registering `https://example.com/` and accepting `https://example.com/malicious/callback`).
+*   **HTTP in Production:** Allowing non-TLS endpoints for redirection, which exposes tokens to man-in-the-middle (MITM) interception.
+*   **Reflected Redirect URIs:** An AS that echoes back whatever URI is provided in the request without checking a whitelist.
 
-Proactively addressing these issues ensures secure authentication flows, avoids user frustration, and safeguards against vulnerabilities in distributed systems.
+## Edge Cases
+*   **Trailing Slashes:** `https://app.com/callback` vs `https://app.com/callback/`. Many systems treat these as distinct, causing a mismatch.
+*   **Case Sensitivity:** While domain names are case-insensitive, paths and query parameters are often case-sensitive. A mismatch may occur if the registration is `.../Callback` but the request is `.../callback`.
+*   **URL Encoding:** Discrepancies in how the Client encodes the URI in the request versus how the AS decodes it for comparison.
+*   **Private-Use URI Schemes:** In mobile applications (e.g., `com.myapp://oauth`), the lack of a standard hierarchy can lead to validation complexities across different operating systems.
 
----
-*Generated by Puter.js & Qwen*
+## Related Topics
+*   **[OAuth 2.0](03 Single Sign-On/OAuth 2.0.md) Security Best Current Practice (BCP):** The evolving standard for securing redirection.
+*   **State Parameter:** The mechanism for maintaining application state without altering the Redirect URI.
+*   **PKCE (Proof Key for Code Exchange):** A security extension that provides additional protection even if a Redirect URI is partially compromised.
+*   **Cross-Site Request Forgery (CSRF):** The class of attack that the `state` parameter and Redirect URI validation work together to prevent.
+
+## Change Log
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0 | 2026-01-20 | Initial AI-generated canonical documentation |
