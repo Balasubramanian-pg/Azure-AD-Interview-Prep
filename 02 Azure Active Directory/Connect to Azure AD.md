@@ -1,99 +1,81 @@
-# CONNECT TO AZURE AD
+# [Connect to Azure AD](02 Azure Active Directory/Connect to Azure AD.md)
 
-```markdown
-## Introduction  
-Azure Active Directory (Azure AD) is Microsoft’s cloud-based identity and access management (IAM) service that enables organizations to manage user authentication and authorization across applications, services, and devices. Connecting to Azure AD is essential for securing access to resources, integrating applications with single sign-on (SSO), and managing user identities in hybrid or cloud environments. This guide provides an overview of key concepts, practical examples, and best practices for working with Azure AD.
+Canonical documentation for [Connect to Azure AD](02 Azure Active Directory/Connect to Azure AD.md). This document defines concepts, terminology, and standard usage.
 
----
+## Purpose
+The purpose of connecting to Azure AD (now part of Microsoft Entra) is to establish a secure, verifiable communication channel between an external entity—such as an application, service, or device—and a centralized identity provider (IdP). This connection facilitates the transition from network-based security perimeters to identity-based security models. It addresses the problem of fragmented identity management by providing a unified control plane for authentication, authorization, and auditing across heterogeneous environments.
 
-## Core Concepts  
-### 1. **Azure AD Tenant**  
-- A **tenant** is a dedicated instance of Azure AD for an organization, acting as a container for users, groups, apps, and policies.  
-- Each tenant is isolated and scoped to a specific domain (e.g., `contoso.onmicrosoft.com`).  
+> [!NOTE]
+> This documentation is intended to be implementation-agnostic and authoritative. While "Azure AD" is the historical name, the principles described herein apply to the evolved Microsoft Entra ID ecosystem.
 
-### 2. **Authentication Methods**  
-- **OAuth 2.0**: Standard protocol for authorization, enabling delegated access to resources (e.g., accessing Microsoft Graph API).  
-- **OpenID Connect**: Authentication protocol built on OAuth 2.0, used for user login and identity verification.  
-- **SAML 2.0**: Security assertion markup language for federated identity management, commonly used with third-party SaaS apps.  
+## Scope
+Clarify what is in scope and out of scope for this topic.
 
-### 3. **Azure AD Registered Apps**  
-- **Registered apps** represent applications that require access to Azure AD resources. Applications must be registered to obtain **application credentials** (e.g., client ID and client secret).  
-- **Permissions**: Apps can request delegated permissions (acting on behalf of a user) or application permissions (acting independently).  
+**In scope:**
+*   **Identity Integration:** The logical handshake between a client and the identity provider.
+*   **Protocol Standards:** The use of industry-standard frameworks (OIDC, OAuth 2.0, SAML) for establishing connections.
+*   **Security Principals:** The definition of entities that can initiate or receive a connection.
+*   **Trust Relationships:** The theoretical framework for establishing trust between a tenant and an external resource.
 
-### 4. **Authentication vs. Authorization**  
-- **Authentication**: Validating a user’s identity (e.g., username/password).  
-- **Authorization**: Defining what actions a user or app can perform post-authentication (e.g., role-based access control).  
+**Out of scope:**
+*   **Specific Vendor Implementations:** Step-by-step guides for third-party SaaS integrations.
+*   **Code-level SDK Tutorials:** Language-specific syntax for libraries (e.g., MSAL, ADAL).
+*   **Hardware-specific Configuration:** Physical setup of networking equipment or biometric sensors.
 
-### 5. **Multi-Factor Authentication (MFA)**  
-- Azure AD enforces MFA at login to reduce risk. Policies can mandate MFA for users based on risk, location, or device trustworthiness.  
+## Definitions
+Provide precise definitions for key terms.
 
-### 6. **Roles and Permissions**  
-- Azure AD defines **roles** (e.g., User Administrator, Global Administrator) to grant permissions for managing users, groups, or policies.  
+| Term | Definition |
+|------|------------|
+| **Tenant** | A dedicated instance of the identity service representing an organization or a specific boundary of trust. |
+| **Service Principal** | A local representation (an object) of a global application object within a specific tenant, used for authentication and authorization. |
+| **Managed Identity** | An identity automatically managed by the platform, eliminating the need for developers to manage credentials. |
+| **Claim** | A statement about a subject (e.g., name, role, email) issued by the identity provider and packaged in a token. |
+| **Scope** | A mechanism to limit an application's access to a user's account or a resource's data. |
+| **Authority** | The URL or endpoint that indicates where the client should request tokens (the "Source of Truth"). |
 
-### 7. **Hybrid Identity Integration**  
-- **Azure AD Connect**: Tool for synchronizing on-premises Active Directory (AD) with Azure AD, enabling seamless SSO and user management in hybrid environments.  
+## Core Concepts
+Connecting to Azure AD is predicated on three fundamental pillars:
 
-### 8. **Conditional Access Policies**  
-- Rules to enforce restrictions or requirements (e.g., requiring MFA or blocking unapproved devices) based on user, location, or app-based conditions.  
+1.  **Identity as the Control Plane:** In a cloud-native environment, the network is assumed to be hostile. The connection to the identity provider serves as the primary gatekeeper for all resource access.
+2.  **Claims-Based Identity:** Rather than the resource verifying the user's password, the resource trusts a signed "token" issued by Azure AD. This token contains "claims" that the resource uses to make authorization decisions.
+3.  **Explicit Trust:** A connection cannot be established without a pre-existing trust relationship, usually defined by an Application Registration or a Federation agreement.
 
-### 9. **Azure AD Graph/API**  
-- REST APIs allow programmatic access to Azure AD data (e.g., users, groups) and management tasks (e.g., app registration).  
+## Standard Model
+The standard model for connecting to Azure AD follows the **Modern Authentication** framework, primarily utilizing OpenID Connect (OIDC) for authentication and OAuth 2.0 for authorization.
 
----
+1.  **Discovery:** The client identifies the appropriate Authority (Tenant-specific or Common).
+2.  **Challenge/Request:** The client sends a request for an identity or access token, providing its own credentials or a user's credentials.
+3.  **Validation:** Azure AD validates the credentials against the directory and evaluates security policies (e.g., Conditional Access).
+4.  **Issuance:** Upon success, Azure AD issues a JSON Web Token (JWT).
+5.  **Consumption:** The client presents this token to the target resource, which validates the token's signature and claims.
 
-## Examples  
-### 1. **Registering an Application with Azure AD**  
-1. Navigate to the **Azure portal** > **Azure Active Directory** > **App registrations** > **New registration**.  
-2. Provide a name, supported account types (e.g., single tenant or multitenant), and redirect URI(s).  
-3. After registration, note the **Client ID** and generate a **Client Secret** under **Certificates & secrets**.  
+## Common Patterns
+*   **User-Interactive Flow:** Used for applications where a human is present to provide credentials (e.g., Web Apps, Mobile Apps).
+*   **Daemon/Service Flow:** Used for non-interactive background processes (e.g., Cron jobs, APIs) using Client Credentials.
+*   **On-Behalf-Of (OBO) Flow:** Used when an API needs to call another API while propagating the original user's identity and permissions.
+*   **Device Code Flow:** Used for devices with limited input capabilities (e.g., IoT, CLI tools) where the user authenticates on a separate device.
 
-```http
-# Example OAuth 2.0 Token Request for Microsoft Graph API
-POST https://login.microsoftonline.com/{tenant-id}/oauth2/v2.0/token
-Content-Type: application/x-www-form-urlencoded
+## Anti-Patterns
+*   **Hardcoded Secrets:** Storing client secrets or passwords in source code or configuration files.
+*   **Over-Privileged Service Principals:** Granting "Directory.ReadWrite.All" when only specific resource access is required.
+*   **Bypassing Modern Auth:** Using legacy protocols like Basic Authentication or NTLM, which do not support Multi-Factor Authentication (MFA).
+*   **Implicit Grant Flow:** Using the OAuth 2.0 Implicit Flow for new applications, as it is less secure than the Authorization Code Flow with PKCE.
+*   **Token Sharing:** Passing raw tokens between unrelated services without validating the audience (`aud`) claim.
 
-client_id={client-id}
-&scope=https%3A%2F%2Fgraph.microsoft.com%2F.default
-&client_secret={client-secret}
-&grant_type=client_credentials
-```  
+## Edge Cases
+*   **Multi-Tenant Applications:** Scenarios where an application must accept connections from users in any Azure AD tenant, requiring dynamic authority resolution.
+*   **Disconnected/Hybrid Environments:** Situations where a connection must be established in an environment with intermittent internet connectivity, necessitating cached tokens or local identity synchronization.
+*   **Guest Access (B2B):** When a connection is initiated by a user from an external organization, requiring the host tenant to map the external identity to local resource permissions.
+*   **Conditional Access Blocking:** A valid connection attempt may be rejected not due to incorrect credentials, but due to environmental factors (e.g., unmanaged device, untrusted IP range).
 
-### 2. **Using OpenID Connect for User Login**  
-Implement SSO by redirecting users to Azure AD’s authorization endpoint:  
+## Related Topics
+*   **OAuth 2.0 and OIDC Frameworks:** The underlying protocols for modern identity.
+*   **Conditional Access Policies:** The rules engine that governs connection success.
+*   **Managed Identities for Azure Resources:** The preferred method for service-to-service connection.
+*   **Microsoft Graph API:** The primary resource accessed via an Azure AD connection.
 
-```javascript
-// Example OpenID Connect redirect in JavaScript
-window.location.href = `https://login.microsoftonline.com/{tenant-id}/oauth2/v2.0/authorize` +
-`?client_id={client-id}` +
-`&redirect_uri={encoded-redirect-url}` +
-`&response_type=code` +
-`&scope=openid profile` +
-`&state={state-parameter}`;
-```  
-
-### 3. **Enforcing MFA with Conditional Access**  
-1. In the Azure portal, navigate to **Azure Active Directory** > **Security** > **Conditional Access** > **New policy**.  
-2. Define the **user/group**, **cloud apps** (e.g., Microsoft 365), and **conditions** (e.g., users outside the corporate network).  
-3. Select **Grant** > **Require multi-factor authentication** > Save.  
-
-### 4. **Hybrid Identity with Azure AD Connect**  
-- Use Azure AD Connect to configure synchronization between on-premises AD and Azure AD. Key steps include:  
-  - Installing Azure AD Connect.  
-  - Configuring synchronization rules for users/groups.  
-  - Enabling password hash synchronization or federated authentication.  
-
----
-
-## Summary  
-Connecting to Azure AD is foundational for securing enterprise applications and devices. Key takeaways include:  
-- **Apps must be registered** to use Azure AD authentication.  
-- **OAuth 2.0 and OpenID Connect** are the core protocols for modern authentication flows.  
-- **MFA and Conditional Access** enhance security by enforcing policies based on context.  
-- Hybrid environments require synchronization tools like Azure AD Connect.  
-- Always follow best practices: never hardcode credentials, limit permission scopes, and audit roles regularly.  
-
-By leveraging Azure AD’s features, organizations can achieve centralized identity management, SSO, and compliance with robust security controls.  
-```
-
----
-*Generated by Puter.js & Qwen*
+## Change Log
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0 | 2026-01-20 | Initial AI-generated canonical documentation |
