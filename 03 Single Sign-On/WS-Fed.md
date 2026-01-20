@@ -1,97 +1,108 @@
-# WS FED
+# WS Fed
 
-## Introduction  
-WS-Federation, often referred to as WS-Fed, is a standard protocol for federated identity management. It enables secure authentication and authorization across disparate systems, allowing users to access multiple services with a single set of credentials. Developed by Microsoft as part of the WS-* (Windows Services) stack and later standardized by OASIS, WS-Federation is widely used in enterprise scenarios such as Single Sign-On (SSO) between cloud and on-premises applications. It relies on XML-based security tokens and supports interoperability between different identity providers (IdPs) and service providers (SPs).  
+Canonical documentation for WS Fed. This document defines concepts, terminology, and standard usage.
 
-WS-Federation addresses challenges in cross-domain authentication by establishing trust through metadata exchange and leveraging standards like SAML (Security Assertion Markup Language) for token formats. It is particularly prominent in Microsoft environments (e.g., Active Directory Federation Services, Azure AD) but can be integrated with third-party systems.  
+## Purpose
+[WS-Fed](03 Single Sign-On/WS-Fed.md)eration (WS-Fed) is a protocol designed to facilitate the exchange of identity and security information across different security realms or trust boundaries. It exists to solve the problem of identity fragmentation in distributed systems, allowing a user authenticated in one domain (the Identity Provider) to access resources in another domain (the Relying Party) without requiring a local account or re-authentication.
 
----
+By leveraging the WS-Trust and WS-Security frameworks, [WS-Fed](03 Single Sign-On/WS-Fed.md) provides a standardized mechanism for requesting, issuing, and validating security tokens, thereby enabling Single Sign-On (SSO) and federated identity management in heterogeneous environments.
 
-## Core Concepts  
+> [!NOTE]
+> This documentation is intended to be implementation-agnostic and authoritative.
 
-### **1. Identity Provider (IdP)**  
-- The system that authenticates users (e.g., Active Directory Federation Services, Azure AD).  
-- Issues security tokens to SPs after verifying user credentials.  
+## Scope
+Clarify what is in scope and out of scope for this topic.
 
-### **2. Service Provider (SP)**  
-- The dependent service that trusts the IdP to confirm user authenticity.  
-- Examples: on-premises applications, cloud services, or web portals.  
+**In scope:**
+*   The Passive Requestor Profile (Web-based SSO).
+*   The relationship between [WS-Fed](03 Single Sign-On/WS-Fed.md)eration and the WS-* stack (WS-Trust, WS-Security).
+*   Protocol-level message parameters and flow logic.
+*   The concept of Claims-based identity within the federation context.
 
-### **3. Security Token Service (STS)**  
-- A component within the IdP responsible for generating and validating security tokens.  
-- May be separate from the IdP (e.g., in multi-tenant setups).  
+**Out of scope:**
+*   Specific vendor implementations (e.g., AD FS, Azure AD, PingFederate).
+*   Configuration guides for specific web servers or application frameworks.
+*   Detailed specifications of the underlying WS-Trust SOAP headers (except where necessary for context).
 
-### **4. Core Protocols**  
-- **SSO Initiation**: The SP redirects the user to the IdP’s login page.  
-- **SSO Completion**: The IdP authenticates the user and returns a security token to the SP.  
-- **Single Logout (SLO)**: Terminates all sessions across federated services.  
+## Definitions
+Provide precise definitions for key terms.
 
-### **5. Security Tokens**  
-- XML-based tokens, often using SAML 1.1 assertions (though not SAML 2.0).  
-- Contains claims like user identity, roles, or expiration time.  
+| Term | Definition |
+|------|------------|
+| **Identity Provider (IdP)** | An entity that authenticates users and issues security tokens containing claims about those users. |
+| **Relying Party (RP)** | An application or service that consumes security tokens from an IdP to make authorization decisions. |
+| **Security Token Service (STS)** | A service component that issues, validates, renews, and cancels security tokens based on the WS-Trust standard. |
+| **Claim** | A statement about a subject (e.g., name, email, role) made by an issuer. |
+| **Realm** | A logical boundary or domain that defines the scope of a security policy or identity management system. |
+| **Passive Requestor** | An agent (typically a web browser) that is incapable of understanding complex SOAP protocols and relies on HTTP redirects and form posts. |
+| **Wtrealm** | A parameter identifying the target realm (the RP) for which the token is intended. |
+| **Wresult** | The parameter containing the issued security token (usually a RSTR) in the response. |
 
-### **6. Federation Metadata Exchange**  
-- XML documents exchanged between the IdP and SP to specify:  
-  - Endpoints (e.g., SSO URL, SLO URL).  
-  - Certificates for token signing/validation.  
-  - Token formats and encryption preferences.  
+## Core Concepts
 
----
+### Claims-Based Identity
+[WS-Fed](03 Single Sign-On/WS-Fed.md)eration operates on the principle of claims-based identity. Rather than the application managing user credentials, it trusts an external authority (the IdP) to provide a set of "claims" about the user. The application then maps these claims to internal permissions.
 
-## Examples  
-### **Example 1: Azure AD as the IdP for an On-Premises Application**  
-**Scenario**: A company wants employees to access an on-premises SharePoint portal using their Azure AD credentials.  
+### Federation Trust
+A federation trust is a formal relationship established between an IdP and an RP. This trust is typically secured via cryptographic certificates. The RP trusts tokens signed by the IdP's private key, and the IdP knows where to send users based on the RP's registered realm and endpoint.
 
-**Steps**:  
-1. **Configure Azure AD**:  
-   - Register the SharePoint application as a dependent service.  
-   - Share federation metadata (e.g., IdP URL, certificates).  
+### The WS-* Foundation
+[WS-Fed](03 Single Sign-On/WS-Fed.md)eration is an extension of the Web Services (WS-*) roadmap. It specifically utilizes:
+*   **WS-Trust:** For the format of the token request and response (RST/RSTR).
+*   **WS-Security:** For securing the message content (signing and encryption).
 
-2. **Configure SharePoint**:  
-   - Import the metadata from Azure AD into SharePoint.  
-   - Enable WS-Federation authentication.  
+## Standard Model
 
-3. **User Access Flow**:  
-   - A user browses to SharePoint, redirected to Azure AD for login.  
-   - After successful authentication, Azure AD issues a SAML token to SharePoint.  
-   - SharePoint validates the token and grants access.  
+### The Passive Requestor Profile (Web SSO)
+The most common application of [WS-Fed](03 Single Sign-On/WS-Fed.md) is the Passive Requestor Profile, which uses standard HTTP mechanisms (GET, POST, Redirects) to facilitate SSO for web browsers.
 
-**Key Terms Included**:  
-- **Realm**: The identifier for the SharePoint SP in Azure AD.  
-- **Relying Party Trust**: The setup in Azure AD for SharePoint.  
+1.  **Request:** A user attempts to access a protected resource on the RP.
+2.  **Redirect:** The RP detects the user is unauthenticated and redirects the browser to the IdP with a `wa=wsignin1.0` action and a `wtrealm` parameter.
+3.  **Authentication:** The IdP authenticates the user (via password, MFA, etc.).
+4.  **Token Issuance:** The IdP generates a Security Token (often SAML 1.1 or 2.0) wrapped in a `RequestSecurityTokenResponse` (RSTR).
+5.  **Response:** The IdP sends an HTTP POST containing the `wresult` (the RSTR) back to the RP's endpoint.
+6.  **Validation:** The RP validates the signature of the token, extracts the claims, and establishes a local session for the user.
 
----
+## Common Patterns
 
-### **Example 2: Federated SSO Between ERP System and Cloud Service**  
-**Scenario**: A manufacturing ERP system (On-prem) and a cloud-based CRM tool use an IdP to avoid duplicate logins.  
+### Home Realm Discovery (HRD)
+In scenarios where an RP trusts multiple IdPs, the RP must determine which IdP the user belongs to. This is often handled via an intermediary page (HRD) where the user selects their organization or enters an email suffix to trigger the correct redirect.
 
-**Steps**:  
-1. **Federation Setup**:  
-   - The IdP (e.g., ADFS) exchanges metadata with both ERP and CRM systems.  
-   - The ERP and CRM become SPs, trusting tokens from the IdP.  
+### Single Sign-Out
+[WS-Fed](03 Single Sign-On/WS-Fed.md)eration supports a standardized sign-out flow using the `wa=wsignout1.0` action. This notifies the IdP to terminate the session and, optionally, notify other RPs that the user has logged out (Sign-Out Cleanup).
 
-2. **User Interaction**:  
-   - A user launches the ERP, redirected to the IdP.  
-   - After authentication, the IdP creates a token for the ERP.  
-   - When accessing CRM later, the user is already authenticated via the IdP session.  
+### Token Transformation
+An STS may act as a "Federation Provider" (FP), sitting between an RP and a master IdP. The FP receives a token from the IdP, transforms the claims (e.g., renaming "UID" to "NameID"), and issues a new token to the RP.
 
-3. **Single Logout**:  
-   - Upon logging out of the ERP, the IdP triggers logout in both ERP and CRM.  
+## Anti-Patterns
 
-**Key Considerations**:  
-- **Token Expiry**: Ensure tokens have appropriate lifetimes to balance security and usability.  
-- **Cross-Domain Cookies**: Configure cookies to avoid session leakage between SPs.  
+### Hardcoding Endpoints
+Relying on hardcoded URLs for IdPs or RPs rather than using metadata exchange or dynamic configuration makes the federation fragile and difficult to maintain during certificate rotations or infrastructure changes.
 
----
+### Ignoring Token Expiration
+Failing to validate the `NotBefore` and `NotOnOrAfter` attributes within the security token allows for replay attacks or the use of stale identity data.
 
-## Summary  
-WS-Federation is a foundational protocol for secure, cross-domain authentication in enterprise environments. Key takeaways include:  
-- **Trust Establishment**: Federation metadata ensures IdP and SP endpoints and certificates are mutually defined.  
-- **Standardized Tokens**: Relies on SAML assertions for claims-based authentication.  
-- **Core Flows**: SSO initiation, completion, and SLO provide seamless user experiences.  
-- **Use Cases**: Dominates in Microsoft ecosystems but can integrate with non-Microsoft SPs/IdPs.  
+### Over-reliance on Browser State
+Assuming that a session at the IdP automatically implies a valid session at the RP (or vice versa) without proper protocol-level verification can lead to "zombie sessions" where a user remains logged into an application after their central identity has been revoked.
 
-WS-Federation reduces administrative overhead, increases security through centralized auth, and enables interoperability between heterogeneous systems. Organizations leveraging it must securely manage metadata, monitor token lifetimes, and ensure compliance with encryption standards.
+## Edge Cases
 
----
-*Generated by Puter.js & Qwen*
+### Large Token Sizes
+Because [WS-Fed](03 Single Sign-On/WS-Fed.md) responses (the `wresult`) are often passed via HTTP POST, very large tokens (containing hundreds of group claims) can exceed web server header or post-body limits, leading to HTTP 400 or 413 errors.
+
+### Nested Federation
+In complex corporate mergers, a user might authenticate at IdP-A, which federates to IdP-B, which finally issues a token to the RP. Each hop must correctly preserve the original subject's identity while adhering to the trust constraints of the next hop.
+
+### Clock Skew
+If the system clocks of the IdP and RP are not synchronized, valid tokens may be rejected as "not yet valid" or "expired." Standard practice is to allow a 3-5 minute "skew" buffer during validation.
+
+## Related Topics
+*   **SAML (Security Assertion Markup Language):** Often used as the token format within [WS-Fed](03 Single Sign-On/WS-Fed.md)eration.
+*   **WS-Trust:** The underlying protocol for requesting and issuing security tokens.
+*   **[OAuth 2.0](03 Single Sign-On/OAuth 2.0.md) / OpenID Connect:** Modern alternatives to [WS-Fed](03 Single Sign-On/WS-Fed.md)eration, typically used for REST APIs and mobile applications.
+*   **WS-Policy:** Used to describe the requirements and capabilities of the entities in a federation.
+
+## Change Log
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0 | 2026-01-20 | Initial AI-generated canonical documentation |
