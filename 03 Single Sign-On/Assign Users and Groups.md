@@ -1,76 +1,113 @@
-# ASSIGN USERS AND GROUPS
+# [Assign Users and Groups](03 Single Sign-On/Assign Users and Groups.md)
 
-## Introduction  
-Managing users and groups is a fundamental aspect of access control and identity governance in digital systems. It ensures that individuals and teams have the appropriate permissions to access resources while maintaining security and compliance. Effective user and group management simplifies permission updates, reduces administrative overhead, and minimizes the risk of unauthorized access. This guide provides an overview of core concepts, examples, and best practices for assigning users and groups across platforms and systems.
+Canonical documentation for [Assign Users and Groups](03 Single Sign-On/Assign Users and Groups.md). This document defines concepts, terminology, and standard usage.
 
----
+## Purpose
+The assignment of users and groups serves as the fundamental mechanism for managing access control and resource allocation within a digital ecosystem. It addresses the problem of scalability in identity management by decoupling individual identities from specific permissions. By associating identities (Users) with logical containers (Groups), organizations can manage entitlements efficiently, ensure consistent security postures, and streamline the lifecycle of access as individuals join, move, or leave an organization.
 
-## Core Concepts  
-### 1. Users and Groups  
-- **User**: An individual account with a unique identifier (e.g., username or email) that grants access to specific resources.  
-- **Group**: A collection of users grouped by role, department, or permissions. Groups streamline permission management by allowing administrators to assign permissions to entire groups instead of individual users.  
+> [!NOTE]
+> This documentation is intended to be implementation-agnostic and authoritative.
 
-### 2. Roles and Permissions  
-- **Roles**: Predefined sets of permissions tied to job functions (e.g., "Administrator," "Sales Team").  
-- **Permissions**: Specific access rights, such as read, write, or execute, granted to users or groups on resources like files, applications, or databases.  
+## Scope
+Clarify what is in scope and out of scope for this topic.
 
-### 3. Key Principles  
-- **Principle of Least Privilege**: Grant users only the permissions necessary to perform their job.  
-- **Separation of Duties**: Avoid granting conflicting permissions to single groups to prevent fraud or errors.  
-- **Permission Inheritance**: Groups inherit permissions from parent groups in a nested hierarchy (e.g., a "Marketing Team" group inheriting permissions from a "Global Users" group).  
+**In scope:**
+* The logical association between identities and containers.
+* Mechanisms of membership (static, dynamic, and transitive).
+* The relationship between principals and entitlements.
+* Theoretical frameworks for hierarchical and flat assignment structures.
 
-### 4. Assigning Users and Groups  
-- **Creating Groups**: Define groups based on organizational structure (e.g., "Finance Team") or permissions (e.g., "Contractors").  
-- **Adding Users to Groups**: Associate user accounts with one or more groups to grant their permissions.  
-- **Role Assignment**: Link roles (and their permissions) to users or groups via system interfaces or scripting tools.  
-- **Revoking Access**: Remove users from groups or revoke roles to terminate permissions when needed.  
+**Out of scope:**
+* Specific vendor implementations (e.g., Active Directory, AWS IAM, Okta).
+* Protocol-specific details (e.g., SAML assertions, OIDC scopes).
+* Hardware-level authentication methods.
 
-### 5. Synchronization and Tools  
-- **Directory Services**: Systems like Microsoft Active Directory or LDAP centrally manage groups and users across devices.  
-- **Cloud Platforms**: Google Workspace, AWS IAM, or Azure AD handle user/group assignments via dashboards or APIs.  
-- **Synchronization Methods**: Federated Identity Management (FIM) or password sync tools ensure consistency across systems.  
+## Definitions
+Provide precise definitions for key terms.
 
----
+| Term | Definition |
+|------|------------|
+| **Identity** | A unique digital representation of an entity (human or non-human). |
+| **User** | A specific type of identity, typically representing an individual person or a service account. |
+| **Group** | A logical collection of identities that can be managed as a single unit. |
+| **Principal** | An entity (User or Group) that is capable of being assigned permissions or roles. |
+| **Assignment** | The formal link established between a principal and a resource, role, or group. |
+| **Membership** | The state of a User or Group being contained within another Group. |
+| **Entitlement** | A specific right or privilege granted to a principal through an assignment. |
+| **Nesting** | The practice of assigning one group as a member of another group. |
 
-## Examples  
-### Example 1: Onboarding a New Employee  
-**Scenario**: A software developer is joining an IT department requiring access to source code repositories and internal tools.  
+## Core Concepts
 
-**Steps**:  
-1. Create a user account for the developer (e.g., `jdoe@example.com`).  
-2. Add the user to the "IT Department" group.  
-3. Assign the "Developer Role" to the "IT Department" group, granting access to code repositories (read/write), Jira (edit tickets), and a shared development server (SSH access).  
-4. Audit permissions to ensure no unintended access.  
+### The Principal-Target Relationship
+At its core, assignment is a directional relationship where a **Principal** (the actor) is linked to a **Target** (the resource or role). This relationship defines "who" can do "what."
 
-### Example 2: Managing Department-Specific Access  
-**Scenario**: A manager needs access to both their department’s data and additional HR tools.  
+### Membership Types
+*   **Direct Membership:** A user is explicitly added to a group.
+*   **Indirect (Transitive) Membership:** A user gains membership in a group because they are a member of a subgroup nested within that group.
+*   **Dynamic Membership:** Membership is automatically calculated based on metadata or attributes (e.g., "All users where Department = 'Engineering'").
 
-**Steps**:  
-1. Assign the manager to the "HR Department" and "Managers" groups.  
-2. Set nested groups (e.g., "Managers" inherit permissions from "HR Department" but have additional rights like accessing payroll systems).  
-3. Use inheritance to grant broader permissions to higher-tier groups (e.g., "Managers" can approve budgets, while "Employees" cannot).  
+### Inheritance
+Inheritance is the mechanism by which permissions assigned to a group are automatically granted to all members of that group. In hierarchical structures, inheritance typically flows downward from parent groups to child groups and finally to individual users.
 
-### Example 3: Restricting Access to Sensitive Data  
-**Scenario**: A marketing team must access campaign databases but should not modify financial records.  
+## Standard Model
 
-**Steps**:  
-1. Create a "Marketing Team" group.  
-2. Grant the group access to marketing tools (e.g., Salesforce, Photoshop) and read-only access to budget reports.  
-3. Restrict the "Marketing Team" group from financial systems by explicitly denying permissions or excluding it from the "Finance Users" group.  
+The standard model for assigning users and groups follows the **RBAC (Role-Based Access Control)** framework, often extended by **ABAC (Attribute-Based Access Control)** for finer granularity.
 
----
+1.  **Identity Creation:** A User is provisioned in the system.
+2.  **Group Categorization:** Groups are created based on functions (e.g., "Marketing"), locations (e.g., "EMEA"), or security levels (e.g., "Admin").
+3.  **Assignment to Groups:** Users are assigned to one or more groups.
+4.  **Entitlement Mapping:** Permissions or Roles are assigned to the Groups, not the Users.
+5.  **Resolution:** When a user attempts to access a resource, the system resolves the user's effective permissions by aggregating the entitlements of all groups to which the user belongs.
 
-## Summary  
-- **Purpose of User and Group Management**: Streamline access control, enhance security, and ensure compliance by centralizing permission assignments.  
-- **Best Practices**:  
-  - Use groups to manage shared permissions for teams or roles.  
-  - Apply the **principle of least privilege** to minimize attack surfaces.  
-  - Regularly audit groups and user memberships to prevent permissions creep.  
-  - Apply inheritance strategically to avoid redundant assignments.  
-- **Tools and Systems**: Utilize directory services (e.g., Active Directory) or cloud platforms (e.g., Azure AD) for centralized management, synchronization, and reporting.  
-- **Risk Mitigation**: Always revoke or adjust permissions when roles change.  
+## Common Patterns
 
-Effective user and group management is critical for balancing productivity and security in any organization, ensuring resources are accessible to the right people while safeguarding sensitive assets.
+### Functional Grouping
+Groups are organized by job function or department. This is the most common pattern for organizational alignment.
 
----
-*Generated by Puter.js & Qwen*
+### Resource-Based Grouping
+Groups are created specifically to manage access to a single resource (e.g., "Project-Alpha-Read-Only"). Users are added to these groups to gain specific access.
+
+### Tiered Administration
+A hierarchical pattern where "Super Admin" groups contain "Regional Admin" groups, which in turn contain "Local Admin" groups. This allows for delegated administration.
+
+### Just-In-Time (JIT) Assignment
+A pattern where a user is assigned to a group temporarily for a specific duration or task, after which the assignment is automatically revoked.
+
+## Anti-Patterns
+
+### Direct User Entitlement
+Assigning permissions directly to individual users rather than through groups. This leads to "permission creep" and makes auditing nearly impossible at scale.
+
+### Circular Nesting
+A scenario where Group A is a member of Group B, and Group B is a member of Group A. This can cause infinite loops in permission resolution engines and system instability.
+
+### Deep Nesting
+Creating excessively long chains of nested groups (e.g., User -> G1 -> G2 -> G3... -> G10). This obscures the "Effective Permissions" of a user and degrades system performance during authorization checks.
+
+### The "Everything" Group
+Creating a single group that contains all users and assigning it broad permissions. This violates the Principle of Least Privilege.
+
+## Edge Cases
+
+### Conflicting Permissions
+A user belongs to Group A (Allow Access) and Group B (Deny Access). The canonical resolution is that an explicit **Deny** overrides an **Allow**, but this varies by implementation.
+
+### Orphaned Assignments
+When a resource or group is deleted, but the assignment records remain in the database. This can lead to security vulnerabilities if a new resource is later created with the same identifier.
+
+### Cross-Domain/Cross-Tenant Assignment
+Assigning a user from one identity provider or domain to a group in a different domain. This requires trust relationships and introduces complexities in identity lifecycle management.
+
+### Shadow Memberships
+Users who gain access through undocumented or legacy back-door assignments that bypass the standard group-based management system.
+
+## Related Topics
+*   **Identity and Access Management (IAM):** The broader framework for managing digital identities.
+*   **Principle of Least Privilege (PoLP):** The security discipline of providing only the minimum access necessary.
+*   **Access Control Lists (ACL):** The low-level mapping of principals to specific resource operations.
+*   **Lifecycle Management:** The process of managing the stages of an identity from creation to deletion.
+
+## Change Log
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0 | 2026-01-20 | Initial AI-generated canonical documentation |
