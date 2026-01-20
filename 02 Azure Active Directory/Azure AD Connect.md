@@ -1,110 +1,109 @@
-# AZURE AD CONNECT
+# [Azure AD Connect](02 Azure Active Directory/Azure AD Connect.md)
 
-## Introduction  
-Azure AD Connect is a Microsoft tool that synchronizes on-premises directory data (such as Active Directory) with Azure Active Directory (Azure AD), enabling seamless integration between on-premises and cloud-based Microsoft services like Microsoft 365, Exchange Online, and SharePoint Online. It replaces older tools such as DirSync and Azure AD Sync and streamlines the process of managing hybrid identities.  
+Canonical documentation for [Azure AD Connect](02 Azure Active Directory/Azure AD Connect.md). This document defines concepts, terminology, and standard usage.
 
-**Key Functions**:  
-- Synchronizing user accounts, groups, and other directory objects.  
-- Synchronizing passwords for single sign-on (SSO) or pass-through authentication.  
-- Supporting hybrid identity scenarios (e.g., Exchange Server, Office 365).  
-- Configuration options for single sign-on (via federation with Active Directory Federation Services [AD FS]).  
+## Purpose
+[Azure AD Connect](02 Azure Active Directory/Azure AD Connect.md) (now part of the Microsoft Entra suite) exists to bridge the gap between on-premises identity infrastructures and cloud-based identity providers. Its primary purpose is to facilitate a **Hybrid Identity** model, ensuring that users, groups, and devices maintained in local directory services are represented accurately and securely in the cloud. 
 
-**Prerequisites**:  
-- Windows Server 2016/2019/2022 with Active Directory Domain Services (AD DS).  
-- Azure AD Premium license (required for certain features like password writeback).  
-- Internet connectivity between the on-premises server and Azure AD.  
+By automating the synchronization of identity data, the tool eliminates the need for redundant administrative overhead and provides users with a consistent sign-on experience across heterogeneous environments.
 
----
+> [!NOTE]
+> This documentation is intended to be implementation-agnostic and authoritative. While it references specific architectural components of the Microsoft ecosystem, the principles of identity synchronization and lifecycle management described herein apply to the broader discipline of hybrid directory integration.
 
-## Core Concepts  
+## Scope
+Clarify what is in scope and out of scope for this topic.
 
-### 1. **Synchronization Engine**  
-Azure AD Connect uses a synchronization engine to map on-premises directory data to Azure AD. The engine works with the following components:  
-- **Directory Synchronization (DirSync)**: Pushes on-premises data to Azure AD at configurable intervals.  
-- **Password Hash Synchronization (PHS)**: Stores encrypted password hashes in Azure AD, allowing users to sign in to cloud services using their on-premises passwords.  
-- **Pass-Through Authentication (PTA)**: Forwards authentication requests to on-premises AD without storing passwords in Azure AD (more secure than PHS).  
+**In scope:**
+* **Identity Synchronization:** The mechanisms for replicating objects and attributes from source directories to target cloud directories.
+* **Authentication Integration:** The methods for validating user credentials across hybrid boundaries (e.g., Password Hash Sync, Pass-through Authentication).
+* **Attribute Mapping and Transformation:** The logic governing how data is translated between different schema definitions.
+* **Health Monitoring:** The oversight of synchronization health and alerting.
 
-### 2. **Hybrid Identity Models**  
-Azure AD Connect supports three primary deployment models:  
-- **Password Hash Synchronization (PHS)**: Best for simple hybrid setups where password hashes are stored in Azure AD.  
-- **Pass-Through Authentication (PTA)**: Provides enterprise-grade security by offloading authentication to on-premises AD.  
-- **Federation with AD FS**: Enables SSO via Active Directory Federation Services for domains other than the initial .onmicrosoft.com tenant.  
+**Out of scope:**
+* **Third-party Identity Providers:** Integration with non-Microsoft identity providers (e.g., Okta, Ping Identity) except where they function as a federation target.
+* **Legacy Migration Tools:** Tools specifically designed for one-time migrations rather than ongoing synchronization (e.g., User State Migration Tool).
+* **Client-side Application Configuration:** The specific setup of end-user applications to consume the synchronized identities.
 
-### 3. **Password Writeback**  
-Allows password changes made in Azure AD (e.g., via the Azure portal) to propagate back to on-premises Active Directory.  
+## Definitions
+Provide precise definitions for key terms.
 
-### 4. **Federation and SSO**  
-Integration with AD FS enables federated authentication, allowing users to sign in using corporate credentials without storing credentials in Azure AD.  
+| Term | Definition |
+|------|------------|
+| **Source Anchor** | An immutable attribute used to uniquely identify an object in both the on-premises and cloud directories, ensuring they remain linked regardless of attribute changes (e.g., `mS-DS-ConsistencyGuid`). |
+| **Metaverse** | The central, consolidated storage area within the sync engine that holds the combined identity information from all connected directories. |
+| **Connector Space** | A staging area that contains a representation of the objects in a specific connected directory (e.g., an on-premises AD forest). |
+| **Password Hash Sync (PHS)** | A synchronization method where a hash of the hash of a user's password is synchronized to the cloud, allowing for cloud-native authentication. |
+| **Pass-through Authentication (PTA)** | An authentication method where the cloud service validates the user's password directly against the on-premises directory via a lightweight agent. |
+| **Writeback** | The process of synchronizing specific attributes or objects from the cloud directory back to the on-premises directory (e.g., Password Writeback, Device Writeback). |
+| **Soft-match** | The process of linking an on-premises object to an existing cloud object based on matching primary attributes (usually SMTP address or UPN). |
+| **Hard-match** | The process of linking objects using the Source Anchor/ImmutableID. |
 
-### 5. **Custom Synchronization Rules**  
-Azure AD Connect allows customizing sync rules to filter attributes (e.g., excluding specific groups or modifying attribute mappings such as `mailNickname`).  
+## Core Concepts
 
-### 6. **Sync Cycles**  
-Synchronization occurs in intervals (default: 30 minutes). Configure auto-upgrades and error handling via the **Azure AD Connect Health** add-on.  
+### The Synchronization Cycle
+The engine operates on a cyclical basis, typically consisting of three phases:
+1.  **Import:** Data is pulled from the connected directories into their respective Connector Spaces.
+2.  **Synchronization:** Rules are applied to move data from the Connector Space to the Metaverse (Inbound) and from the Metaverse to other Connector Spaces (Outbound).
+3.  **Export:** Changes staged in the Connector Spaces are pushed to the respective target directories.
 
-### 7. **Multiple Forest Support**  
-Supports syncing across multiple on-premises forests, requiring configuration of the metaverse (central data repository) in the synchronization service.  
+### Declarative Provisioning
+[Azure AD Connect](02 Azure Active Directory/Azure AD Connect.md) utilizes a rule-based system known as Declarative Provisioning. This allows administrators to define how attributes flow between systems using expressions and functions, rather than custom scripts. It provides a predictable way to handle complex attribute transformations.
 
-### 8. **Security Considerations**  
-- Use of **TLS 1.2** encryption for data transmission.  
-- Attribute filtering to exclude sensitive data from synchronization.  
+### Identity Lifecycle Management
+The tool manages the entire lifecycle of an identity:
+*   **Provisioning:** Creating the cloud object when a user is created on-premises.
+*   **Maintenance:** Updating attributes (e.g., job title, department) as they change.
+*   **Deprovisioning:** Disabling or deleting the cloud object when the on-premises source is removed or falls out of sync scope.
 
----
+## Standard Model
+The standard model for [Azure AD Connect](02 Azure Active Directory/Azure AD Connect.md) is the **Single Forest, Single Tenant** topology. In this model:
+*   A single on-premises Active Directory forest is the authoritative source.
+*   A single [Azure AD Connect](02 Azure Active Directory/Azure AD Connect.md) server manages the synchronization.
+*   A single Azure AD (Microsoft Entra) tenant is the destination.
+*   **Password Hash Sync (PHS)** is the recommended authentication method for its resilience and support for leaked credential detection.
 
-## Examples  
+## Common Patterns
 
-### Example 1: Basic Azure AD Connect Configuration  
-**Scenario**: Synchronizing a single on-premises AD forest to Azure AD using default settings.  
+### Staging Mode
+A high-availability and safety pattern where a second [Azure AD Connect](02 Azure Active Directory/Azure AD Connect.md) server is installed but does not export data to the directories. It processes imports and synchronizations to the Metaverse, allowing an administrator to verify changes before "promoting" it to active status.
 
-**Steps**:  
-1. Install Azure AD Connect, select **Use Express Settings**.  
-2. Choose **Password hash synchronization** during setup.  
-3. Grant administrative permissions in Azure AD.  
-4. Review the synchronization summary and complete setup.  
+### Multi-Forest Consolidation
+A pattern used by large organizations where multiple disconnected on-premises forests are synchronized to a single cloud tenant. The sync engine resolves duplicate identities across forests by joining them into a single Metaverse object based on shared attributes (like mail).
 
-**Result**: AD user accounts, groups, and passwords are synchronized with Azure AD, enabling users to sign in to cloud services with their on-premises credentials.  
+### Filtering
+The practice of limiting which objects are synchronized to the cloud. Common patterns include:
+*   **Domain-based:** Only specific domains in a forest.
+*   **OU-based:** Only specific Organizational Units.
+*   **Attribute-based:** Only objects with a specific attribute value (e.g., `extensionAttribute15 == "SyncToCloud"`).
 
----
+## Anti-Patterns
 
-### Example 2: Configuring AD FS for Federation  
-**Scenario**: Enabling single sign-on (SSO) using AD FS for a custom domain (e.g., `company.com`).  
+### Direct Database Manipulation
+Attempting to modify the underlying SQL Server database used by [Azure AD Connect](02 Azure Active Directory/Azure AD Connect.md). This voids support and leads to database corruption or synchronization failure. All changes must be made via the Synchronization Rules Editor.
 
-**Steps**:  
-1. Deploy AD FS on a Windows Server.  
-2. Configure AD FS with the desired SSO domain.  
-3. During Azure AD Connect setup, select **Federation via AD FS**.  
-4. Provide AD FS server details and configure certificate trust.  
+### Overlapping Sync Servers
+Running two active (non-staging) sync servers targeting the same tenant and the same source objects. This causes "flapping," where attributes are constantly overwritten, leading to identity instability.
 
-**Result**: Users sign in using their on-premises AD credentials for Azure AD resources, with authentication routed through AD FS.  
+### Ignoring the "Source of Truth"
+Manually editing synchronized attributes in the cloud portal. Because the on-premises directory is the authoritative source, these changes will be overwritten during the next synchronization cycle.
 
----
+## Edge Cases
 
-### Example 3: Multi-Forest Synchronization  
-**Scenario**: Syncing two on-premises forests (`ForestA` and `ForestB`) to a single Azure AD instance.  
+### Disconnected Forests
+When an organization has forests with no network connectivity between them. [Azure AD Connect](02 Azure Active Directory/Azure AD Connect.md) must have line-of-sight to all domain controllers it manages. If connectivity is impossible, a decentralized architecture (like multiple sync tools or cloud sync agents) may be required.
 
-**Steps**:  
-1. Set up Azure AD Connect for the first forest (`ForestA`).  
-2. Add the second forest (`ForestB`) using the Azure AD Connect wizard’s **Export Configuration** and **Import Configuration** options.  
-3. Define synchronization rules for cross-forest attributes (e.g., ensuring no naming conflicts).  
+### Large Group Handling
+Synchronizing groups with memberships exceeding 50,000 members can lead to performance degradation and synchronization timeouts. Standard practice involves breaking large groups into nested sub-groups or utilizing cloud-native dynamic groups.
 
-**Result**: Both forests are synchronized to the same Azure AD tenant, with objects distinguished via configurations.  
+### Source Anchor Changes
+Changing the attribute used as the Source Anchor after synchronization has been established is a destructive operation. It requires a full "matching" exercise and can lead to the deletion and recreation of all cloud objects if not handled via a specific migration path.
 
----
+## Related Topics
+*   **Microsoft Entra Cloud Sync:** A lightweight agent-based synchronization alternative for specific use cases.
+*   **Active Directory Federation Services (AD FS):** A legacy authentication method often used in conjunction with sync for complex authorization requirements.
+*   **Directory Extensions:** The process of extending the cloud schema to accommodate custom on-premises attributes.
 
-### Example 4: Password Writeback Setup  
-**Scenario**: Enabling password changes made in Azure AD (e.g., password resets) to update on-premises AD.  
-
-**Steps**:  
-1. Ensure Azure AD Premium licensing is assigned.  
-2. During Azure AD Connect setup, enable **Password Writeback** under the **Custom Installation** wizard.  
-3. Configure attributes in the synchronization rules editor (under **Start** > **Azure AD Connect Sync**).  
-
-**Result**: Password changes initiated in Azure AD flow back to on-premises AD.  
-
----
-
-## Summary  
-Azure AD Connect is central to hybrid identity management, bridging on-premises Active Directory and Azure AD. Its core functions include directory synchronization, password management, and enabling SSO through federation or password authentication methods. Key considerations for deployment include selecting the right authentication model (PHS/PTA/AD FS), handling multi-forest environments, and securing sensitive data via attribute filtering. Organizations must plan for prerequisites, test synchronization configurations, and leverage Azure AD Connect Health for monitoring. Proper implementation ensures a seamless and secure hybrid IT experience.
-
----
-*Generated by Puter.js & Qwen*
+## Change Log
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0 | 2026-01-20 | Initial AI-generated canonical documentation |
