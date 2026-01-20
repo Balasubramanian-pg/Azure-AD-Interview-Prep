@@ -1,90 +1,99 @@
-# AZURE AD SSO CONFIGURATION
+# [Azure AD SSO Configuration](03 Single Sign-On/Azure AD SSO Configuration.md)
 
-# Introduction  
-Azure AD Single Sign-On (SSO) is a critical feature of Microsoft Azure Active Directory (AD) that enables secure, streamlined authentication across applications and services. By configuring SSO, organizations can eliminate the need for users to remember multiple passwords, reduce password-related support tickets, and enhance compliance with security policies. SSO integrates with Azure AD's broader identity governance tools, such as Conditional Access and role-based access control, to provide a comprehensive security framework. This guide covers the foundational concepts, configuration steps, and practical examples to help you effectively deploy Azure AD SSO in your environment.  
+Canonical documentation for [Azure AD SSO Configuration](03 Single Sign-On/Azure AD SSO Configuration.md). This document defines concepts, terminology, and standard usage.
 
----
+## Purpose
+Azure AD Single Sign-On (SSO) configuration exists to solve the problem of identity fragmentation and authentication friction within an enterprise ecosystem. By establishing a centralized identity authority, organizations can eliminate the need for multiple sets of credentials, reduce the attack surface associated with password fatigue, and provide a seamless transition for users moving between disparate applications. 
 
-# Core Concepts  
-## 1. **Azure AD SSO Overview**  
-- **Single Sign-On (SSO):** Users authenticate once to Azure AD and access multiple applications without re-entering credentials.  
-- **User Management:** Azure AD serves as the identity provider (IdP), authenticating users against its directory.  
-- **Application Integration:** Third-party applications (service providers, SPs) trust Azure AD to validate user identities.  
-- **Key Features:**  
-  - Supports **SAML 2.0** (Security Assertion Markup Language) and **OpenID Connect** standards.  
-  - Seamless integration with Azure AD Premium features like Conditional Access, Guest Users, and Privileged Identity Management (PIM).  
+The primary objective of this configuration is to establish a cryptographically secure trust relationship between an Identity Provider (IdP) and a Service Provider (SP), ensuring that identity assertions are authentic, integral, and authorized.
 
-## 2. **Federation Protocols**  
-- **SAML 2.0:** Dominant protocol for enterprise SSO. Azure AD acts as the IdP, issuing SAML assertions to SP applications.  
-- **OpenID Connect:** Built on OAuth 2.0, commonly used for modern web and mobile apps. Azure AD sends ID tokens to the app.  
+> [!NOTE]
+> This documentation is intended to be implementation-agnostic and authoritative. While "Azure AD" is the historical nomenclature, these principles apply to its evolution as Microsoft Entra ID.
 
-## 3. **Application Management in Azure AD**  
-- **Gallery Applications:** Pre-configured SSO integrations (e.g., Office 365, Salesforce, Google Workspace).  
-- **Custom Applications:** For SPs not in the gallery, you manually configure SAML metadata.  
-- **User Assignment:** Control app access by assigning users or groups to the application.  
-- **Provisioning:** Optional feature to automate user account creation and deletion in the SP.  
+## Scope
+Clarify what is in scope and out of scope for this topic.
 
-## 4. **Key Azure AD Components**  
-- **Tenant:** The organization’s Azure AD directory.  
-- **Administrators:** Roles such as Global Administrator and Privileged Role Administrator manage SSO settings.  
-- **Users and Groups:** Manage access via Azure AD user/group memberships or external identifiers via federation.  
-- **Certificates:** Azure AD emits and validates SAML/OIDC tokens using certificates, which must be renewed before expiration.  
+**In scope:**
+*   **Protocol Standards:** The theoretical application of [SAML 2.0](03 Single Sign-On/SAML 2.0.md), OpenID Connect (OIDC), and [OAuth 2.0](03 Single Sign-On/OAuth 2.0.md) within the Azure AD framework.
+*   **Trust Architecture:** The mechanics of exchanging metadata, certificates, and identifiers to establish a secure handshake.
+*   **Attribute Mapping:** The logic of transforming directory attributes into application-readable claims.
+*   **Token Lifecycle:** The conceptual flow of issuance, validation, and expiration of identity assertions.
 
-## 5. **Best Practices**  
-- Use **strong passwords and MFA** for Azure AD and SSO admin accounts.  
-- Test application configurations thoroughly in a non-production environment.  
-- Monitor **Azure AD Sign-In Logs** for failed authentication attempts and suspicious activity.  
-- Implement **Conditional Access policies** to enforce MFA for SSO applications.  
+**Out of scope:**
+*   **Vendor-Specific UI Guides:** Step-by-step instructions for specific third-party SaaS applications (e.g., "How to configure Salesforce").
+*   **Network Infrastructure:** Configuration of firewalls, proxies, or local ISP routing.
+*   **On-Premises Legacy Auth:** Detailed configuration of NTLM or [Kerberos](03 Single Sign-On/Kerberos.md), except where they interface with modern federation.
 
----
+## Definitions
+Provide precise definitions for key terms.
 
-# Examples  
-## 1. **Configuring SSO for a Gallery Application (e.g., Microsoft Teams)**  
-1. Sign in to the **Azure portal** → Navigate to **Azure Active Directory** → **Enterprise Applications** → **New Application** → **Gallery Applications**.  
-2. Search for "Microsoft Teams" and select it.  
-3. Under **Single Sign-On**, choose **SAML** or **OpenID Connect**. For most apps, **SAML** is the default.  
-4. Configure **Basic SAML Configuration** fields:  
-   - **Identifier/Entity ID:** Usually provided by the app or pre-filled by Azure AD.  
-   - **Reply URL/Assertion Consumer Service (ACS) URL:** Specify the app’s endpoint (e.g., `https://login.microsoftonline.com`).  
-5. **Download the Federation Metadata XML** for reference.  
-6. Assign users/groups via the **Users and Groups** tab.  
+| Term | Definition |
+|------|------------|
+| **Identity Provider (IdP)** | The authoritative system that stores identity information and performs the actual authentication (Azure AD). |
+| **Service Provider (SP)** | The application or resource that relies on the IdP to verify the identity of a user. Also known as a Relying Party (RP). |
+| **Assertion / Token** | A cryptographically signed security object issued by the IdP containing user identity and privilege information. |
+| **Claim** | A specific piece of information about a user (e.g., Email, Department, Role) packaged within a token. |
+| **Metadata** | An XML or JSON document provided by both the IdP and SP to exchange configuration details like endpoints and public keys. |
+| **Redirect URI** | The specific location where the IdP sends the security token after successful authentication. |
+| **Identifier (Entity ID)** | A unique string that identifies the SP to the IdP and vice versa, ensuring the request is intended for the correct party. |
 
-## 2. **Configuring SSO for a Custom Application (e.g., Custom SAML Application)**  
-1. In the Azure AD portal → **Enterprise Applications** → **New Application** → **Non-gallery applications**.  
-2. Enter a name (e.g., “CustomApp”).  
-3. Under **Single Sign-On** → **SAML**, configure the following fields:  
-   - **Identifier:** Use the app’s entity ID (e.g., `https://customapp.com/saml`).  
-   - **Reply URL:** Set the ACS URL provided by the SP (e.g., `https://customapp.com/saml/callback`).  
-   - **User Attributes:** Map Azure AD attributes (e.g., `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`) to the app’s required claims.  
-4. **Download the SAML Metadata** to share with the application’s administrators.  
+## Core Concepts
 
-## 3. **PowerShell Example for Automation**  
-```powershell  
-# Install AzureAD module if not already installed  
-Install-Module AzureAD  
+### Federation Trust
+The foundation of SSO is the federation trust. This is not a persistent connection but a logical agreement where the SP agrees to honor identities verified by the IdP. This trust is secured via Public Key Infrastructure (PKI), where the IdP signs assertions with a private key, and the SP validates them using a corresponding public key.
 
-# Connect with Azure AD credentials  
-Connect-AzureAD  
+### Protocol Selection
+*   **[SAML 2.0](03 Single Sign-On/SAML 2.0.md):** An XML-based standard typically used for enterprise web applications. It is robust and supports complex attribute requirements.
+*   **OIDC / [OAuth 2.0](03 Single Sign-On/OAuth 2.0.md):** A modern, JSON-based layer on top of [OAuth 2.0](03 Single Sign-On/OAuth 2.0.md). It is preferred for mobile applications, single-page apps (SPAs), and modern API-driven architectures.
 
-# Create a new enterprise application  
-$app = New-AzureADApplication -DisplayName "MyCustomApp" -IdentifierUris "https://customapp.com"  
+### Identity Mapping
+The process of correlating a unique identifier in the IdP (such as a User Principal Name or ImmutableID) to the unique identifier expected by the SP. This ensures that "User A" in Azure AD is correctly recognized as "User A" in the target application.
 
-# Configure SSO:  
-$ssoProfile = New-AzureADApplicationSamlSingleSignOnSettings -TenantId <TenantID> -CertificateThumbprint <CertificateThumbprint> -RelayStateParameter "RelayStateExample"  
-Set-AzureADApplication -ObjectId $app.ObjectId -SamlSingleSignOnSettings $ssoProfile  
-```  
+## Standard Model
 
----
+The standard model for Azure AD SSO follows the **Indirect Redirection Pattern**:
 
-# Summary  
-Configuring Azure AD SSO requires understanding core concepts like federation protocols, application types, and user management. By leveraging Azure AD’s gallery applications or custom SAML configurations, organizations can securely integrate enterprise apps while streamlining user access. Key steps include choosing the right authentication protocol, configuring metadata correctly, and testing access via user assignments.  
+1.  **Request:** The user attempts to access the SP.
+2.  **Challenge:** The SP identifies the user's home realm and redirects the user's browser to the Azure AD Auth Endpoint with an Authentication Request.
+3.  **Authentication:** Azure AD challenges the user for credentials (and potentially multi-factor authentication).
+4.  **Token Issuance:** Upon success, Azure AD generates a signed token and redirects the browser back to the SP's Assertion Consumer Service (ACS) URL.
+5.  **Validation:** The SP validates the token's signature against the IdP's public certificate and grants access.
 
-Remember to:  
-- Renew SAML certificates before expiration to avoid disruptions.  
-- Use Conditional Access to enforce security policies (e.g., MFA, device compliance).  
-- Regularly audit SSO configurations and application assignments via Azure AD reports and logs.  
+## Common Patterns
 
-Proper implementation of Azure AD SSO enhances security, reduces administrative overhead, and supports scalable identity management for cloud-first environments.
+### SP-Initiated SSO
+The user starts at the application login page. The application redirects to Azure AD for authentication. This is the most common and recommended pattern as it supports deep-linking.
 
----
-*Generated by Puter.js & Qwen*
+### IdP-Initiated SSO
+The user starts at the Azure AD portal (My Apps) and clicks an application icon. Azure AD sends a proactive POST request to the application with a token. 
+
+### Just-In-Time (JIT) Provisioning
+A pattern where the SP automatically creates a user record the first time a user logs in via SSO, using the claims provided in the SAML/OIDC token to populate the user profile.
+
+## Anti-Patterns
+
+*   **Hardcoded Redirect URIs:** Using static, non-configurable URIs in code rather than environment-specific variables, leading to environment mismatch.
+*   **Over-Provisioning Claims:** Including sensitive user data in the token that the application does not require for functionality, increasing the risk of data exposure.
+*   **Bypassing MFA at the SP Level:** Relying on the SP to perform MFA after the IdP has already authenticated the user, creating a fragmented and frustrating user experience.
+*   **Using Wildcard Redirect URIs:** Configuring `https://*.contoso.com` as a redirect URI, which allows attackers to intercept tokens via malicious subdomains.
+
+## Edge Cases
+
+### Guest Users (B2B)
+When a user from an external tenant accesses an application via SSO. The configuration must account for the `userType` attribute and ensure the SP can handle identities where the issuer is not the local tenant.
+
+### Certificate Expiration
+The trust relationship relies on certificates that expire. Failure to implement a rollover strategy (manual or automated) results in immediate SSO failure across all users for that specific application.
+
+### Multi-Tenant Applications
+Applications designed to serve multiple Azure AD tenants simultaneously. These require a dynamic "common" endpoint for authentication rather than a tenant-specific GUID.
+
+## Related Topics
+*   **SCIM (System for Cross-domain Identity Management):** For automated user provisioning/deprovisioning.
+*   **Conditional Access:** For applying granular security policies before an SSO token is issued.
+*   **Managed Identities:** For service-to-service authentication without shared secrets.
+
+## Change Log
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0 | 2026-01-20 | Initial AI-generated canonical documentation |
