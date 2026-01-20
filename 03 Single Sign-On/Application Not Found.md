@@ -1,115 +1,99 @@
-# APPLICATION NOT FOUND
+# [Application Not Found](03 Single Sign-On/Application Not Found.md)
 
-## Introduction  
-"Application Not Found" is an error or failure state where an application cannot be accessed, executed, or found in the intended environment. This issue commonly arises in web development, system administration, and user software interactions, often due to misconfigurations, dependency issues, or incorrect paths. Understanding its causes and solutions is critical for troubleshooting, maintaining system reliability, and ensuring user satisfaction. This guide provides an overview of the problem, its root causes, practical examples, and strategies to resolve or mitigate it.  
+Canonical documentation for [Application Not Found](03 Single Sign-On/Application Not Found.md). This document defines concepts, terminology, and standard usage.
 
----
+## Purpose
+The "[Application Not Found](03 Single Sign-On/Application Not Found.md)" state represents a critical resolution failure within a computing environment. It occurs when a system—acting as an orchestrator or user agent—receives a request to invoke a specific functional entity but cannot map the provided identifier to a valid, executable, or accessible resource. 
 
-## Core Concepts  
+This topic addresses the mechanics of application discovery, the lifecycle of registration, and the failure modes of the resolution chain. It exists to provide a framework for understanding how systems manage the gap between a user's intent (e.g., "open this file type") and the system's capability (e.g., "no handler registered").
 
-### 1. Definition and Scope  
-- **"Application Not Found"** occurs when an application, service, or resource is unavailable or inaccessible. This can manifest as error messages like **HTTP 404 (Not Found)**, **"The system cannot find the file specified"**, or unresponsive APIs.  
-- The error may arise in different contexts, such as:  
-  - **Web Applications**: When a requested web page or API endpoint doesn’t exist.  
-  - **Mobile/Desktop Apps**: If the app is uninstalled, corrupted, or missing dependencies.  
-  - **System Services**: When a program, daemon, or executable is unavailable on the local machine or server.  
+> [!NOTE]
+> This documentation is intended to be implementation-agnostic and authoritative.
 
-### 2. Key Causes  
-The error typically stems from one or more of the following factors:  
-- **Misconfiguration**:  
-  - Incorrect file paths, server routes, or DNS settings.  
-  - Server reconfiguration without updating dependencies.  
-- **Missing Dependencies**:  
-  - Libraries, frameworks, or system components required for an app to run are not installed.  
-- **Server-Side Issues**:  
-  - Hosting platform (e.g., Apache, Nginx) not configuring apps correctly.  
-  - Full stack services (e.g., databases) unavailable.  
-- **Client-Side Errors**:  
-  - Users entering incorrect URLs or attempting to use outdated links.  
-- **Version Conflicts**:  
-  - Incompatible frameworks, SDKs, or software versions.  
-- **Permissions Errors**:  
-  - Lack of user or system permissions to execute the application.  
+## Scope
+Clarify what is in scope and out of scope for this topic.
 
----
+**In scope:**
+* **Resolution Logic:** The theoretical process of mapping identifiers to targets.
+* **Registration Lifecycle:** How applications announce their presence to a host system.
+* **Invocation Failures:** The taxonomy of why a lookup fails.
+* **State Management:** The condition of the system when a requested resource is missing.
 
-### 3. Environments Where It Occurs  
-- **Web Applications**:  
-  - Common in browsers when a resource is deleted, renamed, or paths are adjusted.  
-- **Mobile Apps**:  
-  - Apps may malfunction if they rely on third-party services without proper network connectivity.  
-- **Desktop Applications**:  
-  - Occurs when binaries, configuration files, or required runtime environments (e.g., .NET, Java) are missing.  
-- **APIs**:  
-  - Endpoints return **HTTP 404** if they are unreachable due to routing errors or configuration.  
-- **CLI/Command-Line Tools**:  
-  - Errors arise when executables are removed or not in the system’s path variable.  
+**Out of scope:**
+* **Specific Vendor Implementations:** Troubleshooting specific Windows Registry keys, Android Intent filters, or macOS Launch Services.
+* **Network-level 404 Errors:** While conceptually similar, "[Application Not Found](03 Single Sign-On/Application Not Found.md)" refers to the execution layer rather than the transport layer.
 
----
+## Definitions
+Provide precise definitions for key terms.
 
-### 4. Why It Matters  
-- **User Experience**:  
-  - Frustrates users and leads to dissatisfaction (e.g., broken links on websites).  
-- **Business Impact**:  
-  - Downtime for critical systems (e.g., e-commerce platforms) can result in financial loss.  
-- **Security Risks**:  
-  - Inconsistent error handling may expose sensitive information (e.g., internal server paths).  
-- **Reputation**:  
-  - Frequent failures damage a brand’s reliability and trustworthiness.  
+| Term | Definition |
+|------|------------|
+| **Identifier** | A unique token (URI, UUID, File Extension, or Protocol) used to reference a specific application or class of applications. |
+| **Resolver** | The system component responsible for translating an Identifier into a physical path or execution context. |
+| **Registry/Manifest** | The central database or configuration store where application capabilities are recorded. |
+| **Invocation** | The act of attempting to initialize or call the target application. |
+| **Association** | The logical link between a data type (e.g., `.pdf`) and a specific application handler. |
+| **Zombie Registration** | A state where the Registry contains a reference to an application that has been deleted or moved without updating the Resolver. |
 
----
+## Core Concepts
 
-## Examples  
+### The Resolution Chain
+The "[Application Not Found](03 Single Sign-On/Application Not Found.md)" state is the terminal output of a failed Resolution Chain. This chain typically follows three steps:
+1.  **Request:** A trigger (user click, script call, or system event) provides an Identifier.
+2.  **Lookup:** The Resolver queries the Registry/Manifest for the Identifier.
+3.  **Validation:** The Resolver verifies that the target located in the Registry actually exists and is executable in the current context.
 
-### Example 1: **HTTP 404 Error in Web Apps**  
-**Scenario**: A user visits `https://example.com/admin/dashboard` but sees a "404 Not Found" page.  
-**Causes**:  
-  - The route `/admin/dashboard` was removed or renamed.  
-  - Server configuration (e.g., `.htaccess` for Apache) lacks proper routing rules.  
-**Resolution**:  
-  - Map routes correctly using a web server or framework (e.g., Django URLs).  
-  - Implement a custom error page for 404 errors to guide users.  
+### Intent vs. Implementation
+Systems distinguish between **Explicit Intent** (calling a specific app by its unique ID) and **Implicit Intent** (requesting any app that can handle a specific data type). An "[Application Not Found](03 Single Sign-On/Application Not Found.md)" error occurs in Explicit Intent when the ID is missing, and in Implicit Intent when no handlers are registered for that type.
 
----
+## Standard Model
+The generally accepted model for handling application discovery follows the **Registry-Resolver-Target (RRT)** framework:
 
-### Example 2: **Missing Application Dependencies (Desktop)**  
-**Scenario**: A photo editing software crashes during startup with a message like *"Dependency 'Vulkan' not found."*  
-**Causes**:  
-  - The required graphics API (Vulkan) is not installed on the user’s operating system.  
-- **Resolution**:  
-  - Package managers (e.g., `apt`, `npm`) can list dependencies to ensure they are installed via commands like:  
-    ```bash  
-    sudo apt install vulkan-sdk  
-    ```  
-  - Include pre-checks in the app’s installation to warn users about missing dependencies.  
+1.  **Registration:** Upon installation, an application must register its Identifiers and capabilities with the host system.
+2.  **Discovery:** When an Invocation is triggered, the Resolver performs a prioritized search (e.g., User-level associations first, then System-level defaults).
+3.  **Verification:** Before returning a "Success" state, the system performs a "Stat" check to ensure the binary or service is reachable.
+4.  **Exception Handling:** If the lookup or verification fails, the system enters the "[Application Not Found](03 Single Sign-On/Application Not Found.md)" state and must emit a standardized exception to the caller.
 
----
+## Common Patterns
 
-### Example 3: **API Endpoint Failure (Server-Side Misconfiguration)**  
-**Scenario**: An application’s API route `https://api.example.com/v1/users` returns a 404 after server restart.  
-**Causes**:  
-  - The new `v1` version was not migrated to the server’s endpoint configuration files.  
-**Resolution**:  
-  - Update the server configuration (e.g., in Nginx or Apache) to include `/v1` paths.  
-  - Test endpoints using `curl` or Postman before deployment.  
+### Fallback Handlers
+To avoid the "[Application Not Found](03 Single Sign-On/Application Not Found.md)" state, systems often implement a "Generic Handler" or "Open With" dialog. This pattern shifts the resolution responsibility from the system back to the user.
 
----
+### Store Redirection
+In modern operating environments, if an application is not found, the Resolver may redirect the Identifier to a centralized repository (App Store/Package Manager) to suggest a download for the missing handler.
 
-## Summary  
-The "Application Not Found" error is a multifaceted issue that disrupts usability and system integrity. Key strategies for addressing it include:  
+### Lazy Resolution
+The system does not verify the existence of the application until the exact moment of invocation. This improves performance but increases the likelihood of encountering an "[Application Not Found](03 Single Sign-On/Application Not Found.md)" error during runtime.
 
-1. **Proactive Configuration Management**:  
-   - Regularly audit server settings, dependencies, and routing rules.  
-2. **Thorough Testing**:  
-   - Validate endpoints and critical dependencies before deployment.  
-3. **End-User Documentation**:  
-   - Provide error pages, FAQs, or tooltips to assist users encountering issues.  
-4. **Dependency Control**:  
-   - Use tools like Docker or package managers (pip, npm) to isolate and manage dependencies.  
-5. **Monitoring and Logging**:  
-   - Implement logs (e.g., CloudWatch, ELK stack) to track error occurrences and root causes.  
+## Anti-Patterns
 
-By addressing configuration, dependencies, and testing rigorously, teams can minimize disruptions and improve application reliability.
+### Hard-coded Pathing
+Relying on absolute file system paths rather than symbolic Identifiers. If the application is moved, the system fails to find it despite the application being present.
 
----
-*Generated by Puter.js & Qwen*
+### Silent Failure
+Suppressing the "[Application Not Found](03 Single Sign-On/Application Not Found.md)" error without providing feedback to the user or the calling process. This leads to "Dead Clicks" where the system appears unresponsive.
+
+### Orphaned Registries
+Failing to clean up the Registry/Manifest during an application's decommissioning (uninstallation). This leads to the system attempting to launch non-existent targets.
+
+## Edge Cases
+
+### Sandboxed Isolation
+An application may exist on the system, but the calling process lacks the permissions to "see" or "invoke" it. From the perspective of the caller, the application is "Not Found," even though it is physically present.
+
+### Version Mismatch (Shadowing)
+When multiple versions of an application exist, the Resolver may find an older version that does not support the requested intent, effectively resulting in a "Functional [Application Not Found](03 Single Sign-On/Application Not Found.md)" state.
+
+### Race Conditions
+An application is uninstalled or moved in the millisecond between the Resolver's "Validation" step and the "Invocation" step.
+
+## Related Topics
+* **Service Discovery:** The network-equivalent of application resolution.
+* **Dependency Management:** Ensuring required applications/libraries are present before execution.
+* **URI Scheme Handling:** The specific logic for resolving `protocol://` identifiers.
+* **MIME Type Mapping:** The logic for resolving file-to-application associations.
+
+## Change Log
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0 | 2026-01-20 | Initial AI-generated canonical documentation |
