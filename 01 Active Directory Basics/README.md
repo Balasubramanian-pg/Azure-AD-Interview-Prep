@@ -1,127 +1,81 @@
-# README
+## Copy-ready interview prep template (20-minute depth version)
 
-# Introduction  
-A README serves as the primary documentation for a project, acting as the first point of contact for users, contributors, or stakeholders. Its purpose is to provide a clear, concise, and comprehensive overview of the project's functionality, setup requirements, usage instructions, and contribution guidelines. An effective README ensures that others can quickly understand the project's value and navigate its components efficiently.  
-
----
-
-# Core Concepts  
-
-### Structure  
-A well-organized README typically includes the following sections, adapted to the project's scope:  
-
-1. **Project Overview**  
-   - **Objective**: Summarize the project's purpose, functionality, and key features.  
-   - **Example Phrases**: "This repository provides a CLI tool for...", "A responsive web application for...".  
-
-2. **Installation**  
-   - **Objective**: Outline the steps to set up the project locally.  
-   - **Key Details**: Dependencies, system requirements, version control tools (e.g., Git), and configuration.  
-   - **Example**:  
-   ```markdown  
-   To install, clone the repository and run:  
-   ```bash  
-   npm install  
-   npm start  
-   ```  
-
-3. **Usage**  
-   - **Objective**: Explain how to interact with the project.  
-   - **Details**: Basic commands, input/output formats, and configuration options.  
-   - **Example**:  
-   ```markdown  
-   Launch the web app:  
-   ```bash  
-   yarn dev  
-   ```  
-
-4. **Contributing**  
-   - **Objective**: Guide contributors on submitting code, reporting issues, or providing feedback.  
-   - **Details**: Code of conduct, testing requirements, and contribution workflows (e.g., pull requests).  
-
-5. **License**  
-   - **Objective**: Specify copyright, permissions, and compliance requirements.  
-   - **Common Licenses**: MIT, Apache 2.0, GPL v3.  
-
-6. **Dependencies**  
-   - **Objective**: List libraries, frameworks, and tools required for the project.  
-
-**Optional Sections**:  
-- **Roadmap**: Future plans or milestones.  
-- **Credits**: Acknowledgments for collaborators or tools.  
-- **FAQ**: Common questions and answers.  
-- **Screenshots/API Docs**: Visuals or technical references.  
-- **Support**: Channels for user assistance (e.g., email, Discord).  
+Below is a clean, minimal template you can paste and reuse.
+This is designed to be finished and revised inside **20 minutes per topic**, not admired like a museum artifact.
 
 ---
 
-# Examples  
+# Topic: README
 
-## **Example 1: Simple CLI Tool**  
-```markdown  
-# Data-Parser  
-高效的命令行数据处理工具  
+## One-line definition
 
-## 安装  
-```bash  
-git clone https://github.com/your-username/data-parser.git  
-cd data-parser  
-pip install -r requirements.txt  
-```  
+A README is a text file explaining a project's purpose and usage.
 
-## 使用  
-解析数据文件：  
-```bash  
-python parser.py --input data.csv --output results.json  
-```  
+## Why this matters in interviews
 
-## 贡献  
-欢迎贡献代码！请先查看[代码规范](CONTRIBUTING.md)，并提交 Pull Request。  
+README files appear in open-source projects and repositories, interviewers care about them because they demonstrate a developer's ability to communicate complex ideas simply, and they are crucial for collaboration and project maintenance.
 
-## 授权协议  
-MIT License  
-```  
+## Core concepts (max 3)
 
-## **Example 2: Web Application Project**  
-```markdown  
-# 社交媒体管理系统  
-## 特性  
-- 用户身份验证  
-- 内容发布与管理  
-- 实时聊天功能  
+* **Purpose:** A README file provides essential information about a project, such as its goals, functionality, and usage instructions.
+* **Content:** A typical README includes sections like introduction, installation, usage, and troubleshooting.
+* **Format:** README files are usually written in Markdown and placed in the root directory of a project repository.
 
-## 环境设置  
-### 本地部署  
-1. 拉取代码：  
-   ```bash  
-   git clone https://github.com/your-username/social-media-backend.git  
-   ```  
-2. 安装依赖：  
-   ```bash  
-   npm install  
-   ```  
-3. 启动服务器：  
-   ```bash  
-   npm run dev  
-   ```  
+## Key constraints and invariants
 
-## 部署到云端  
-参考 [AWS 部署指南](docs/deployment.md).  
+* The README file must be easily accessible and readable.
+* It should be concise and up-to-date.
+* The file must follow a standard format for consistency.
 
-## 许可证  
-Apache 2.0 License  
-```  
+## Common interview questions
 
----
+* Explain the importance of a README file in a project
+* Compare a README file with other documentation types, such as user manuals
+* Given a new project, how would you structure its README file for maximum readability and usability?
 
-# Summary  
-A good README is **user-centric**, balancing brevity with clarity. Key takeaways:  
-- Prioritize the most critical information for users (e.g., setup steps, usage examples).  
-- Use visual hierarchies (headers, bullet points, code blocks) to enhance readability.  
-- Keep content up to date and version-control README alongside project changes.  
-- Anticipate questions and include troubleshooting tips or FAQs.  
+## Tradeoffs and alternatives
 
-Best practices: Use consistent terminology, link to supplementary materials (PDFs, API docs), and write in imperative mood (e.g., “Install,” “Run”). A well-crafted README reduces onboarding friction and fosters collaboration.
+* **Pros:** A well-written README file enhances project usability, maintainability, and collaboration.
+* **Cons:** Creating and maintaining a high-quality README can be time-consuming.
+* **When to use instead:** Use a wiki or documentation portal for large, complex projects with many contributors.
 
----
-*Generated by Puter.js & Qwen*
+## One worked example
+
+* Input: A new open-source project with a simple command-line interface.
+* Transformation / Logic: The README explains how to install, run, and contribute to the project.
+* Output: A user can successfully install and use the project after reading the README.
+
+## Failure modes and debugging hints
+
+* Failure mode 1: Outdated information - regularly review and update the README.
+* Failure mode 2: Poor formatting - use standard Markdown formatting for readability.
+* Failure mode 3: Lack of essential information - ensure the README covers all critical aspects of the project.
+
+## One-minute interview answer
+
+A README file is a crucial document that explains a project's purpose, usage, and maintenance instructions. It's essential for collaboration and should be concise, up-to-date, and easily accessible. However, creating a high-quality README can be time-consuming, so it's essential to balance the level of detail with the project's complexity.
+
+## Active practice (do immediately)
+
+* **Task 1:** Write a simple README file for a fictional command-line tool.
+* **Task 2:** Explain the purpose and importance of a README file in a project to a non-technical person.
+
+## Cheat sheet (TL;DR)
+
+* Key definition: A README is a text file explaining a project's purpose and usage.
+* Core rule: Keep the README concise, up-to-date, and easily accessible.
+* Common pitfall: Outdated information.
+* Typical use case: Open-source projects and repositories.
+* One comparison point: A README is not a user manual.
+* One quick example: A README for a simple command-line tool should include installation and usage instructions.
+
+## Sources and verification
+
+* GitHub's guide to writing a README
+* Markdown documentation
+* The Apache Foundation's guidelines for writing a README **NEEDS VERIFICATION**
+
+## Self-test
+
+* **Conceptual:** Why is a README file essential for a project's maintainability?
+* **Applied:** How would you structure a README file for a complex project with multiple contributors?
