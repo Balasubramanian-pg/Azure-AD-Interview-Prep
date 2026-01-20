@@ -1,85 +1,113 @@
-# SSO PROTOCOLS
+# [SSO Protocols](03 Single Sign-On/SSO Protocols.md)
 
-```markdown
-## Introduction  
-Single Sign-On (SSO) protocols enable users to authenticate once and gain access to multiple applications or services without re-entering credentials. These protocols streamline user experience while enhancing security by centralizing control over authentication processes. Common SSO protocols include **SAML** (Security Assertion Markup Language), **OAuth 2.0**, **OpenID Connect (OIDC)**, and **Kerberos**, each addressing different scenarios such as enterprise systems, web applications, and on-premise networks. Understanding SSO protocols is critical for implementing secure, scalable access management in modern IT ecosystems.
+Canonical documentation for [SSO Protocols](03 Single Sign-On/SSO Protocols.md). This document defines concepts, terminology, and standard usage.
 
----
+## Purpose
+Single Sign-On (SSO) protocols exist to solve the problem of identity fragmentation across distributed systems. In a modern computing environment, users interact with multiple independent applications. Without SSO, each application must manage its own user directory and authentication logic, leading to "password fatigue," increased security risks, and administrative overhead.
 
-## Core Concepts  
-### 1. Single Sign-On (SSO) Flow  
-- **Native SSO System**: Central authority authenticates users, who then gain access to all connected systems.  
-- **Identity Provider (IdP)**: Issues authentication assertions (e.g., tokens) to users. Example: Active Directory, Okta.  
-- **Service Provider (SP)**: The application relying on the IdP to verify user identity.  
+SSO protocols provide a standardized framework for an entity (the Identity Provider) to attest to the identity of a user to another entity (the Service Provider or Relying Party). This allows a user to authenticate once and gain access to multiple disparate systems without re-entering credentials, thereby centralizing identity management and improving the security posture of the entire ecosystem.
 
-### 2. Tokens and Assertions  
-- **JWT (JSON Web Token)**: Compact, URL-safe tokens used in OIDC and OAuth for stateless authentication.  
-- **SAML Assertion**: An XML document containing authentication/authorization data between IdP and SP.  
-- **Kerberos Ticket**: Grants access to services on a network after initial authentication.  
+> [!NOTE]
+> This documentation is intended to be implementation-agnostic and authoritative.
 
-### 3. Federation vs. Delegation  
-- **Federation**: Trust between organizations to share authentication data (e.g., universities using Shibboleth).  
-- **Delegation**: Granting third-party access to resources without sharing credentials (e.g., OAuth’s “use X to log in”).  
+## Scope
+Clarify what is in scope and out of scope for this topic.
 
-### 4. Security Mechanisms  
-- **Encryption**: TLS/SSL for data in transit, digital signatures for token authenticity.  
-- **Token Lifespan**: Short-lived sessions with refresh tokens (e.g., OAuth) to reduce risk.  
+**In scope:**
+* Core functionality of identity federation and exchange.
+* Theoretical boundaries of authentication vs. authorization within SSO.
+* Standard message formats (XML, JSON) and transport mechanisms.
+* Trust establishment models between participating entities.
 
-### 5. Key Use Cases  
-- Enterprise SSO, cloud access, IoT device authentication, and social login providers like Google or Facebook.  
+**Out of scope:**
+* Specific vendor implementations (e.g., Okta, Azure AD, Auth0).
+* Programming language-specific SDKs or libraries.
+* User interface (UI) or User Experience (UX) design for login screens.
 
----
+## Definitions
+Provide precise definitions for key terms.
 
-## Examples  
-### Example 1: SAML-Based SSO  
-**Scenario**: A university enables students to access library resources, e-mail, and learning management systems via a single login.  
-- **Flow**:  
-  1. Student accesses library portal (SP).  
-  2. Redirected to IdP (university’s authentication server).  
-  3. Authenticates with username/password.  
-  4. IdP sends SAML assertion to SP, granting access.  
+| Term | Definition |
+|------|------------|
+| **Identity Provider (IdP)** | The authoritative system that authenticates the user and issues identity assertions or tokens. |
+| **Service Provider (SP)** | The application or resource that provides services to the user and relies on the IdP for authentication. |
+| **Relying Party (RP)** | A term often used interchangeably with SP, specifically in OIDC contexts, denoting the entity that "relies" on the IdP's claims. |
+| **Assertion / Claim** | A statement issued by an IdP about a subject (user), typically containing identity attributes and authentication context. |
+| **Subject** | The entity (usually a human user) whose identity is being asserted. |
+| **Trust Relationship** | A pre-configured agreement where an SP agrees to honor assertions issued by a specific IdP, usually established via exchange of metadata or public keys. |
+| **Binding** | The mapping of protocol messages onto standard messaging formats or transport protocols (e.g., HTTP POST binding). |
+| **Metadata** | An XML or JSON document describing the capabilities, endpoints, and security keys of an IdP or SP. |
 
-### Example 2: OAuth 2.0 for Third-Party Access  
-**Scenario**: A user logs into a photo-sharing app using their Google account.  
-- **Flow**:  
-  1. User clicks “Sign in with Google.”  
-  2. Redirected to Google’s authorization page.  
-  3. Grants permission for app to access basic profile info.  
-  4. Google issues an access token to the app.  
-  5. App uses the token to retrieve user data from Google APIs.  
+## Core Concepts
 
-### Example 3: OpenID Connect for Modern Apps  
-**Scenario**: A cloud-based project management tool (service provider) uses OIDC for authentication.  
-- **Flow**:  
-  1. User attempts login; request is redirected to OIDC IdP (e.g., Azure AD).  
-  2. IdP authenticates user and issues an **ID Token** (containing user claims).  
-  3. Service provider validates the token and creates a session.  
+### Identity Federation
+Federation is the practice of linking a user's identity across multiple distinct identity management systems. SSO protocols are the technical realization of federation, allowing an identity managed in "Domain A" to be recognized and trusted in "Domain B."
 
-### Example 4: Kerberos in Enterprise Networks  
-**Scenario**: An employee accesses internal systems using a Windows domain.  
-- **Flow**:  
-  1. User authenticates to Active Directory (KDC).  
-  2. KDC issues a **ticket-granting ticket (TGT)**.  
-  3. User requests access to a server; TGT is used to get a **service ticket**.  
-  4. Server validates the ticket and grants access without re-authenticating the user.  
+### Decoupling of Concerns
+SSO protocols decouple the **Authentication** (verifying who the user is) from the **Application Logic** (what the user does). The application no longer handles passwords; it only handles the proof of identity provided by the IdP.
 
-### Example 5: Shibboleth for Academic Federation  
-**Scenario**: Universities federate via Shibboleth to allow cross-campus access to resources like journals.  
-- Shibboleth acts as an IdP-SP proxy, enabling seamless access to partnered institutions without unified user IDs.  
+### Tokens and Assertions
+Identity information is transmitted via structured data packages. These packages are digitally signed to ensure integrity and authenticity.
+*   **SAML Assertions:** XML-based documents used primarily in enterprise web environments.
+*   **OIDC ID Tokens:** JSON Web Tokens (JWT) optimized for modern web and mobile applications.
 
-### Example 6: OAuth 2.0/OIDC for IoT  
-**Scenario**: A wearable device authenticates to a fitness app’s API using a client credential grant.  
-- The device uses a **client ID/secret** to obtain an access token, with no user interaction.  
+### Front-Channel vs. Back-Channel
+*   **Front-Channel:** Communication occurs via the user's browser (e.g., HTTP redirects). This is visible to the user but allows for seamless transitions between domains.
+*   **Back-Channel:** Direct server-to-server communication. This is more secure as the data does not pass through the user's browser, preventing certain types of interception.
 
----
+## Standard Model
+The standard model for SSO involves a triangular relationship between the **User (User Agent)**, the **Service Provider (SP)**, and the **Identity Provider (IdP)**.
 
-## Summary  
-Single Sign-On protocols are foundational to modern identity management, optimizing security and user experience through shared authentication systems. **SAML** dominates legacy enterprise environments, **OAuth 2.0** enables delegation via tokens, and **OIDC** adds identity layers to OAuth for modern web/CROSS applications. **Kerberos** excels in on-premise networks, while **Shibboleth** addresses academic federation. Choosing a protocol hinges on:  
-- Use case (on-prem vs. cloud).  
-- Data sensitivity requirements.  
-- Token format and security needs.  
+1.  **Request:** The user attempts to access a protected resource on the SP.
+2.  **Challenge:** The SP detects the user is not authenticated and redirects the User Agent to the IdP with an Authentication Request.
+3.  **Authentication:** The IdP authenticates the user (via password, MFA, etc.).
+4.  **Assertion:** Upon success, the IdP generates an assertion/token and sends it back to the User Agent, which forwards it to the SP.
+5.  **Validation:** The SP validates the digital signature of the assertion using the IdP’s public key.
+6.  **Access:** If valid, the SP establishes a local session for the user and grants access.
 
-SSO protocols require careful implementation to balance simplicity and security, ensuring proper token management, encryption, and adherence to standards like TLS. Enterprises often combine protocols (e.g., OIDC for users, OAuth for APIs) to meet diverse IAM (Identity and Access Management) challenges.
+## Common Patterns
 
----
-*Generated by Puter.js & Qwen*
+### SP-Initiated SSO
+The user navigates directly to the application (SP) first. The SP recognizes the user is unauthenticated and triggers the SSO flow by sending the user to the IdP. This is the most common pattern for SaaS applications.
+
+### IdP-Initiated SSO
+The user logs into a central portal (IdP) first and clicks a link to an application. The IdP "pushes" the assertion to the SP. While convenient, this pattern is more susceptible to Man-in-the-Middle (MitM) attacks if not implemented with strict security controls.
+
+### Just-In-Time (JIT) Provisioning
+A pattern where the SP automatically creates a local user record the first time a user logs in via SSO, using the attributes provided in the assertion (e.g., email, name, department).
+
+## Anti-Patterns
+
+### Using [OAuth 2.0](03 Single Sign-On/OAuth 2.0.md) for Authentication
+[OAuth 2.0](03 Single Sign-On/OAuth 2.0.md) is an **authorization** framework, not an authentication protocol. Using an Access Token as proof of identity without the OpenID Connect (OIDC) layer is a security flaw, as Access Tokens do not inherently contain identity information or audience restrictions.
+
+### Hardcoding Metadata
+Manually hardcoding IdP certificates or endpoints within application code. This leads to system failure when certificates expire or endpoints change. Standard practice dictates using dynamic metadata URLs or configuration files.
+
+### Long-Lived Sessions without Revocation
+Maintaining an SP session indefinitely without checking the status of the IdP session. If a user is terminated or their account is locked at the IdP, the SP should have a mechanism (like short-lived tokens or SLO) to terminate access.
+
+### Passing Sensitive Data in URLs
+Transmitting assertions or sensitive identifiers via URL query parameters, which are often logged in browser history and server logs.
+
+## Edge Cases
+
+### Single Logout (SLO)
+While SSO handles logging in, "logging out" is significantly more complex. SLO attempts to terminate sessions across all SPs when a user logs out of the IdP. This often fails due to browser cookie restrictions, network timeouts, or SPs not supporting the SLO profile.
+
+### Deep Linking
+When a user clicks a link to a specific resource within an SP (e.g., `app.com/reports/123`) but is not logged in. The SSO flow must be able to preserve the "RelayState" or "Target URL" so the user is returned to the specific resource after authentication, rather than the application home page.
+
+### Clock Skew
+SSO assertions are time-bound (NotBefore and NotOnOrAfter). If the system clocks of the IdP and SP are not synchronized, assertions may be rejected as "expired" or "not yet valid" even if they were just issued.
+
+## Related Topics
+*   **[OAuth 2.0](03 Single Sign-On/OAuth 2.0.md):** The underlying framework for OIDC, focused on delegated authorization.
+*   **SCIM (System for Cross-domain Identity Management):** A protocol for automating the exchange of user identity information between identity domains (Provisioning).
+*   **MFA (Multi-Factor Authentication):** Often integrated into the IdP phase of the SSO flow.
+*   **RBAC/ABAC:** Access control models used by the SP to determine what a user can do after SSO has identified who they are.
+
+## Change Log
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0 | 2026-01-20 | Initial AI-generated canonical documentation |
