@@ -1,68 +1,99 @@
-# KEY DIFFERENCES AD VS AZURE AD
+# [Key Differences AD vs Azure AD](02 Azure Active Directory/Key Differences AD vs Azure AD.md)
 
-# Introduction  
-Active Directory (AD) and Azure Active Directory (Azure AD) are Microsoft’s identity management systems, each tailored to distinct environments but often used together in hybrid scenarios. AD is an on-premises solution managing user authentication, permissions, and resources within local networks. Its counterpart, Azure AD, is a cloud-based identity and access management (IAM) service optimized for modern, distributed organizations that rely heavily on SaaS and cloud applications. Understanding their differences is critical for designing IT infrastructures that balance on-premises and cloud requirements.  
+Canonical documentation for [Key Differences AD vs Azure AD](02 Azure Active Directory/Key Differences AD vs Azure AD.md). This document defines concepts, terminology, and standard usage.
 
----
+## Purpose
+The purpose of this documentation is to delineate the fundamental architectural, functional, and philosophical differences between traditional on-premises directory services (Active Directory Domain Services) and cloud-native identity platforms (Azure Active Directory, now known as Microsoft Entra ID). 
 
-# Core Concepts  
+This topic addresses the transition from a perimeter-based security model, where identity is tied to a physical or virtual local area network (LAN), to a decentralized, identity-as-a-perimeter model suitable for global, internet-accessible resources.
 
-## Deployment and Environment  
-- **AD**: Managed on-premises via domain controllers (servers running Windows Server). Requires manual installation, configuration, and maintenance to replicate data across physical sites. Ideal for organizations with fully localized resources.  
-- **Azure AD**: Fully cloud-hosted, managed by Microsoft. No on-prem infrastructure needed. Scales automatically to support global users and modern applications.  
+> [!NOTE]
+> This documentation is intended to be implementation-agnostic and authoritative. While it references specific product names for clarity, the principles apply to the broader shift from legacy LDAP/Kerberos environments to modern Identity-as-a-Service (IDaaS) architectures.
 
-## Authentication Methods  
-- **AD**: Uses **LDAP** for directory queries and **Kerberos** for authentication. Requires domain-joined devices for access to local resources.  
-- **Azure AD**: Relies on **OAuth 2.0** and **OpenID Connect** for secure API and SSO across cloud apps. Integrates natively with **Multi-Factor Authentication (MFA)** and supports JSON web tokens (JWT).  
+## Scope
+Clarify what is in scope and out of scope for this topic.
 
-## Primary Use Cases  
-- **AD**: Manages on-prem resources like file servers, legacy applications (e.g., SharePoint Server), and Windows domain policies.  
-- **Azure AD**: Manages cloud resources (e **.g.** Office 365, Azure services), remote workers, and SaaS app authentication. Supports hybrid scenarios via tools like Azure AD Connect.  
+**In scope:**
+*   Architectural paradigms (Hierarchical vs. Flat).
+*   Authentication protocols and authorization frameworks.
+*   Device management philosophies.
+*   Identity lifecycle management in local vs. cloud contexts.
 
-## Directory Management  
-- **AD**: Organizes users and devices into **organizational units (OUs)**. Uses group policies for centralized configuration.  
-- **Azure AD**: Focuses on cloud-based user and app management, including **guest user access** (B2B collaboration) and **iOS/Android device enrollment**.  
+**Out of scope:**
+*   Specific pricing tiers or licensing models.
+*   Step-by-step migration tutorials.
+*   Third-party identity provider comparisons (e.g., Okta, Ping Identity).
 
-## Scalability  
-- **AD**: Limits depend on hardware and domain controller configuration. Scaling requires adding servers and managing forest trusts.  
-- **Azure AD**: Scales elastically via Microsoft’s infrastructure, supporting millions of users without physical upgrades.  
+## Definitions
+Provide precise definitions for key terms.
 
-## Hybrid Capabilities  
-- **AD**: Integrates with Azure AD via **Azure AD Connect** to sync user accounts, groups, and passwords. Enables hybrid identities and multi-factor authentication for on-prem and cloud apps.  
-- **Azure AD**: Actively supports hybrid scenarios but requires on-prem tools like AD Connect to interact with AD.  
+| Term | Definition |
+|------|------------|
+| **AD DS (Active Directory Domain Services)** | A server-based directory service that uses a hierarchical structure to manage users, computers, and resources within a network perimeter. |
+| **Azure AD / Entra ID** | A cloud-based identity and access management service that provides authentication and authorization for web-based applications and resources. |
+| **LDAP** | Lightweight Directory Access Protocol; the primary protocol used for querying and modifying items in AD DS. |
+| **Modern Authentication** | An umbrella term for authentication methods based on web-friendly protocols such as OAuth 2.0, OpenID Connect (OIDC), and SAML 2.0. |
+| **Tenant** | A dedicated instance of a cloud identity service representing an organization, distinct from the "Forest" or "Domain" concept in on-premises AD. |
+| **GPO (Group Policy Object)** | A feature of AD DS used to manage configuration and security settings for users and computers joined to a domain. |
+| **MDM (Mobile Device Management)** | A protocol-based management system used by cloud identity platforms to manage devices regardless of their network location. |
 
-## Security and Compliance  
-- **AD**: Relies on local security tools and **group policy objects (GPOs)**. Requires manual patching and adherence to compliance standards (e.g., HIPAA).  
-- **Azure AD**: Includes built-in features like **conditional access policies**, threat detection (e.g., compromised credentials alerts), and automated compliance reporting through Microsoft’s certification frameworks.  
+## Core Concepts
 
----
+### 1. Architectural Structure
+*   **Active Directory (AD):** Utilizes a hierarchical structure consisting of Forests, Trees, and Domains. It relies on Organizational Units (OUs) to delegate administrative permissions and apply policies.
+*   **Azure AD:** Utilizes a flat structure. While it supports "Administrative Units" for scoping management, it does not use the nested OU/GPO hierarchy. It is designed for web-scale and multi-tenant isolation.
 
-# Examples  
+### 2. Communication Protocols
+*   **Active Directory:** Primarily uses Kerberos and NTLM for authentication and LDAP for directory queries. These protocols are designed for low-latency, trusted internal networks.
+*   **Azure AD:** Primarily uses REST-based APIs and web protocols (SAML, WS-Federation, OAuth 2.0, and OIDC). These are designed to traverse the public internet and work across firewalls via HTTPS.
 
-#### Example 1: On-Premises Environment  
-A manufacturing firm uses only AD to manage local resources. Employees authenticate via domain-joined computers to access internal databases and printers. The IT team uses **Active Directory Administrative Center (ADAC)** to manage user permissions and enforce ACLs.  
+### 3. Identity vs. Device Management
+*   **Active Directory:** Manages devices via "Domain Join." Once joined, the device is a trusted entity on the network, managed via GPOs.
+*   **Azure AD:** Manages devices via "Registration" or "Join" to the cloud tenant. Management is performed via MDM (Mobile Device Management) policies rather than traditional GPOs.
 
-#### Example 2: Cloud-First Organization  
-A global marketing agency relies entirely on Azure AD for user authentication across SaaS apps (e.g., Salesforce, Zoom). Employees use **Azure AD SSO** to access tools from anywhere, and MFA is enforced for sensitive roles.  
+## Standard Model
+The generally accepted model for modern organizations is the **Hybrid Identity Model**. In this model, the on-premises AD DS remains the authoritative source for legacy applications and local network resources, while an identity synchronization engine (e.g., AD Connect) projects these identities into the cloud directory.
 
-#### Example 3: Hybrid Workforce  
-A healthcare provider has on-prem AD for managing local servers but syncs user accounts to Azure AD via **Azure AD Connect** for cloud applications like Microsoft Teams and Azure VMs. Hybrid users authenticate with the same credentials for both environments.  
+*   **Source of Authority:** Usually resides in the on-premises AD for synchronized users.
+*   **Authentication Flow:** Can be managed via Password Hash Sync (PHS), Pass-Through Authentication (PTA), or Federation (ADFS).
 
-#### Example 4: Application Migration  
-A company develops a sales web app initially using AD’s **LDAP** for authentication. When migrating to Azure, they restructure authentication using **OAuth 2.0 with Azure AD**, enabling SSO for mobile users without exposing on-prem credentials.  
+## Common Patterns
 
-#### Example 5: Security Enforcement  
-An Azure AD tenant blocks non-compliant devices from accessing cloud resources by enforcing a **Conditional Access policy** requiring Intune-registered devices. In an AD environment, equivalent policies would require GPOs and agent deployments for device compliance checks.  
+### Identity Synchronization
+The most common pattern where identities are created on-premises and synchronized to the cloud. This allows for a "Single Sign-On" (SSO) experience across both legacy and modern applications.
 
----
+### Cloud-Only Identity
+A pattern used by "born-in-the-cloud" organizations where no on-premises footprint exists. All users, groups, and devices are managed directly within the cloud identity platform.
 
-# Summary  
-- **AD**: Best suited for on-premises environments, domain-joined devices, and legacy applications. Requires local infrastructure and administrative oversight.  
-- **Azure AD**: Critical for managing cloud identities, SaaS applications, and hybrid environments. Offers modern protocols (e.g., OAuth), scalability, and advanced security features like conditional access.  
-- **Hybrid Scenarios**: Use **Azure AD Connect** to synchronize AD and Azure AD, enabling single sign-on (SSO) and MFA for both on-prem and cloud resources.  
-- **Decision Factors**: Choose AD for complete internal control and legacy integration, Azure AD for cloud-first strategies, and their hybrid combination to bridge physical and virtual networks.  
+### Federation
+A pattern where the cloud identity platform trusts an external Identity Provider (IdP) to validate user credentials. This is often used in complex environments requiring high-security hardware tokens or specific compliance workflows.
 
-Understanding these differences ensures organizations deploy identity solutions optimally, aligning IT architecture with business needs.
+## Anti-Patterns
 
----
-*Generated by Puter.js & Qwen*
+### "Lift and Shift" Logic
+Attempting to replicate an OU/GPO structure directly into a cloud identity platform. Cloud platforms are not designed to support the granular, inheritance-based logic of GPOs, and forcing this often leads to management complexity and security gaps.
+
+### Exposing Legacy Protocols to the Internet
+Attempting to use LDAP or Kerberos over the public internet to authenticate cloud applications. This is insecure and architecturally unsound; modern protocols (OIDC/SAML) should be used for internet-facing authentication.
+
+### Shared Service Accounts in Cloud
+Using traditional "Service Accounts" (username/password) for cloud-based automation. The preferred pattern is using **Managed Identities** or **Service Principals**, which eliminate the need for static credentials.
+
+## Edge Cases
+
+### Legacy Application Support
+Applications that require a "Domain Join" or specific LDAP attributes that are not synchronized by default. These often require a managed domain service (e.g., Azure AD Domain Services) which acts as a bridge by providing a managed AD DS forest in the cloud.
+
+### Multi-Tenant Collaboration
+Scenarios where a user from one organization needs access to resources in another. Unlike AD "Forest Trusts," which are complex to set up and maintain, cloud platforms use B2B (Business-to-Business) collaboration features to invite external identities as "Guest" users.
+
+## Related Topics
+*   **Zero Trust Architecture:** The security framework that assumes no network is inherently trusted, relying heavily on cloud identity signals.
+*   **RBAC (Role-Based Access Control):** The method of assigning permissions based on job functions within the cloud platform.
+*   **SCIM (System for Cross-domain Identity Management):** An open standard for automating the exchange of user identity information between identity domains.
+
+## Change Log
+
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0 | 2026-01-20 | Initial AI-generated canonical documentation |
