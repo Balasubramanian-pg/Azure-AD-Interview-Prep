@@ -1,123 +1,90 @@
-# AZURE AD EDITIONS
+# [Azure AD Editions](02 Azure Active Directory/Azure AD Editions.md)
 
-# Introduction  
-Azure Active Directory (Azure AD) is Microsoft's cloud-based identity and access management (IAM) solution, designed to securely manage users, devices, and applications. Azure AD offers multiple **editions** tailored to different organizational requirements, ranging from small startups to large enterprises and government agencies. Each edition provides varying levels of features, security capabilities, and compliance certifications. This guide outlines the key Azure AD editions, core concepts, and scenarios to help organizations choose the most appropriate edition for their needs.  
+Canonical documentation for [Azure AD Editions](02 Azure Active Directory/Azure AD Editions.md). This document defines concepts, terminology, and standard usage.
 
----
+## Purpose
+The purpose of Azure AD (now Microsoft Entra ID) editions is to provide a tiered functional framework that aligns identity management capabilities with organizational scale, security requirements, and regulatory compliance needs. This segmentation allows organizations to balance cost against the depth of identity protection, governance, and administrative control required for their specific environment.
 
-# Core Concepts  
+> [!NOTE]
+> This documentation is intended to be implementation-agnostic and authoritative. While it references specific product tiers, it focuses on the functional architecture and theoretical boundaries of those tiers.
 
-## Editions Overview  
-Azure AD is available in several editions, each with distinct capabilities:  
+## Scope
+Clarify what is in scope and out of scope for this topic.
 
-### Azure AD Free (Basic Edition)  
-- **Features**:  
-  - Basic authentication for users and groups.  
-  - Single Sign-On (SSO) via Microsoft’s cloud apps.  
-  - Limited user attributes (name, email, title).  
-  - 500-user limit (scalable with paid licenses).  
-  - Basic access control and admin tools.  
-- **No**:  
-  - Conditional Access policies.  
-  - Multi-Factor Authentication (MFA) for users.  
-  - Advanced security features like Privileged Identity Management (PIM).  
-- **Use Case**: Small businesses needing minimal identity management.  
+**In scope:**
+* Functional differentiation between identity service tiers.
+* Theoretical boundaries of identity governance and security features.
+* Core capabilities associated with Free, Premium P1, and Premium P2 models.
+* Specialized editions for specific use cases (e.g., External Identities).
 
-### Azure AD Basic  
-- **Features**:  
-  - Full support for Conditional Access policies to enforce security rules.  
-  - **MFA** for unlimited users (requires a Basic or higher license per user).  
-  - Extended user attributes (manager, department).  
-  - Limited reporting and auditing tools.  
-- **No**:  
-  - Advanced governance features like PIM.  
-  - Self-Service Password Reset (SSPR).  
-- **Use Case**: Medium-sized organizations requiring conditional access or MFA for all users.  
+**Out of scope:**
+* Specific pricing or licensing SKU bundles (e.g., Microsoft 365 E3/E5).
+* Step-by-step configuration or deployment guides.
+* Third-party identity provider comparisons.
 
-### Azure AD Premium P1  
-- **Features**:  
-  - **PIM**: Manages privileged user access with just-in-time (JIT) permissions.  
-  - **SSPR**: Enable users to reset passwords independently.  
-  - Advanced security features like sign-in reporting and risk detection.  
-  - Integrations with tools like Microsoft Cloud App Security (MCAS).  
-- **Extensions**:  
-  - Role-Based Access Control (RBAC) across Microsoft services like Microsoft 365.  
-- **Use Case**: Enterprises needing identity governance and advanced security monitoring.  
+## Definitions
+Provide precise definitions for key terms.
 
-### Azure AD Premium P2  
-- **Features**:  
-  - Adds threat detection for risky sign-ins and user behavior anomalies.  
-  - Advanced access reviews for periodic compliance checks.  
-  - Premium features of Microsoft Cloud App Security (e.g., application proxy capacity for remote access).  
-  - Advanced guest user management and external collaboration tools (Azure AD B2B).  
-- **Use Case**: Large enterprises requiring robust security and compliance with dynamic environments.  
+| Term | Definition |
+|------|------------|
+| **Tenant** | A dedicated instance of the identity service that represents an organization. |
+| **Identity Governance** | The policy-based management of identity and access, ensuring the right people have the right access to the right resources. |
+| **Conditional Access** | A policy-driven engine that evaluates signals (user, device, location) to make automated access decisions. |
+| **Privileged Identity Management (PIM)** | A service that enables managing, controlling, and monitoring access to important resources within an organization. |
+| **Self-Service Password Reset (SSPR)** | A capability allowing users to reset their passwords without administrative intervention. |
+| **B2B Collaboration** | A feature set allowing organizations to share applications and services with guest users from other organizations. |
 
-### Azure AD for Government  
-- **Features**:  
-  - Complies with U.S. federal standards (FISMA, FedRAMP, DoD IL4+, and IL5).  
-  - Isolated environments (DoD/Commercial Government Cloud).  
-  - Same core features as Premium P2 but with strict government certifications.  
-- **Use Case**: U.S. federal agencies and contractors needing compliance with stringent security requirements.  
+## Core Concepts
+The Azure AD edition model is built upon three fundamental pillars:
 
----
+1.  **Identity Lifecycle Management:** The progression from basic user creation to automated provisioning and de-provisioning based on authoritative data sources.
+2.  **Access Security:** The evolution from simple password-based authentication to sophisticated, risk-based adaptive access policies.
+3.  **Governance and Compliance:** The transition from manual access reviews to automated, audited, and time-bound access management.
 
-## Feature Comparison Table  
+## Standard Model
+The standard model for Azure AD editions follows a progressive hierarchy where each tier inherits the features of the previous one.
 
-The following table summarizes key capabilities across Azure AD editions:  
+### 1. [Free Edition](02 Azure Active Directory/Free Edition.md)
+The foundational tier provided with any Microsoft cloud service subscription.
+*   **Core Functionality:** Directory object management, Single Sign-On (SSO) for a limited number of apps, and basic security reporting.
+*   **Boundary:** Limited to basic authentication and lacks advanced security signals or automated governance.
 
-| **Feature**                  | **Azure AD Free (Basic)** | **Azure AD Basic** | **Premium P1**         | **Premium P2**         | **Government Edition** |  
-|------------------------------|---------------------------|-------------------|-------------------------|-------------------------|------------------------|  
-| **Conditional Access**       | No                        | Yes               | Yes                     | Yes                     | Yes                    |  
-| **Multi-Factor Authentication (MFA)** | Available only for admins (limited user licenses required) | Required user licenses | Included with P1 licenses | Included with P2 licenses | Government-compliant MFA (e.g., YubiKey) |  
-| **Privileged Identity Management (PIM)** | No                       | No                  | Yes (JIT privileges)    | Yes (advanced policies)  | Yes                    |  
-| **Self-Service Password Reset (SSPR)** | No                       | No                  | Yes                     | Yes                     | Yes                    |  
-| **User Attribute Support**    | Limited                   | Extended          | Full attributes         | Full attributes         | Full attributes        |  
-| **Advanced Threat Intelligence** | No                       | Basic              | Yes (basic risk detection) | Advanced risk detection | FedRAMP-compliant threat detection |  
-| **Compliance Certifications** | GDPR, SOC2                | GDPR, SOC2         | ISO 27001, DoD IL4      | ISO 27001, DoD IL5      | FedRAMP HI, DoD IL5    |  
+### 2. Premium Plan 1 (P1)
+Designed for organizations requiring enterprise-level identity management and hybrid integration.
+*   **Core Functionality:** Advanced group management, SSPR for hybrid environments, and Conditional Access.
+*   **Boundary:** Provides the "Zero Trust" foundation but lacks automated risk-based remediation and advanced governance.
 
----
+### 3. Premium Plan 2 (P2)
+The comprehensive tier for organizations requiring deep security and automated governance.
+*   **Core Functionality:** Identity Protection (risk-based access), Privileged Identity Management (PIM), and Access Reviews.
+*   **Boundary:** The ceiling for native identity security and lifecycle automation.
 
-## Licensing & Usage  
-- **Directory vs. User Licenses**:  
-  - **Directory Edition**: Defines the overall features available in your Azure AD instance (e.g., Azure AD Free enables only free features).  
-  - **User Licenses**: Required to unlock features for individual users (e.g., MFA, PIM, or SSPR). These licenses must align with or exceed the directory edition. For example, a P1 user license requires an Azure AD Premium P1 directory.  
-- **Scalability**: Licenses can be added per user, and directory editions can be upgraded independently.  
+### 4. Specialized Editions (External/B2C)
+Editions tailored for customer-facing applications or external collaboration.
+*   **Core Functionality:** Highly customizable login journeys and massive scale for consumer identities.
 
-## Compliance & Security  
-- Compliance certifications (e.g., GDPR, SOC2, ISO 27001) are available in all editions except the Free tier.  
-- Government editions (DoD, GCC High) ensure adherence to U.S. federal regulations and are isolated from commercial clouds.  
+## Common Patterns
+*   **The Hybrid Bridge:** Organizations use P1 to synchronize on-premises directories with the cloud, enabling a unified identity across legacy and modern environments.
+*   **Zero Trust Baseline:** Utilizing P1 Conditional Access to enforce Multi-Factor Authentication (MFA) based on location or device compliance.
+*   **Least Privilege Enforcement:** Utilizing P2 PIM to ensure administrative rights are granted "Just-In-Time" rather than being permanent.
 
----
+## Anti-Patterns
+*   **Feature Over-Provisioning:** Purchasing P2 licenses for an entire workforce when only a subset of administrators requires PIM or advanced governance.
+*   **Security Siloing:** Relying on the Free edition for production environments, which lacks the Conditional Access controls necessary to mitigate modern credential-based attacks.
+*   **Manual Review Fatigue:** Attempting to manage large-scale access reviews manually in a P1 environment instead of utilizing P2 automation.
 
-## Examples  
+## Edge Cases
+*   **Tenant-Level vs. User-Level Licensing:** While some features are technically enabled at the tenant level once a single license is purchased, compliance requires that every user benefiting from the feature be properly licensed.
+*   **Guest User Ratios:** Historically, guest user licensing followed a 1:5 ratio; however, modern models have shifted toward Monthly Active Users (MAU), creating complexity in legacy tenants.
+*   **Government and Sovereign Clouds:** Editions in specialized environments (e.g., GCC High) may have functional parity delays compared to the standard commercial editions.
 
-### 1. Small Business – Azure AD Free + User Licenses  
-- **Scenario**: A 50-person startup needing basic authentication and limited MFA.  
-- **Solution**: Use Azure AD Free with **MFA-enabled licenses** for fewer users.  
+## Related Topics
+*   **Zero Trust Architecture:** The security framework that Azure AD editions support.
+*   **Role-Based Access Control (RBAC):** The mechanism used within editions to manage permissions.
+*   **Identity Protection:** The specific P2 capability focused on machine-learning-based risk detection.
 
-### 2. Medium-Sized Retail – Azure AD Basic  
-- **Scenario**: A retail chain with 500 employees requiring Conditional Access for on-premises apps.  
-- **Solution**: Deploy Azure AD Basic to enforce location-based access rules (e.g., block sign-ins outside the U.S.).  
-
-### 3. Global Enterprise – Azure AD Premium P2  
-- **Scenario**: A financial services firm needing advanced threat detection and identity governance.  
-- **Solution**: Use Premium P2 for **PIM-based privileged access control** and **risk-based Conditional Access**.  
-
-### 4. U.S. Federal Agency – Government Edition  
-- **Scenario**: A defense contractor storing classified data.  
-- **Solution**: Azure AD Government (DoD IL5) with **FIPS 140-2**-compliant encryption and isolated data storage.  
-
----
-
-## Summary  
-Azure AD editions cater to different organizational needs through their feature set, security capabilities, and compliance certifications. Here are key takeaways:  
-- Choose **Azure AD Free** for minimal identity management.  
-- Use **Basic** for Conditional Access and MFA for multiple users.  
-- Opt for **Premium P1/P2** for advanced governance (PIM) and threat detection.  
-- Select **Government Editions** for regulated industries like U.S. federal agencies.  
-- Remember that **user licenses** are critical to unlock per-user features like MFA or SSPR.  
-
-Always align your selection with specific compliance requirements, security needs, and scalability.
-
----
-*Generated by Puter.js & Qwen*
+## Change Log
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0 | 2026-01-20 | Initial AI-generated canonical documentation |
+| 1.1 | 2026-01-20 | Refined definitions to include Microsoft Entra ID context |
