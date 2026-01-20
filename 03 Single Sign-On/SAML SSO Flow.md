@@ -1,114 +1,95 @@
-# SAML SSO FLOW
+# [SAML SSO Flow](03 Single Sign-On/SAML SSO Flow.md)
 
-# Introduction  
-Security Assertion Markup Language (SAML) Single Sign-On (SSO) is an open standard for secure web-based authentication and authorization. It enables users to access multiple applications and services using a single set of credentials, eliminating the need to repeatedly log in to each system individually. SAML SSO operates between the **user**, **Identity Provider (IdP)**, and **Service Provider (SP)**, leveraging XML-based protocols to facilitate secure communication. This guide outlines the core concepts, processes, and practical examples of SAML SSO flow.
+Canonical documentation for [SAML SSO Flow](03 Single Sign-On/SAML SSO Flow.md). This document defines concepts, terminology, and standard usage.
 
----
+## Purpose
+The Security Assertion Markup Language (SAML) Single Sign-On (SSO) flow exists to facilitate federated identity management. It addresses the problem of fragmented user identities across disparate systems by allowing a centralized Identity Provider (IdP) to vouch for a user's identity to multiple Service Providers (SPs). This eliminates the need for users to maintain separate credentials for every application and allows organizations to centralize authentication logic, security policies, and session management.
 
-# Core Concepts  
-## Key Actors  
-1. **User**: The entity requesting access to the SP.  
-2. **Identity Provider (IdP)**: The trusted authority that authenticates the user (e.g., Okta, Microsoft Azure AD).  
-3. **Service Provider (SP)**: The application or service that grants access after verifying authentication (e.g., Google Workspace, Salesforce).  
-4. **SAML Protocol**: The standardized XML framework used for exchanging authentication and authorization data.  
+> [!NOTE]
+> This documentation is intended to be implementation-agnostic and authoritative.
 
-## Core Components  
-- **SAML Assertion**: An XML document containing a user’s authentication and attribute information (e.g., name, role).  
-  - **Subject**: Identifies the user (e.g., via email or user ID).  
-  - **Conditions**: Defines constraints (e.g., validity period, audience restrictions).  
-  - **AuthnStatement**: Verifies the authentication method and time.  
-  - **AttributeStatement**: Lists user attributes for role-based access.  
-- **Metadata Exchange**: XML files shared between IdP and SP to establish trust, containing endpoints, certificates, and configuration details.  
-- **Security**: Relies on digital signatures (X.509 certificates) to ensure message integrity and encryption (e.g., for sensitive data).  
+## Scope
+Clarify what is in scope and out of scope for this topic.
 
-## SAML SSO Flow Phases  
-1. **Authentication Request**:  
-   - The user attempts to access an SP (e.g., opens an app).  
-   - The SP redirects the user to the IdP, sending a `AuthnRequest`.  
+**In scope:**
+* The exchange of XML-based authentication and authorization data.
+* Roles of the Identity Provider (IdP) and Service Provider (SP).
+* Standard protocol bindings (Redirect, POST).
+* The lifecycle of a SAML assertion during a login event.
+* Security mechanisms inherent to the protocol (Digital Signatures, Encryption).
 
-2. **Authentication**:  
-   - The IdP validates the user’s credentials (e.g., password, MFA).  
-   - If successful, the IdP generates a **SAML Assertion** and encrypts it.  
+**Out of scope:**
+* Specific vendor implementations (e.g., Okta, Azure AD, Shibboleth).
+* Provisioning protocols (e.g., SCIM).
+* Non-SAML federation protocols (e.g., OIDC, [WS-Fed](03 Single Sign-On/WS-Fed.md)eration).
 
-3. **Assertion Transmission**:  
-   - The IdP sends the assertion to the SP via one of three **bindings**:  
-     - **HTTP POST**: For browsers when redirects are allowed.  
-     - **HTTP Redirect**: For lightweight communication but limited to URI length.  
-     - **Artifact**: For large-scale systems, sending a reference (artifact) instead of the full assertion.  
+## Definitions
+Provide precise definitions for key terms.
 
-4. **Assertion Validation**:  
-   - The SP decrypts or validates the assertion’s signature using metadata.  
-   - The SP grants access and creates/refreshes the user’s session.  
+| Term | Definition |
+|------|------------|
+| Identity Provider (IdP) | The entity that authenticates the principal and issues SAML assertions. |
+| Service Provider (SP) | The entity (application) that provides the service and relies on assertions from the IdP to grant access. |
+| Assertion | An XML document issued by an IdP that contains statements about a user’s identity and attributes. |
+| Assertion Consumer Service (ACS) | The endpoint on the SP that receives and processes the SAML Response from the IdP. |
+| AuthnRequest | The XML message sent by the SP to the IdP to initiate the authentication process. |
+| Binding | The mechanism by which SAML messages are transported (e.g., HTTP Redirect, HTTP POST). |
+| Metadata | An XML file exchanged between IdP and SP containing configuration details, such as endpoints and public keys. |
+| Principal | The entity (usually a human user) whose identity is being authenticated. |
+| RelayState | A parameter used to maintain state information across the SSO flow, often used to redirect users back to their original destination. |
 
-5. **Session Management**:  
-   - The user remains authenticated across SP resources until the session expires or is revoked.  
+## Core Concepts
+The SAML SSO flow is built upon three fundamental pillars:
 
----
+1.  **Trust Relationship:** Before any flow can occur, the IdP and SP must establish a trust relationship. This is achieved by exchanging Metadata files containing public certificates and endpoint URLs.
+2.  **XML-Based Assertions:** SAML uses structured XML to convey identity information. These assertions are digitally signed (and optionally encrypted) to ensure integrity and confidentiality.
+3.  **Browser-Based Redirection:** The protocol relies on the user's browser (the "User Agent") to act as the intermediary. The IdP and SP do not typically communicate directly; instead, they pass messages through the browser via redirects or form posts.
 
-# Examples  
-## Example 1: A User Accesses a Protected Application  
-**Steps**:  
-1. **User** tries to log in to **Salesforce** (SP).  
-2. **Salesforce** redirects the user to **Okta** (IdP), sending an `AuthnRequest`.  
-3. **Okta** prompts the user for credentials.  
-4. After verifying, Okta sends a SAML assertion to Salesforce, including the user’s email and role.  
-5. **Salesforce** validates the assertion and grants access.  
+## Standard Model
+The standard model for SAML SSO is the **SP-Initiated Flow**, which follows these sequential steps:
 
-```xml
-<!-- Sample SAML Assertion -->
-<saml:Assertion xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">
-  <saml:Issuer>https://idp.example.com</saml:Issuer>
-  <saml:Subject>
-    <saml:NameID>user@example.com</saml:NameID>
-  </saml:Subject>
-  <saml:Conditions NotBefore="2023-09-01T10:00:00Z" NotOnOrAfter="2023-09-01T11:00:00Z">
-    <saml:AudienceRestriction>
-      <saml:Audience>https://sp.example.com</saml:Audience>
-    </saml:AudienceRestriction>
-  </saml:Conditions>
-  <saml:AuthnStatement AuthnInstant="2023-09-01T10:05:00Z"/>
-</saml:Assertion>
-```
+1.  **Access Attempt:** The Principal attempts to access a protected resource on the Service Provider.
+2.  **AuthnRequest Generation:** The SP determines which IdP to use, generates a `<samlp:AuthnRequest>`, and signs it (optional but recommended).
+3.  **Redirection to IdP:** The SP sends the AuthnRequest to the Principal's browser, which redirects the Principal to the IdP's Single Sign-On URL (usually via HTTP Redirect Binding).
+4.  **Authentication:** The IdP identifies the Principal (e.g., via username/password, MFA, or existing session).
+5.  **SAML Response Generation:** Upon successful authentication, the IdP generates a `<samlp:Response>` containing a signed `<saml:Assertion>`.
+6.  **Assertion Delivery:** The IdP sends the Response to the Principal's browser, which automatically submits it to the SP's Assertion Consumer Service (ACS) URL (usually via HTTP POST Binding).
+7.  **Validation:** The SP validates the digital signature, checks the assertion's validity period (`NotBefore` and `NotOnOrAfter`), and ensures the `InResponseTo` ID matches the original request.
+8.  **Access Granted:** The SP establishes a local session for the Principal and redirects them to the requested resource.
 
-## Example 2: Metadata Configuration  
-IdP Metadata snippet (excerpt):  
-```xml
-<EntityDescriptor entityID="https://idp.example.com">
-  <IDPSSODescriptor>
-    <KeyDescriptor use="signing">
-      <X509Certificate>MIIC...</X509Certificate>
-    </KeyDescriptor>
-    <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp.example.com/saml"/>
-  </IDPSSODescriptor>
-</EntityDescriptor>
-```
+## Common Patterns
 
-SP Metadata snippet (excerpt):  
-```xml
-<EntityDescriptor entityID="https://sp.example.com">
-  <SPSSODescriptor>
-    <KeyDescriptor use="encryption">
-      <X509Certificate>MIIB...</X509Certificate>
-    </KeyDescriptor>
-    <AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://sp.example.com/sso"/>
-  </SPSSODescriptor>
-</EntityDescriptor>
-```
+### IdP-Initiated Flow
+In this pattern, the Principal starts at the IdP's dashboard (e.g., an "App Portal"). The IdP generates a SAML Response for a specific SP and sends it to the browser to be posted to the SP's ACS URL. No `AuthnRequest` is generated by the SP.
 
----
+### HTTP Redirect Binding
+Used primarily for the `AuthnRequest`. The SAML message is URL-encoded and appended as a query parameter. Due to URL length limits, this is rarely used for the much larger SAML Response.
 
-# Summary  
-1. **Purpose**: SAML SSO streamlines user authentication between SPs and IdPs, enhancing security and user experience.  
-2. **Flow**:  
-   - User initiates request to SP → SP redirects to IdP → IdP authenticates user → IdP issues SAML assertion → SP validates and grants access.  
-3. **Key Elements**:  
-   - **Assertions**: Central to exchanging security data.  
-   - **Metadata**: Establishes trust between IdP and SP.  
-   - **Security**: Relies on cryptographic certificates and controlled conditions.  
-4. **Benefits**: Reduces dependency on passwords, centralizes identity management, and supports compliance requirements.  
-   - For implementation, ensure proper metadata sharing, valid certificates, and configure SP/IdP endpoints correctly.  
+### HTTP POST Binding
+Used primarily for the SAML Response. The XML message is base64-encoded and placed within an HTML form field, which is automatically submitted to the destination via JavaScript.
 
-This guide provides a foundational understanding of SAML SSO mechanics, enabling practitioners to design, troubleshoot, and secure SAML-based systems effectively.
+## Anti-Patterns
 
----
-*Generated by Puter.js & Qwen*
+*   **Insecure Signature Validation:** Failing to verify the digital signature against the trusted certificate in the Metadata. This allows attackers to forge assertions.
+*   **Ignoring Validity Windows:** Failing to enforce `NotBefore` and `NotOnOrAfter` timestamps, which increases the risk of replay attacks.
+*   **Hardcoding Metadata:** Manually entering endpoints and certificates instead of consuming a dynamic Metadata URL. This leads to service outages when certificates expire.
+*   **Using SAML for Authorization:** Relying solely on the presence of an assertion to grant high-level permissions without checking specific attributes or internal RBAC logic.
+*   **Lack of `InResponseTo` Verification:** In SP-initiated flows, failing to correlate the Response with a known, pending Request ID.
+
+## Edge Cases
+
+*   **Clock Skew:** Differences in system time between the IdP and SP can cause valid assertions to be rejected. A "skew" allowance (typically 3-5 minutes) is usually implemented.
+*   **Single Log-Out (SLO):** The complexity of terminating sessions across all SPs when a user logs out of the IdP. This is often unreliable due to browser cookie restrictions and network failures.
+*   **Multiple IdPs:** When an SP must support users from different organizations, it must implement a "Discovery Service" or "WAYF" (Where Are You From) screen to determine which IdP to redirect to.
+*   **Large Assertions:** Assertions containing hundreds of group memberships may exceed the maximum size for HTTP POST requests or cause performance issues during XML parsing.
+
+## Related Topics
+*   **[OAuth 2.0](03 Single Sign-On/OAuth 2.0.md) / OpenID Connect (OIDC):** Modern alternatives to SAML, often preferred for mobile and API-centric environments.
+*   **Public Key Infrastructure (PKI):** The underlying system of certificates and keys used to sign SAML messages.
+*   **XML Signature (XMLDSig):** The specific standard used for signing SAML assertions.
+*   **Identity Federation:** The broader concept of linking a user's identity across multiple security domains.
+
+## Change Log
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0 | 2026-01-20 | Initial AI-generated canonical documentation |
