@@ -1,113 +1,99 @@
-# CONFIGURE SSO
+# [Configure SSO](03 Single Sign-On/Configure SSO.md)
 
-# Introduction  
-Single Sign-On (SSO) is a security framework that allows users to access multiple applications and services with a single set of login credentials. By eliminating the need for users to remember and manage separate passwords for each system, SSO enhances security, simplifies user experience, and streamlines identity management. It is widely adopted in organizations to centralize authentication processes, reduce IT support costs, and comply with security standards such as GDPR and HIPAA. Common scenarios include enterprise logins, cloud application integration, and SaaS platform access.  
+Canonical documentation for [Configure SSO](03 Single Sign-On/Configure SSO.md). This document defines concepts, terminology, and standard usage.
 
----
+## Purpose
+The configuration of Single Sign-On (SSO) addresses the fragmentation of identity management across disparate systems. By decoupling the authentication process from individual applications and centralizing it within a dedicated authority, SSO reduces the attack surface, minimizes credential fatigue for users, and provides administrators with a single point of control for access lifecycle management. It transforms the relationship between a user and a suite of services from multiple isolated logins into a unified federated session.
 
-# Core Concepts  
+> [!NOTE]
+> This documentation is intended to be implementation-agnostic and authoritative.
 
-### **1. Identity Provider (IdP)**  
-- An IdP (e.g., Okta, Azure AD, Google Workspace) stores user identity data (username/password, biometrics, etc.) and authenticates users.  
-- Acts as the authoritative source for authentication.  
+## Scope
+Clarify what is in scope and out of scope for this topic.
 
-### **2. Service Provider (SP)**  
-- The SP (e.g., Salesforce, GitHub, Office 365) is the application or service that trusts the IdP to authenticate users.  
-- Relies on the IdP to validate user credentials and grant access.  
+**In scope:**
+* Establishing trust relationships between entities.
+* Exchange of identity metadata and assertions.
+* Standardized authentication flows (SP-initiated and IdP-initiated).
+* Identity propagation and attribute mapping.
+* Session management and termination (Single Logout).
 
-### **3. Federation Protocols**  
-- **SAML**: The most common protocol for enterprise SSO, using XML-based assertions for authentication.  
-- **OAuth 2.0 / OpenID Connect (OIDC)**: Modern JSON-based protocols for authorization and authentication, popular in cloud and Web 2.0 applications.  
-- **WS-Federation**: Microsoft’s protocol for integrating with Active Directory.  
+**Out of scope:**
+* Specific vendor implementations (e.g., Okta, Azure AD, Auth0).
+* Detailed code snippets for specific programming languages.
+* Hardware-level authentication protocols (e.g., low-level FIDO2/WebAuthn implementation details).
 
-### **4. Metadata Exchange**  
-- IdP and SP share XML metadata (e.g., endpoints, encryption certificates) to establish trust.  
-- Metadata contains technical details like the IdP’s URL and public keys.  
+## Definitions
+Provide precise definitions for key terms.
 
-### **5. Authentication vs. Authorization**  
-- **Authentication**: Verifying a user’s identity (e.g., via username/password).  
-- **Authorization**: Defining permissions after authentication (e.g., role-based access control).  
+| Term | Definition |
+|------|------------|
+| **Identity Provider (IdP)** | The authoritative system that authenticates the user and issues identity assertions. |
+| **Service Provider (SP)** | The application or resource that relies on the IdP to verify the identity of a user. Also known as a Relying Party (RP). |
+| **Assertion / Token** | A cryptographically signed package of data sent by the IdP to the SP containing user identity and attribute information. |
+| **Metadata** | An XML or JSON document exchanged between IdP and SP to establish trust, containing endpoints, certificates, and entity IDs. |
+| **Trust Relationship** | The mathematical and administrative agreement where an SP agrees to honor assertions signed by a specific IdP. |
+| **Binding** | The mechanism by which messages are transported between parties (e.g., HTTP POST, HTTP Redirect). |
+| **Claim / Attribute** | Specific pieces of information about a user (e.g., email, group membership) contained within an assertion. |
 
-### **6. Tokens**  
-- Tokens (e.g., SAML Response, JWT) are passed between IdP and SP to maintain session state.  
-- JWT (JSON Web Token) is widely used in OIDC for efficient, readable assertions.  
+## Core Concepts
 
-### **7. Single Logout (SLO)**  
-- Ensures a user is logged out of all services after signing out from one. Not all protocols support this equally (e.g., SAML SLO is standardized but less common in OIDC).  
+### Federation
+Federation is the practice of linking a user's identity across multiple distinct security domains. In an SSO configuration, federation allows a user to maintain a single set of credentials while accessing resources owned by different organizations or business units.
 
-### **8. Certificate Management**  
-- SSL/TLS certificates secure communication between IdP and SP.  
-- Cryptographic keys (e.g., X.509) sign SAML assertions to prevent tampering.  
+### The Circle of Trust
+A configuration is only valid when both the IdP and the SP recognize each other's unique identifiers (Entity IDs) and possess the necessary public keys to validate digital signatures. This "Circle of Trust" ensures that the SP only accepts identities from a verified source.
 
-### **9. Standards Bodies**  
-- **OASIS**: Maintains SAML and WS-Federation standards.  
-- **IETF**: Oversees OAuth, OIDC, and other internet protocols.  
+### Identity Propagation
+Beyond simple authentication, SSO configuration involves the transmission of user attributes. This allows the SP to not only know *who* the user is but also what permissions or roles they should be granted based on data managed by the IdP.
 
----
+## Standard Model
 
-# Examples  
-### **Example 1: Configuring SAML-Based SSO Between Okta and Salesforce**  
-1. **Create an IdP in Okta**:  
-   - In Okta Admin, navigate to **Applications > Add Application**.  
-   - Select "Create New Application" > "SAML 2.0".  
-   - Configure the SAML settings (e.g., SP Entity ID, ACS URL).  
+The standard model for SSO configuration follows a structured exchange of trust and a redirection-based authentication flow.
 
-2. **Export Okta Metadata**:  
-   - Download the IdP metadata XML file from Okta’s SAML settings.  
+1.  **Trust Establishment:** The administrator exchanges Metadata between the IdP and SP. This includes the exchange of Public Key Infrastructure (PKI) certificates to ensure non-repudiation and integrity.
+2.  **The Authentication Request:**
+    *   **SP-Initiated:** The user visits the SP; the SP redirects the user to the IdP with an Authentication Request.
+    *   **IdP-Initiated:** The user logs into an IdP portal and selects the SP, triggering an unsolicited assertion.
+3.  **Challenge and Validation:** The IdP challenges the user (via password, MFA, etc.). Upon success, the IdP generates a signed Assertion.
+4.  **Assertion Consumption:** The user’s browser delivers the Assertion to the SP’s Assertion Consumer Service (ACS) URL. The SP validates the signature against the stored IdP certificate.
+5.  **Session Creation:** The SP establishes a local session for the user based on the validated identity.
 
-3. **Configure Salesforce as the SP**:  
-   - In Salesforce Setup, enable **Single Sign-On Settings > Enable SAML**.  
-   - Upload the Okta metadata and save configurations.  
+## Common Patterns
 
-4. **Test the Login Flow**:  
-   - Redirect the user to Salesforce. The IdP (Okta) handles authentication.  
+### [SAML 2.0](03 Single Sign-On/SAML 2.0.md) (Security Assertion Markup Language)
+An XML-based standard widely used in enterprise environments. It is robust and supports complex attribute mapping and formal metadata exchanges.
 
----
+### OIDC (OpenID Connect)
+An identity layer built on top of the [OAuth 2.0](03 Single Sign-On/OAuth 2.0.md) protocol. It uses JSON/JWT (JSON Web Tokens) and is preferred for modern web and mobile applications due to its lightweight nature and ease of integration with RESTful APIs.
 
-### **Example 2: Implementing OAuth 2.0 with OpenID Connect**  
-1. **Set Up an OAuth Client**:  
-   - In the IdP (e.g., Google Cloud Console):  
-     - Go to **APIs & Services > OAuth consent screen** and configure permissions.  
-     - Register a client ID and obtain credentials.  
+### Just-in-Time (JIT) Provisioning
+A pattern where the SP automatically creates a user record the first time a user authenticates via SSO, using the attributes provided in the assertion. This eliminates the need for manual user pre-provisioning.
 
-2. **Configure Redirect URIs**:  
-   - Specify the URLs where the IdP can redirect after authentication.  
+## Anti-Patterns
 
-3. **Implement Authentication Logic**:  
-   - Use the IdP endpoint to initiate authentication:  
-     ```plaintext  
-     GET https://accounts.google.com/o/oauth2/v2/auth?client_id=[CLIENT_ID]&redirect_uri=[REDIRECT_URI]&response_type=code&scope=openid email  
-     ```  
-   - Handle the callback to retrieve the `id_token` for user identity.  
+*   **Hardcoded Endpoints:** Using static URLs instead of dynamic metadata exchange, leading to breakage when certificates rotate or endpoints change.
+*   **Ignoring Signature Validation:** Accepting assertions without verifying the cryptographic signature against the trusted IdP certificate.
+*   **Over-reliance on SP-Initiated Flow:** Failing to account for IdP-initiated entry points, which can lead to "Deep Linking" failures.
+*   **Insecure Attribute Mapping:** Mapping sensitive roles (e.g., "SuperAdmin") based on mutable or easily spoofed user attributes.
+*   **Lack of SLO (Single Logout):** Terminating the SP session but leaving the IdP session active, allowing subsequent users on a shared device to access the SP without re-authentication.
 
----
+## Edge Cases
 
-### **Example 3: Using SAML with a WordPress Site**  
-1. **Install a SAML Plugin**:  
-   - Use a tool like **SimpleSAMLphp** or **WP SAML Plugin**.  
+*   **Clock Skew:** If the system clocks of the IdP and SP are out of sync, assertions may be rejected as "not yet valid" or "expired." Standard configurations usually allow a 3–5 minute buffer.
+*   **Certificate Rotation:** When an IdP certificate expires, the trust relationship breaks unless the SP is configured with the new public key in advance.
+*   **Deep Linking:** A user attempts to access a specific resource URL within the SP while unauthenticated. The SSO configuration must ensure the user is returned to that specific URL after the IdP handshake, rather than the application root.
+*   **Multi-Tenant IdPs:** Scenarios where a single SP must support multiple IdPs (e.g., a SaaS application supporting different customers' unique IdPs). This requires a "Discovery Service" or "Home Realm Discovery" (HRD) to determine which IdP to use.
 
-2. **Configure IdP Settings**:  
-   - Input SSO URL, entity ID, and metadata from the IdP (e.g., Shibboleth).  
+## Related Topics
 
-3. **Generate Metadata for the SP**:  
-   - Export WordPress’s SP metadata (e.g., `metadata/sp1.xml`) and provide it to the IdP team for integration.  
+*   **Identity Lifecycle Management (ILM):** The broader process of provisioning and deprovisioning users.
+*   **Multi-Factor Authentication (MFA):** Often integrated into the IdP phase of the SSO flow.
+*   **[OAuth 2.0](03 Single Sign-On/OAuth 2.0.md):** The authorization framework upon which OIDC is built.
+*   **Directory Services (LDAP/AD):** The underlying data stores that often feed the IdP.
 
----
+## Change Log
 
-### **Example 4: Troubleshooting Common Issues**  
-- **Invalid Metadata**: Ensure XML metadata from both IdP and SP are correctly formatted.  
-- **Certificate Expiry**: Replace expired certificates in the IdP/SP configuration.  
-- **Token Sign-Out Failure**: Verify SLO support and configuration in the chosen protocol.  
-
----
-
-# Summary  
-- **SSO Overview**: Centralizes authentication to improve security and usability, supporting various protocols (SAML, OIDC, etc.).  
-- **Key Components**: IdP, SP, federation protocols, and metadata exchange enable trust.  
-- **Configuration Steps**: Include setting up identity providers, importing/exporting metadata, testing authentication flows, and managing certificates.  
-- **Best Practices**: Regularly rotate certificates, validate metadata, and test SLO functionality.  
-
-Effective SSO implementation requires careful planning across technical (protocol selection) and organizational (user training) aspects. Always validate configurations in test environments before deployment.
-
----
-*Generated by Puter.js & Qwen*
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0 | 2026-01-20 | Initial AI-generated canonical documentation |
