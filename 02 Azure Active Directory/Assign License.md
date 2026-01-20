@@ -1,105 +1,117 @@
-# ASSIGN LICENSE
+# [Assign License](02 Azure Active Directory/Assign License.md)
 
-### Introduction  
-**Assign License** refers to the process of granting users access to specific cloud or software services by applying licenses within an organization’s administrative tools (e.g., Azure Active Directory, Office 365, or other enterprise platforms). This practice ensures that users and groups receive the necessary permissions and entitlements to utilize licensed services while maintaining security and compliance. The procedure is critical for role-based access control, budget management, and governance in environments where licensing is governed by entitlement or subscription models.  
+Canonical documentation for [Assign License](02 Azure Active Directory/Assign License.md). This document defines concepts, terminology, and standard usage.
 
----
+## Purpose
+The process of assigning a license serves as the bridge between an organization’s legal entitlement to software or services and the functional consumption of those resources by specific entities. It is the mechanism by which an abstract right (the entitlement) is bound to a concrete identity (the subject).
 
-### Core Concepts  
+The primary purpose of license assignment is to ensure compliance with contractual obligations, optimize resource allocation, and provide a verifiable audit trail of who or what is authorized to access specific capabilities. It transforms a pool of purchased assets into active, operational permissions.
 
-#### 1. **Licenses**  
-   - A **license** is a set of entitlements that grants access to one or more services (e.g., Microsoft 365 Enterprise E5 license includes Exchange Online, SharePoint, and Teams).  
-   - Licenses are acquired through agreements with vendors and managed in a tenant's **license inventory**.  
-   - Each license contains **service plans**, which define the specific applications or features users can access.  
+> [!NOTE]
+> This documentation is intended to be implementation-agnostic and authoritative.
 
-#### 2. **Service Plans**  
-   - A **service plan** is a component of a license, representing individual services (e.g., *Exchange Online (Plan 2)* or *Power BI Premium*).  
-   - Service plans must be *turned on* to be usable by users assigned the parent license.  
+## Scope
+Clarify what is in scope and out of scope for this topic.
 
-#### 3. **Tenant Administrators**  
-   - Roles like **Global Administrator**, **Billing Administrator**, and **User Account Administrator** typically have the privileges to assign licenses.  
+**In scope:**
+* The logical mapping of entitlements to subjects (users, devices, or services).
+* Lifecycle management of the assignment state (allocation, deallocation, and reassignment).
+* Governance models for distribution (manual vs. automated).
+* Theoretical constraints such as quotas and concurrency.
 
-#### 4. **Directory Roles vs. Licenses**  
-   - **Directory roles** define administrative permissions (e.g., managing security policies), while **licenses** govern access to services. They are distinct but interconnected (e.g., a license may require a role to activate certain features).  
+**Out of scope:**
+* Specific vendor licensing portals or command-line interfaces.
+* Financial procurement processes (purchasing the licenses).
+* Technical enforcement mechanisms (the code that checks for a license at runtime).
+* Legal drafting of End User License Agreements (EULAs).
 
-#### 5. **Activation Rules**  
-   - Organizations can enforce **activation rules** to restrict license usage based on conditions such as:  
-     - User location (e.g., IP restrictions).  
-     - Device compliance (e.g., only managed devices).  
-     - Time-based access (e.g., work hours only).  
+## Definitions
+Provide precise definitions for key terms.
 
-#### 6. **Assignment Scenarios**  
-   - **Individual Assignment:** Directly assign licenses to specific users.  
-   - **Group-Based Assignment:** Assign licenses to Azure AD groups for bulk management.  
-   - **Dynamic Groups:** Use criteria (e.g., department, location) to auto-assign licenses.  
+| Term | Definition |
+|------|------------|
+| **Subject** | The entity to which a license is assigned (e.g., a User, Device, Service Account, or Workload). |
+| **Entitlement** | The specific right or set of features granted by a license. |
+| **License Pool** | A collection of available, unassigned entitlements of a specific type. |
+| **Allocation** | The act of reserving or dedicating a license to a subject. |
+| **Deallocation** | The removal of a license from a subject, returning it to the pool. |
+| **Seat** | A unit of measurement representing a single assignable instance of a license. |
+| **Consumption** | The actual utilization of the resource enabled by the assigned license. |
+| **Over-provisioning** | The state where more licenses are assigned than are functionally required or utilized. |
 
----
+## Core Concepts
 
-### Examples  
+### The Assignment Triad
+License assignment is governed by the relationship between three components:
+1.  **The Identity:** Who or what is requesting access.
+2.  **The Resource:** The software, feature, or service being accessed.
+3.  **The Policy:** The rules governing whether the identity is permitted to hold the license (e.g., department, job role, or geographic location).
 
-#### Example 1: Assigning a License via the Azure Portal  
-**Scenario:** A new employee requires a Microsoft 365 E5 license for email, collaboration apps, and admin privileges.  
+### Statefulness
+An assignment is inherently stateful. It exists in a lifecycle:
+*   **Pending:** The assignment is requested but not yet active.
+*   **Active:** The subject is authorized to use the resource.
+*   **Suspended:** The assignment exists, but the right to use is temporarily revoked (e.g., during a disciplinary period or payment lapse).
+*   **Released:** The assignment is terminated, and the seat is returned to the pool.
 
-**Steps:**  
-1. **Acquire Licenses:** Ensure the tenant has sufficient E5 licenses.  
-2. **Navigate to Users:** Go to **Azure Active Directory > Users** and select the user.  
-3. **Assign License:**  
-   - Go to **Licenses** under the **Manage** section.  
-   - Select **Add a license**, choose the **Microsoft 365 E5** license, and verify service plans (e.g., Exchange Online, Teams).  
-   - Click **Assign**.  
+### Quota Management
+Assignment systems must track "Available vs. Assigned" counts. A quota acts as a hard or soft limit on the number of subjects that can hold an active assignment simultaneously.
 
-**Outcome:** The user gains access to all enabled service plans in the assigned license.  
+## Standard Model
+The standard model for license assignment follows a **Centralized Governance Model**. In this model, a central authority (either a human administrator or an automated system) manages a unified directory of subjects and a unified inventory of licenses.
 
-#### Example 2: Using PowerShell to Assign Licenses to a Group  
-**Scenario:** A marketing team needs a bulk license assignment.  
+1.  **Request:** A subject or system triggers a need for a license.
+2.  **Validation:** The system checks if a seat is available in the pool and if the subject meets the policy requirements.
+3.  **Binding:** The system creates a unique record linking the Subject ID to the License ID.
+4.  **Propagation:** The assignment status is synchronized with the resource's enforcement point (the application or service).
 
-**Script:**  
-```powershell  
-# Connect to Azure AD  
-Connect-AzureAD  
+## Common Patterns
 
-# Assign license to a group named "Marketing Team"  
-$GroupName = "Marketing Team"  
-$License = Get-AzureADSubscribedSku | Where-Object { $_.SkuPartNumber -eq "GCCStandard" }  
+### Direct Assignment
+The explicit mapping of a license to an individual subject by an administrator. This is high-control but low-scalability.
 
-# Get group members and assign the license  
-Get-AzureADGroupMember -ObjectId (Get-AzureADGroup -SearchString $GroupName).ObjectId |  
-  ForEach-Object {  
-    Set-AzureADUserLicense -ObjectId $_.ObjectId -AssignedLicenses $License.SkuId  
-  }  
-```  
+### Group-Based Assignment (Inheritance)
+Licenses are assigned to a container (e.g., a directory group or department). Any subject that is a member of that container automatically inherits the license. This is the preferred pattern for enterprise-scale operations.
 
-**Outcome:** All members of the "Marketing Team" are assigned the specified license.  
+### Auto-Claim (Just-in-Time)
+A license is automatically assigned from the pool the first time a subject attempts to access the resource. This minimizes administrative overhead but requires strict monitoring of the license pool to prevent exhaustion.
 
-#### Example 3: Configuring Activation Rules  
-**Scenario:** A company restricts Power BI access to users working in the corporate network.  
+### Concurrent Assignment
+Licenses are not bound to a subject permanently but are checked out from a pool during an active session and returned immediately upon session termination.
 
-**Steps:**  
-1. Navigate to **Azure Active Directory > Activation Rules**.  
-2. **Create a Rule:**  
-   - Name: "Restrict Power BI to Corporate Network"  
-   - **License:** Microsoft 365 E5  
-   - **Conditions:** Include users in the "IT Team" group and location with IP address ranges of the office.  
-   - **Action:** Block access to Power BI service plan outside the specified conditions.  
+## Anti-Patterns
 
----
+### License Hoarding
+Retaining assignments for subjects that no longer require them (e.g., terminated employees or decommissioned devices). This leads to unnecessary costs and "ghost" consumption.
 
-### Key Considerations  
-- **Avoid License Waste:** Unassign licenses from departing employees to free up resources.  
-- **Use Groups for Scalability:** Centralize management by assigning licenses to dynamic groups.  
-- **Audit Compliance:** Ensure licenses align with organizational policies and vendor terms of use.  
+### Manual Reconciliation
+Relying on spreadsheets or disconnected systems to track assignments. This creates a "Source of Truth" conflict between the assignment record and the actual state of the resource.
 
----
+### Over-Assignment (Hard-Coding)
+Assigning licenses to generic or shared accounts to bypass per-user tracking. This obscures audit trails and violates most security and compliance frameworks.
 
-### Summary  
-Assigning licenses is foundational for managing user access to cloud services. Critical steps include:  
-1. **Selecting appropriate licenses** based on service needs.  
-2. **Activating necessary service plans** to ensure functionality.  
-3. **Utilizing groups or automation** for efficient bulk assignments.  
-4. **Enforcing activation rules** to control access scope.  
-5. **Regularly auditing licenses** to avoid overprovisioning or compliance gaps.  
+## Edge Cases
 
-Properly assigning licenses balances access and security, ensuring users have what they need without compromising governance.
+### Orphaned Assignments
+When a subject (e.g., a user account) is deleted from the identity provider, but the license assignment remains "active" in the licensing system. This consumes a seat that cannot be easily recovered without manual intervention.
 
----
-*Generated by Puter.js & Qwen*
+### Nested Inheritance Conflicts
+In group-based licensing, a subject may belong to two groups: one that grants a "Basic" license and one that grants a "Premium" license. The system must have a deterministic resolution logic (usually "Highest Entitlement Wins").
+
+### Offline Assignment
+Scenarios where a license must be assigned to a device that does not have a persistent connection to the assignment authority. This usually requires a "lease" mechanism with a pre-defined expiration.
+
+### Transitive Licensing
+When assigning a license to a "Parent" entity (e.g., a Virtual Machine Host) automatically grants licenses to all "Child" entities (e.g., Virtual Machines).
+
+## Related Topics
+*   **Identity and Access Management (IAM):** The foundation upon which subjects are defined.
+*   **License Enforcement:** The technical check that validates an assignment at the point of use.
+*   **Software Asset Management (SAM):** The broader discipline of managing the lifecycle of software assets.
+*   **Usage Metering:** Tracking how an assigned license is actually used.
+
+## Change Log
+
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0 | 2026-01-20 | Initial AI-generated canonical documentation |
