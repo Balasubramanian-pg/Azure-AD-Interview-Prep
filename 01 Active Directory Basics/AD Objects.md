@@ -12,9 +12,9 @@ AD objects appear in enterprise systems, interviewers care about their managemen
 * **Concept 3:** Objects are organized in a hierarchical structure.
 
 ## Key constraints and invariants
-* Constraint 1: Unique object identifiers
-* Constraint 2: Consistent attribute formatting
-* Constraint 3: Hierarchical structure integrity
+* Objects must have a unique identifier.
+* Objects must be part of the AD hierarchy.
+* Objects must comply with AD schema.
 
 ## Common interview questions
 * Explain AD objects in simple terms
@@ -22,42 +22,40 @@ AD objects appear in enterprise systems, interviewers care about their managemen
 * Given scenario X, how would you apply AD object management?
 
 ## Tradeoffs and alternatives
-* **Pros:** Centralized management, improved security
-* **Cons:** Complexity, scalability limitations
-* **When to use instead:** LDAP or other directory services for non-Windows environments
+* **Pros:** Centralized management, security, and scalability.
+* **Cons:** Complexity, dependency on AD infrastructure.
+* **When to use instead:** LDAP or other directory services for non-Windows environments.
 
 ## One worked example
-* Input: New user account creation
-* Transformation / Logic: Assign attributes, add to groups
-* Output: Functional user account with access to resources
-* Time complexity: O(1) for simple operations
-* Space complexity: O(n) for storing object attributes
+* Input: Create a new user object.
+* Transformation / Logic: Assign attributes, such as username, password, and group membership.
+* Output: A new user object with assigned attributes.
 
 ## Failure modes and debugging hints
-* Failure mode 1: Duplicate object identifiers, due to incorrect import
-* Failure mode 2: Inconsistent attribute formatting, detectable through audits
-* Failure mode 3: Hierarchical structure corruption, fixable through re-import or manual correction
+* Failure mode 1: Duplicate object names, due to incorrect naming conventions.
+* Failure mode 2: Inconsistent object attributes, detectable through AD queries.
+* Failure mode 3: Object corruption, fixable through AD restore or repair.
 
 ## One-minute interview answer
-AD objects are digital representations of users, groups, or computers, used for centralized management and security. They are essential in enterprise systems, but can introduce complexity and scalability limitations, making alternative directory services like LDAP a viable option in certain scenarios.
+AD objects are digital representations of users, groups, or computers, used for centralized management and security. They are essential in enterprise systems, but require careful management to avoid complexity and dependency on AD infrastructure, such as considering LDAP alternatives for non-Windows environments.
 
 ## Active practice (do immediately)
-* **Task 1:** Draw a simple AD object hierarchy diagram
-* **Task 2:** Answer: "How would you create a new AD object for a user?"
+* **Task 1:** Draw a simple AD object hierarchy.
+* **Task 2:** Explain the difference between AD objects and LDAP entries out loud.
 
 ## Cheat sheet (TL;DR)
-* Key definition: Digital representation of users, groups, or computers
-* Core rule: Unique object identifiers
-* Common pitfall: Duplicate or inconsistent attributes
-* Typical use case: Enterprise user management
-* One comparison point: LDAP entries
-* One quick example: Creating a new user account
+* Key definition: Digital representations of users, groups, or computers.
+* Core rule: Unique identifiers and attributes.
+* Common pitfall: Duplicate object names.
+* Typical use case: Enterprise system management.
+* One comparison point: LDAP entries.
+* One quick example: Creating a new user object.
 
 ## Sources and verification
 * Microsoft Active Directory documentation
 * LDAP protocol specification
-* **NEEDS VERIFICATION:** Recent AD object management best practices
+* **NEEDS VERIFICATION:** Recent AD security updates
 
 ## Self-test
 * **Conceptual:** Why are AD objects essential in enterprise systems?
-* **Applied:** How would you implement AD object management for a small business?
+* **Applied:** How would you implement AD object management for a new company?
