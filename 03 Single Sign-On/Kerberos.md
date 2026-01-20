@@ -1,94 +1,111 @@
-# KERBEROS
+# [Kerberos](03 Single Sign-On/Kerberos.md)
 
-# Introduction  
-Kerberos is a trusted, centralized authentication protocol designed to provide strong authentication services for client-server applications in modern computing networks. Developed at MIT in the 1980s by Roger Needham and Butler Lampson, it is named after the three-headed dog from Greek mythology, symbolizing its three-stage authentication process. Kerberos is widely used in enterprise environments, particularly in systems such as Microsoft Active Directory, to ensure secure and scalable user authentication.  
+Canonical documentation for [Kerberos](03 Single Sign-On/Kerberos.md). This document defines concepts, terminology, and standard usage.
 
-**Key Features**:  
-- Uses symmetric-key cryptography for authentication.  
-- Reduces reliance on plaintext passwords by leveraging ticket-based authentication.  
-- Provides mutual authentication between clients and servers.  
-- Resists replay attacks through time-stamping mechanisms.  
+## Purpose
+[Kerberos](03 Single Sign-On/Kerberos.md) is a network authentication protocol designed to provide strong authentication for client/server applications by using secret-key cryptography. It addresses the fundamental problem of proving identity over an insecure network where packets can be intercepted, modified, or replayed. 
 
-# Core Concepts  
+The protocol's primary objective is to allow a user (or service) to prove their identity to a remote entity without sending a password in the clear and without requiring the remote entity to store the user's password. It establishes a "Trusted Third Party" model to facilitate mutual authentication, ensuring that both the client and the server are who they claim to be.
 
-## Architecture  
-The Kerberos system relies on the following components:  
-1. **Key Distribution Center (KDC)**: The central trusted server housing two logical parts:  
-   - **Authentication Server (AS)**: Issues the Initial Ticket Granting Ticket (TGT).  
-   - **Ticket Granting Server (TGS)**: Issues service-specific tickets to clients after receiving a TGT.  
-2. **Clients (Principals)**: Users or services requesting access to resources.  
-3. **Servers (Service Providers)**: Resources clients wish to access.  
+> [!NOTE]
+> This documentation is intended to be implementation-agnostic and authoritative.
 
-## Cryptographic Elements  
-- **Ticket Granting Ticket (TGT)**: A temporary credential (ticket) issued by the KDC’s AS. It is encrypted using the TGS’s long-term key and contains client principals, session keys, and timestamps.  
-- **Service Tickets**: Tickets encrypted with a service’s long-term key. They grant clients access to specific services.  
-- **Session Keys**: Temporary symmetric keys generated for each communication session between client and server.  
+## Scope
+Clarify what is in scope and out of scope for this topic.
 
-## Key Concepts  
-- **Pre-Authentication**: Clients must prove identity (e.g., via passwords or smart cards) to the AS before receiving a TGT.  
-- **Time-Sync Requirement**: Clocks on clients and servers must be synchronized to prevent replay attacks (typically within 5 minutes).  
-- **Realm**: A logical domain of trust (e.g., `EXAMPLE.COM`). Users must authenticate to their realm first.  
-- **No Plaintext Passwords**: Passwords are never transmitted. Instead, they are used to derive cryptographic keys (e.g., `AES256-CTS-HMAC-SHA1-96`).  
+**In scope:**
+* The logical architecture of the [Kerberos](03 Single Sign-On/Kerberos.md) protocol (AS, TGS, and AP exchanges).
+* Core cryptographic principles and ticket-based mechanics.
+* Standard lifecycle of a [Kerberos](03 Single Sign-On/Kerberos.md) session.
+* Theoretical security boundaries and trust models.
 
-## Protocol Flow  
-1. **Three-Way Handshake**:  
-   - The client requests a TGT from the AS.  
-   - The AS generates a TGT and sends it encrypted with the TGS’s key.  
-   - The client receives the TGT and uses it for future authentications.  
+**Out of scope:**
+* Specific vendor implementations (e.g., Microsoft Active Directory, MIT [Kerberos](03 Single Sign-On/Kerberos.md), Heimdal).
+* Configuration syntax for specific operating systems (e.g., `krb5.conf` or `kdc.conf`).
+* Programming language-specific library documentation.
 
-2. **Service Access Workflow**:  
-   - The client requests a service ticket from the TGS using the TGT.  
-   - The TGS issues a ticket encrypted with the target service’s key.  
-   - The client presents the ticket to the service, which decrypts it using its long-term key and validates access.  
+## Definitions
+Provide precise definitions for key terms.
 
----
+| Term | Definition |
+|------|------------|
+| **Principal** | A unique identity to which [Kerberos](03 Single Sign-On/Kerberos.md) can assign tickets. Usually formatted as `primary/instance@REALM`. |
+| **Realm** | An administrative domain or logical boundary within which a [Kerberos](03 Single Sign-On/Kerberos.md) Key Distribution Center has the authority to authenticate principals. |
+| **Key Distribution Center (KDC)** | The trusted intermediary that maintains a database of principals and their secret keys. It consists of the AS and the TGS. |
+| **Authentication Service (AS)** | The component of the KDC that verifies a principal's identity and issues a Ticket Granting Ticket (TGT). |
+| **Ticket Granting Service (TGS)** | The component of the KDC that issues service tickets based on a valid TGT. |
+| **Ticket Granting Ticket (TGT)** | A temporary credential issued by the AS that proves the user's identity to the TGS. |
+| **Service Ticket** | A credential issued by the TGS that allows a client to access a specific resource or service. |
+| **Authenticator** | A record containing a timestamp and other data, encrypted with a session key, used to prove the timeline and validity of a request. |
+| **Keytab** | A file containing one or more unencrypted keys for service principals, allowing services to authenticate without human intervention. |
+| **Session Key** | A temporary symmetric key generated by the KDC for use between two parties (e.g., Client and TGS, or Client and Service). |
 
-# Examples  
+## Core Concepts
 
-## Example 1: Authentication Process  
-Here’s a step-by-step example of a user accessing a service via Kerberos:  
+### The Trusted Third Party
+[Kerberos](03 Single Sign-On/Kerberos.md) operates on the assumption that a central authority (the KDC) is trusted by all participants. The KDC shares a unique secret key with every principal in its realm. Because the KDC knows the keys of both the requester and the provider, it can facilitate a secure introduction between them.
 
-1. **Client Requests TGT**:  
-   - The client sends its username (`alice@EXAMPLE.COM`) to the AS.  
-   - The AS verifies the user’s password (pre-auth) and generates a TGT.  
-   - The TGT contains a **session key (S1)** and is encrypted with the TGS’s key.  
+### Ticket-Based Authentication
+Authentication is not performed via direct password submission to services. Instead, it uses "tickets." A ticket is a cryptographically sealed container that carries the identity of the client and a session key. Only the intended recipient (the service or the TGS) can decrypt the ticket using its own secret key.
 
-2. **Client Requests Service Ticket**:  
-   - Alice requests access to an HTTP service (e.g., `http/webserver.EXAMPLE.COM`).  
-   - The client sends the TGT and service name to the TGS.  
-   - The TGS decrypts the TGT, generates a new session key (S2) for Alice and the HTTP server, and returns the encrypted ticket.  
+### Mutual Authentication
+Unlike simple password-based systems, [Kerberos](03 Single Sign-On/Kerberos.md) supports mutual authentication. The client proves its identity to the server, and the server proves its identity to the client by demonstrating it can decrypt the service ticket and return a modified timestamp from the client's authenticator.
 
-3. **Access Service**:  
-   - Alice sends the service ticket and a timestamp encrypted with session key S2 to the HTTP server.  
-   - The server decrypts it, verifies the timestamp, and grants access.  
+### Time Sensitivity
+[Kerberos](03 Single Sign-On/Kerberos.md) relies heavily on synchronized clocks. Because authenticators include timestamps to prevent replay attacks, significant "clock skew" between the client, server, and KDC will result in authentication failure.
 
----
+## Standard Model
 
-## Example 2: Integrating Kerberos with a Database  
-Suppose an application accesses a PostgreSQL database using Kerberos authentication:  
-1. The database service must register its principal in the KDC (e.g., `postgres/db.EXAMPLE.COM`).  
-2. The client (e.g., an application server) uses `gssapi` to request a service ticket for `postgres/db.EXAMPLE.COM`.  
-3. The ticket is embedded into the database connection string:  
-   ```bash  
-   psql -h db.example.com -U alice -d mydb --connect-timeout=10 --krbservice-name="postgres/db.EXAMPLE.COM"  
-   ```  
-4. The PostgreSQL server validates the ticket and authenticates the user without requiring a password prompt.  
+The standard [Kerberos](03 Single Sign-On/Kerberos.md) authentication flow (often called the "Three-Headed Dog" exchange) follows these phases:
 
----
+1.  **AS Exchange (Authentication Service):**
+    *   The Client sends a request to the AS.
+    *   The AS verifies the client against its database.
+    *   The AS returns a **TGT** (encrypted with the TGS's key) and a **TGS Session Key** (encrypted with the Client's key).
+2.  **TGS Exchange (Ticket Granting Service):**
+    *   The Client sends the TGT and an Authenticator to the TGS, requesting access to a specific service.
+    *   The TGS decrypts the TGT, verifies the Authenticator, and generates a **Service Ticket**.
+    *   The TGS returns the Service Ticket (encrypted with the Service's key) and a **Service Session Key** (encrypted with the TGS Session Key).
+3.  **AP Exchange (Application Request):**
+    *   The Client sends the Service Ticket and a new Authenticator to the Application Server.
+    *   The Server decrypts the ticket, verifies the Authenticator, and (optionally) sends a confirmation back to the client for mutual authentication.
 
-# Summary  
-**Kerberos** is a foundational protocol for network authentication, ensuring secure access control through:  
-- **Centralized Trust**: The KDC acts as the central authority, reducing the risk of compromising individual servers.  
-- **Ticket-Based Authentication**: Clients and servers negotiate secure sessions using temporary, encrypted credentials.  
-- **Temporal Security**: Timestamps and short-lived tickets mitigate replay attacks.  
-- **Cross-Realm Trust**: Kerberos supports federated realms, enabling seamless authentication across domains.  
+## Common Patterns
 
-**Use Cases**:  
-- Enterprise networks (e.g., Active Directory, OpenLDAP with MIT Kerberos).  
-- Secure API integrations (e.g., GSSAPI or SPNEGO).  
-- Hybrid Cloud Environments: Bridge on-premises and cloud authentication.  
+### Single Sign-On (SSO)
+Once a user obtains a TGT (usually at login), they can obtain multiple service tickets for different resources throughout the day without re-entering their password, provided the TGT remains valid.
 
-While Kerberos requires precise clock synchronization and careful key management, its robust design makes it the de facto standard for enterprise-grade authentication systems.
+### Delegation (Impersonation)
+A service (e.g., a web server) may need to access another service (e.g., a database) on behalf of a user. [Kerberos](03 Single Sign-On/Kerberos.md) supports this through "forwardable" tickets or constrained delegation, where the client allows the intermediary to request a service ticket in their name.
 
----
-*Generated by Puter.js & Qwen*
+### Cross-Realm Authentication
+If two [Kerberos](03 Single Sign-On/Kerberos.md) realms trust each other (via a shared inter-realm key), a principal in Realm A can obtain a ticket for a service in Realm B.
+
+## Anti-Patterns
+
+*   **Hardcoded Keytabs in Source Control:** Storing service keys in version control systems exposes the identity of the service principal.
+*   **Excessive Ticket Lifetime:** Setting TGT lifetimes to extremely long periods (e.g., weeks) increases the window of opportunity for an attacker who steals a session key.
+*   **Disabling Pre-authentication:** Allowing requests without pre-authentication makes it easier for attackers to perform offline brute-force attacks against user passwords.
+*   **Ignoring Clock Skew:** Failing to implement NTP (Network Time Protocol) across the infrastructure, leading to intermittent and hard-to-debug authentication failures.
+*   **Using Weak Encryption:** Relying on deprecated algorithms like DES or RC4, which are susceptible to modern cryptanalysis.
+
+## Edge Cases
+
+*   **NAT and IP Addresses:** Historically, [Kerberos](03 Single Sign-On/Kerberos.md) tickets could be bound to specific IP addresses. In environments using Network Address Translation (NAT) or multi-homed hosts, this can cause tickets to be rejected if the source IP changes. Modern implementations often omit the IP address field to avoid this.
+*   **Ticket Bloat:** In systems where authorization data (like group memberships) is embedded within the ticket (e.g., PAC in Windows), the ticket size can exceed the maximum buffer size of network protocols (like UDP), requiring a fallback to TCP.
+*   **Renewal vs. Expiration:** A ticket has an expiration time and a renewable lifetime. A ticket can be renewed until it reaches its maximum renewable age, after which a completely new AS exchange is required.
+*   **Short-lived Principals:** In containerized or ephemeral environments, managing the lifecycle of principals and keytabs requires automated orchestration to prevent "stale" identities.
+
+## Related Topics
+
+*   **GSSAPI (Generic Security Services Application Program Interface):** A standard API that applications use to interact with [Kerberos](03 Single Sign-On/Kerberos.md).
+*   **LDAP (Lightweight Directory Access Protocol):** Often used in conjunction with [Kerberos](03 Single Sign-On/Kerberos.md) to store user attributes and authorization data.
+*   **NTLM:** A legacy challenge-response protocol often replaced by [Kerberos](03 Single Sign-On/Kerberos.md).
+*   **OAuth2/OIDC:** Modern web-centric authorization frameworks; often compared to [Kerberos](03 Single Sign-On/Kerberos.md) but operating at different layers of the stack.
+*   **Symmetric Cryptography:** The underlying mathematical foundation of [Kerberos](03 Single Sign-On/Kerberos.md).
+
+## Change Log
+
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0 | 2026-01-20 | Initial AI-generated canonical documentation |
