@@ -1,94 +1,95 @@
-# CREATE USER
+# [Create User](02 Azure Active Directory/Create User.md)
 
-```markdown
-### Introduction  
-The **Create User** process refers to the method of establishing a new user account within a system or application. This procedure is foundational in software development, web applications, and system administration, enabling users to access resources, services, or functionalities. The creation of a user typically involves defining account parameters, validating input data, ensuring security, and adhering to compliance requirements. Understanding the steps and best practices for implementing this process is critical for developers, administrators, and security professionals.
+Canonical documentation for [Create User](02 Azure Active Directory/Create User.md). This document defines concepts, terminology, and standard usage.
 
----
+## Purpose
+The "[Create User](02 Azure Active Directory/Create User.md)" process is the foundational mechanism for identity provisioning within a system. Its primary purpose is to transition an external entity (human, service, or device) into a recognized **Principal** with a unique identity. This process establishes the baseline for authentication, authorization, accountability, and personalization. By formalizing the creation of a user, a system establishes a trust boundary and begins the identity lifecycle.
 
-### Core Concepts  
-1. **User Attributes**  
-   - Define essential fields for a user account, such as username, password, email, role, and display name.  
-   - Include optional attributes like phone number, profile picture, or metadata.  
+> [!NOTE]
+> This documentation is intended to be implementation-agnostic and authoritative.
 
-2. **Input Validation**  
-   - Validate user inputs to ensure data integrity (e.g., checking email format, password complexity, or uniqueness of usernames).  
-   - Use server-side validation to prevent bypassing client-side checks.  
+## Scope
+Clarify what is in scope and out of scope for this topic.
 
-3. **Security Measures**  
-   - **Password Encryption/Hashing**: Store passwords using strong hashing algorithms (e.g., bcrypt, Argon2) with salt values. Never store plaintext passwords.  
-   - **Two-Factor Authentication (2FA)**: Enable optional or mandatory 2FA for enhanced security.  
-   - **Brute-Force Protection**: Implement rate-limiting or CAPTCHA to prevent automated attacks.  
+**In scope:**
+* The logical workflow of identity provisioning.
+* Validation requirements for unique identifiers.
+* Establishment of initial security postures and attributes.
+* Theoretical boundaries of user persistence.
 
-4. **Compliance and Privacy**  
-   - Adhere to regulations such as GDPR, HIPAA, or CCPA when collecting user data.  
-   - Include a privacy policy link or checkbox during account creation.  
+**Out of scope:**
+* Specific database schemas or API syntax (e.g., SQL `INSERT` or REST `POST` specifics).
+* Vendor-specific identity providers (e.g., AWS IAM, Azure AD, Okta).
+* Password recovery or secondary authentication factor setup (MFA).
 
-5. **Unique Identifiers**  
-   - Assign a unique identifier (e.g., UUID, auto-incremented ID) to track users across the system.  
+## Definitions
+Provide precise definitions for key terms.
 
-6. **Permissions/Access Control**  
-   - Assign roles (e.g., administrator, guest) or permissions (RBAC, ABAC) to control user access to features or data.  
+| Term | Definition |
+|------|------------|
+| **Identity** | A set of attributes that uniquely describe an entity within a specific domain. |
+| **Principal** | An entity that can be authenticated by the system (e.g., a user, program, or computer). |
+| **Identifier (UID)** | A unique string or token used to distinguish one identity from all others (e.g., UUID, email, or username). |
+| **Provisioning** | The process of creating, preparing, and enabling access to resources based on the new identity. |
+| **Attribute** | A discrete piece of information associated with a user (e.g., name, role, or department). |
+| **Idempotency** | The property of an operation where multiple identical requests have the same effect as a single request. |
 
----
+## Core Concepts
+Explain the fundamental ideas.
 
-### Examples  
-#### Example 1: API Endpoint for User Creation (RESTful)  
-```python
-from flask import Flask, request, jsonify
-from werkzeug.security import generate_password_hash
+### Uniqueness and Collision
+The most critical constraint of the [Create User](02 Azure Active Directory/Create User.md) process is the guarantee of uniqueness. An identifier must map to exactly one principal. A "collision" occurs when a creation request attempts to use an identifier already assigned to an active or archived entity.
 
-app = Flask(__name__)
+### Identity Lifecycle: The Birth Phase
+Creation represents the "Birth" phase of the Identity Lifecycle. It must capture sufficient metadata to support subsequent phases: Maintenance (Update), Usage (Authenticate), and Termination (Delete/Disable).
 
-@app.route('/api/create-user', methods=['POST'])
-def create_user():
-    data = request.json
-    username = data.get('username')
-    password = data.get('password')
-    email = data.get('email')
+### Atomic Provisioning
+User creation should be atomic. The system must ensure that the user record, initial permissions, and associated metadata are either all created successfully or none are, preventing "orphaned" or "partial" identities that could pose security risks.
 
-    # Validate input fields
-    if not all([username, password, email]):
-        return jsonify({"error": "Missing required fields"}), 400
+## Standard Model
+The standard model for creating a user follows a linear progression of state:
 
-    # Hash the password
-    hashed_password = generate_password_hash(password, method='bcrypt')
+1.  **Request:** An initiator (admin or self-service) submits identity attributes.
+2.  **Validation:**
+    *   **Syntactic:** Ensures data formats are correct (e.g., valid email structure).
+    *   **Semantic:** Ensures values make sense within the domain (e.g., age requirements).
+    *   **Uniqueness:** Checks the registry to ensure the identifier is not in use.
+3.  **Persistence:** The identity is committed to the authoritative data store.
+4.  **Credential Issuance:** Initial secrets (passwords, tokens, or keys) are generated or requested.
+5.  **Initialization:** Default roles, permissions, and profile defaults are applied.
+6.  **Notification:** The principal or administrator is alerted that the identity is active.
 
-    # Save to database (simplified example)
-    # ...
+## Common Patterns
+Recurring patterns or approaches.
 
-    return jsonify({"message": "User created successfully"}), 201
-```
+*   **Self-Service Registration:** The end-user provides their own attributes, often requiring an external verification step (e.g., email confirmation).
+*   **Administrative Provisioning:** A privileged user creates the account on behalf of another entity, typically in enterprise environments.
+*   **Just-In-Time (JIT) Provisioning:** The user is created automatically upon their first successful authentication via a trusted external Identity Provider (IdP).
+*   **Bulk Provisioning:** The simultaneous creation of multiple identities via structured data import (e.g., CSV or JSON batch).
 
-#### Example 2: Command-Line Interface (CLI)  
-```bash
-# Example using Linux's 'useradd' command with security flags:
-sudo useradd -m -s /bin/bash -p $(openssl passwd -1 "password123") new_user
-```
+## Anti-Patterns
+Common mistakes or discouraged practices.
 
-#### Example 3: Web Form Submission Workflow  
-1. **Frontend**: Display a form with fields for username, password, email, and role.  
-2. **Validation**: Validate fields on submission (e.g., `email` or `required` HTML5 attributes).  
-3. **Backend**: Validate again, hash the password, and store user data in a database.  
-4. **Response**: Redirect to a confirmation page or return JSON status for SPAs (Single-Page Applications).  
+*   **Identifier Recycling:** Reassigning a unique identifier from a deleted user to a new user. This can lead to "identity bleeding" where the new user inherits legacy logs or permissions.
+*   **Over-Provisioning at Birth:** Assigning excessive permissions by default rather than following the Principle of Least Privilege.
+*   **Silent Failures:** Failing to provide specific feedback when a user cannot be created (e.g., returning a generic error when the username is actually taken).
+*   **Hardcoded Defaults:** Using "password123" or other predictable initial credentials.
 
----
+## Edge Cases
+Explain unusual, ambiguous, or boundary scenarios.
 
-### Summary  
-The **Create User** process emphasizes **security, validation, and compliance** to ensure user accounts are created safely and correctly. Key takeaways include:  
-- Always encrypt/hide sensitive data like passwords.  
-- Use robust validation to avoid invalid input or breaches.  
-- Assign appropriate roles and permissions to avoid unauthorized access.  
-- Comply with privacy regulations and transparency requirements.  
-- Customize the workflow based on system-specific needs (e.g., 2FA, multi-factor authentication).  
+*   **Race Conditions:** Two simultaneous requests attempting to create the same identifier. Systems must implement locking or unique constraints at the persistence layer to prevent duplicates.
+*   **Soft-Deleted Collisions:** Attempting to create a user with an identifier that belongs to a "deactivated" or "soft-deleted" account that still exists in the database.
+*   **Partial Provisioning Failure:** The user record is created in the primary database, but the downstream system (e.g., an email inbox or file share) fails to initialize.
+*   **Internationalization (i18n):** Handling non-Latin characters in identifiers or attributes, which may affect sorting, searching, and uniqueness checks.
 
-Avoid common pitfalls such as:  
-1. Storing plaintext passwords.  
-2. Skipping input validation.  
-3. Ignoring rate-limiting or brute-force protection.  
-4. Failing to update user roles or permissions.  
-Proper implementation ensures reliability, scalability, and security for systems that manage user accounts.
-```
+## Related Topics
+*   **Authentication:** The process of verifying the identity created.
+*   **Authorization:** Defining what the created user is allowed to do.
+*   **User Lifecycle Management:** The broader framework of managing identities from creation to deletion.
+*   **Identity Federation:** Creating local representations of users authenticated by external systems.
 
----
-*Generated by Puter.js & Qwen*
+## Change Log
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0 | 2026-01-20 | Initial AI-generated canonical documentation |
