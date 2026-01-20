@@ -1,75 +1,122 @@
-# SAML 2.0
+# [SAML 2.0](03 Single Sign-On/SAML 2.0.md)
 
-## Introduction  
-Security Assertion Markup Language (SAML) version 2.0 is an open standard for exchanging authentication and authorization data between a service provider (SP) and an identity provider (IdP). It enables federated identity management, allowing users to access multiple applications or services seamlessly using a single login. SAML 2.0 is widely adopted for web-based Single Sign-On (SSO) and is standardized by OASIS. This study guide covers its core concepts, technical components, and practical applications.  
+Canonical documentation for [SAML 2.0](03 Single Sign-On/SAML 2.0.md). This document defines concepts, terminology, and standard usage.
 
----
+## Purpose
+Security Assertion Markup Language (SAML) 2.0 is an XML-based open standard for exchanging authentication and authorization data between parties. Its primary purpose is to enable **Federated Identity** and **Single Sign-On (SSO)**. 
 
-## Core Concepts  
+[SAML 2.0](03 Single Sign-On/SAML 2.0.md) addresses the problem of identity fragmentation by allowing a user to authenticate with a single trusted authority (the Identity Provider) and subsequently gain access to multiple independent applications (Service Providers) without re-entering credentials. This decouples the authentication process from the application logic, enhancing security and improving user experience.
 
-### **Key Terms and Terminology**  
-1. **Identity Provider (IdP)**: Acts as the trusted authority that authenticates users and issues assertions.  
-2. **Service Provider (SP)**: The application or service that relies on the IdP for authentication decisions.  
-3. **Attribute**: Data associated with a user (e.g., email, group membership) that may be included in an assertion.  
-4. **Assertion**: A package of claims sent by the IdP to the SP, containing authentication, attribute, or authorization status (e.g., `<AuthnStatement>`).  
-5. **Artifact**: A temporary token used by SPs to retrieve an assertion from an IdP via an intermediate protocol (e.g., HTTP Artifact binding).  
-6. **Binding**: Defines how SAML messages and assertions are transported (e.g., HTTP Redirect, POST, or SOAP).  
-7. **NameID**: The user identifier within an assertion, represented in a specific format (e.g., Email, Transient, or Persistent).  
-8. **SAML Protocol**: Specifies interactions, such as authentication requests, attribute queries, and session termination.  
+> [!NOTE]
+> This documentation is intended to be implementation-agnostic and authoritative.
 
-### **Key Components of SAML 2.0**  
-- **Authentication Requests**: The SP initiates a request to the IdP for user authentication.  
-- **Assertions**: Created by the IdP to validate the user’s credentials and permissions.  
-- **Metadata Exchange**: XML files containing configuration details (e.g., URLs, certificates) for SPs and IdPs.  
-- **Signatures**: XML digital signatures used to ensure message authenticity and integrity.  
+## Scope
+**In scope:**
+* Core XML schemas and assertion structures.
+* Standard protocols (Request/Response) and bindings (HTTP Redirect, POST, etc.).
+* Operational profiles (Web Browser SSO).
+* Security requirements for digital signatures and encryption.
+* Metadata exchange formats.
 
-### **SAML Workflows**  
-1. **Web-Based SSO**:  
-   - User attempts access to an SP.  
-   - SP redirects the user to the IdP.  
-   - IdP authenticates the user, generates an assertion, and sends it to the SP via a binding (e.g., HTTP POST).  
-   - SP verifies the assertion and grants access.  
+**Out of scope:**
+* Specific vendor implementations (e.g., Okta, Azure AD, Shibboleth).
+* Programming language-specific library documentation.
+* SAML 1.x legacy specifications.
+* Non-SAML protocols (e.g., OIDC, OAuth 2.0), except for comparative context.
 
-2. **Attribute Exchange**:  
-   - SP requests additional user attributes (e.g., roles) from the IdP.  
-   - IdP responds with an assertion containing the requested attributes.  
+## Definitions
+| Term | Definition |
+|------|------------|
+| **Principal** | The entity (usually a human user) whose identity is being asserted. |
+| **Identity Provider (IdP)** | The system that authenticates the Principal and issues SAML Assertions. |
+| **Service Provider (SP)** | The system or application that relies on the IdP to verify the Principal's identity. |
+| **Assertion** | A package of information (XML) containing statements about a Principal’s identity, attributes, or entitlements. |
+| **Binding** | A mapping of a SAML protocol message onto standard messaging formats or transport protocols (e.g., HTTP POST). |
+| **Metadata** | An XML document that defines the technical capabilities, endpoints, and certificates of an IdP or SP to establish trust. |
+| **RelayState** | An opaque identifier used to maintain state information between the request and the response, often used to redirect users back to their original destination. |
+| **Entity ID** | A unique URI that identifies a specific SAML entity (IdP or SP). |
 
-3. **Logout (Single Logout or SLO)**:  
-   - User’s session is terminated across all SPs and the IdP through coordinated requests.  
+## Core Concepts
 
----
+### 1. Assertions
+The fundamental unit of SAML is the Assertion. There are three primary types:
+*   **Authentication Assertions:** Validate that the Principal authenticated at a specific time using a specific method.
+*   **Attribute Assertions:** Provide specific data about the Principal (e.g., email, department, roles).
+*   **Authorization Decision Assertions:** State whether the Principal is permitted to access a specific resource.
 
-## Examples  
+### 2. Protocols
+[SAML 2.0](03 Single Sign-On/SAML 2.0.md) defines how assertions are requested and delivered. Key protocols include:
+*   **Authentication Request Protocol:** How an SP asks an IdP for an assertion.
+*   **Single Logout Protocol:** How a session is terminated across all participants in a federation.
+*   **Assertion Query and Request Protocol:** How an SP requests specific assertions independently of a login flow.
 
-### **Example 1: Basic SSO Workflow**  
-**Scenario**: A user accesses an enterprise application (SP) and is automatically redirected to an internal IdP (e.g., Microsoft Azure AD).  
-**Steps**:  
-1. The user clicks the application’s login link at the SP.  
-2. SP initiates an Authentication Request via SAML Redirect Binding.  
-3. User authenticates at the IdP using credentials.  
-4. IdP generates an `<AuthnStatement>` assertion.  
-5. IdP sends the assertion to the SP via POST Binding.  
-6. SP verifies the assertion and grants access to the user.  
+### 3. Bindings
+Bindings determine how SAML messages are transported.
+*   **HTTP Redirect Binding:** Messages are passed via URL parameters (usually for AuthnRequests).
+*   **HTTP POST Binding:** Messages are passed via base64-encoded content in an HTML form (usually for Assertions).
+*   **HTTP Artifact Binding:** A reference (artifact) is passed, and the receiver fetches the actual message via a back-channel.
 
-### **Example 2: Attribute-Based Access Control**  
-**Scenario**: An SP (e.g., Salesforce) needs to know the user’s roles to grant permissions.  
-**Steps**:  
-1. SP sends a SAML Attribute Query to the IdP.  
-2. IdP retrieves user attributes (e.g., `groups="engineering"`) from a directory.  
-3. IdP returns an `<AttributeStatement>` in the response.  
-4. SP uses the attributes to set user permissions in its system.  
+## Standard Model
 
-### **Example 3: Federation Between Organizations**  
-**Scenario**: Two companies (Company A and Company B) establish trust so employees can access each other’s systems.  
-**Steps**:  
-1. Exchange metadata (XML files) between the IdP of Company A and the SP of Company B.  
-2. When a user from Company A requests access to Company B’s SP, the authentication and attribute exchanges occur using SAML 2.0 protocols.  
-3. Company B’s SP verifies the assertion and grants access based on the user’s attributes.  
+### The Web Browser SSO Profile
+The most common implementation of [SAML 2.0](03 Single Sign-On/SAML 2.0.md) is the Web Browser SSO Profile. It relies on the user's browser as the intermediary (the "User Agent").
 
----
+#### SP-Initiated Flow
+1.  **Access Attempt:** The Principal attempts to access a protected resource on the SP.
+2.  **AuthnRequest:** The SP generates a `<samlp:AuthnRequest>` and redirects the browser to the IdP.
+3.  **Authentication:** The IdP authenticates the Principal (e.g., via username/password or MFA).
+4.  **SAML Response:** The IdP generates a `<samlp:Response>` containing a signed Assertion and sends it to the browser (usually via HTTP POST).
+5.  **Assertion Consumer Service (ACS):** The browser posts the Assertion to the SP's ACS URL.
+6.  **Validation & Access:** The SP validates the signature, checks the conditions, and grants access.
 
-## Summary  
-SAML 2.0 is a foundational standard for secure federation and SSO. Key components include IdPs, SPs, assertions, and bindings, while workflows revolve around authentication, attribute exchange, and logout. Understanding metadata exchange and XML signatures ensures interoperability and trust between systems. SAML 2.0 is critical for enterprises seeking to integrate heterogeneous systems in a secure, standard-compliant manner. Mastery of its core concepts enables the deployment and troubleshooting of federated identity solutions across organizations.
+#### IdP-Initiated Flow
+1.  **Portal Access:** The Principal logs into the IdP's dashboard/portal.
+2.  **Selection:** The Principal clicks a link for a specific SP.
+3.  **Unsolicited Response:** The IdP generates a SAML Response and sends it directly to the SP's ACS URL via the browser.
 
----
-*Generated by Puter.js & Qwen*
+## Common Patterns
+
+### Just-in-Time (JIT) Provisioning
+The practice of automatically creating a user account in the SP's local database the first time they log in via SAML, using the attributes provided in the Assertion.
+
+### Attribute Mapping
+The process of translating IdP-specific attribute names (e.g., `urn:oid:0.9.2342.19200300.100.1.3`) into SP-friendly names (e.g., `email`).
+
+### Metadata Exchange
+The use of standardized XML files to automate the configuration of trust. This includes sharing public keys, endpoint URLs, and supported bindings.
+
+## Anti-Patterns
+
+### 1. Hardcoding Certificates
+Embedding the IdP's public key directly into application code rather than using a configurable metadata endpoint. This leads to service outages when certificates expire.
+
+### 2. Ignoring Signature Validation
+Accepting a SAML Assertion without verifying the digital signature against the trusted IdP's public key. This allows for "SAML Response Spoofing."
+
+### 3. Using SAML for Native Mobile Apps
+While possible, SAML is designed for browser-based flows. Using it in native apps often requires "web-view" hacks. OpenID Connect (OIDC) is the preferred standard for mobile/native environments.
+
+### 4. Failing to Validate "NotOnOrAfter"
+Ignoring the time-based conditions within an assertion, which could allow for replay attacks where an old assertion is reused.
+
+## Edge Cases
+
+### Clock Skew
+Differences in system time between the IdP and SP can cause valid assertions to be rejected. Standard practice is to allow a 3–5 minute "skew" when validating timestamps (`NotBefore` and `NotOnOrAfter`).
+
+### Multiple SPs Behind a Single Proxy
+When a single gateway acts as the SP for multiple downstream applications, the `RelayState` must be carefully managed to ensure the user is routed to the correct internal resource after authentication.
+
+### Certificate Rotation
+The period during which an IdP transitions from an old signing key to a new one. Robust implementations should support "Dual-Signing" or multiple keys in metadata to prevent downtime.
+
+## Related Topics
+*   **XML Digital Signature (XMLDSig):** The underlying mechanism for securing SAML messages.
+*   **OpenID Connect (OIDC):** A modern identity layer built on top of [OAuth 2.0](03 Single Sign-On/OAuth 2.0.md), often compared to SAML.
+*   **XACML:** A standard for fine-grained access control policy, often used in conjunction with SAML.
+*   **Federated Identity:** The broader concept of sharing identity across autonomous security domains.
+
+## Change Log
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0 | 2026-01-20 | Initial AI-generated canonical documentation |
