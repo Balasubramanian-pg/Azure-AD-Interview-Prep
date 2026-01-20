@@ -1,103 +1,104 @@
-# FEDERATION AD FS
+# [Federation AD FS](02 Azure Active Directory/Federation AD FS.md)
 
-### Introduction  
-Federation and Active Directory Federation Services (AD FS) form the foundation of federated identity management in hybrid and cloud-centric environments. **Federation** refers to the security arrangement that allows multiple organizations or domains to recognize and trust each other's identity systems, enabling seamless authentication and authorization across systems without sharing user credentials. **AD FS**, a Microsoft service, acts as a **Security Token Service (STS)** that facilitates this trust by asserting user identities and attributes between systems, often extending on-premises directory services like Active Directory to cloud applications.  
+Canonical documentation for [Federation AD FS](02 Azure Active Directory/Federation AD FS.md). This document defines concepts, terminology, and standard usage.
 
-AD FS is critical for achieving Single Sign-On (SSO), integrating on-premises applications with cloud services, and managing user access across disparate systems. It supports modern authentication protocols and is indispensable for hybrid IT strategies where organizations rely on both local and cloud-based resources, such as Microsoft 365, Azure Active Directory (Azure AD), or third-party SaaS applications.  
+## Purpose
+[Federation AD FS](02 Azure Active Directory/Federation AD FS.md) (Active Directory Federation Services) exists to provide a standardized framework for extending local identity and access management (IAM) across organizational boundaries. It addresses the problem of identity fragmentation by enabling Single Sign-On (SSO) and secure identity delegation between disparate systems, platforms, and organizations without requiring the synchronization of sensitive credential data (such as passwords) to external parties.
 
----
+By utilizing a claims-based identity model, [Federation AD FS](02 Azure Active Directory/Federation AD FS.md) allows an organization to maintain authoritative control over its user accounts while securely asserting the identity and attributes of those users to external "Relying Parties" (RPs).
 
-### Core Concepts  
+> [!NOTE]
+> This documentation is intended to be implementation-agnostic and authoritative, focusing on the architectural and logical framework of AD FS rather than specific software versioning or installation procedures.
 
-#### 1. **Federation Basics**  
-- **Identity Provider (IdP)**: The system (e.g., AD FS) that authenticates a user and issues security tokens.  
-- **Service Provider (SP)**: The application (e.g., Office 365) that relies on the IdP for user authentication.  
-- **Trust Relationships**: Mutual agreements between the IdP and SP to exchange user credentials without sharing passwords or centralized directories.  
-- **Security Tokens**: Encrypted XML documents containing user claims (e.g., name, email, department) that SPs use to grant or deny access.  
+## Scope
+Clarify what is in scope and out of scope for this topic.
 
-#### 2. **AD FS Architecture**  
-- **Components**:  
-  - **AD FS Server Farm**: A group of AD FS servers (min. 2 for redundancy) hosting the STS and database.  
-  - **Relying Party Trust**: A configuration that defines which external systems (SPs) are trusted and how users are authorized.  
-  - **Claims Rules**: Logic used to map user attributes (e.g., groups, department) to claims issued in security tokens.  
-  - **SQL Server**: Often houses configuration metadata and logging data.  
+**In scope:**
+*   **Claims-Based Identity Model:** The fundamental logic of using assertions to communicate identity.
+*   **Trust Relationships:** The establishment of cryptographic and logical links between Identity Providers (IdP) and Relying Parties (RP).
+*   **Protocol Standards:** The utilization of SAML, WS-Federation, and OAuth/OpenID Connect within the federation context.
+*   **Claims Transformation:** The logic governing how identity attributes are mapped, filtered, and issued.
 
-- **Key Processes**:  
-  1. **Authentication**: Users log in to the IdP (e.g., AD).  
-  2. **Authorization**: AD FS evaluates claims rules to generate a token with the user’s claims.  
-  3. **Token Issuance**: The token is sent to the SP (e.g., Salesforce) to grant access.  
+**Out of scope:**
+*   **Hardware/OS Specifications:** Specific server requirements or Windows Server version-specific UI instructions.
+*   **Network Topology:** Detailed firewall configurations or load balancer hardware settings.
+*   **Third-Party IdP Configuration:** Specific setup guides for external vendors (e.g., Okta, Ping, AWS) except where they act as a generic Relying Party.
 
-#### 3. **Trust Relationships**  
-- **Intranet vs. Extranet**: Intranet trust allows internal users to access cloud apps, while extranet trust extends access to external partners.  
-- **Self-Issued vs. Self-Sovereign Identity**: AD FS enables identity management without requiring users to centrally store secrets.  
+## Definitions
+Provide precise definitions for key terms.
 
-#### 4. **Claims and Claims Rules**  
-- **What Are Claims?** Named pieces of information about a user (e.g., `Name`, `Email`, `Group`).  
-- **Claims Rules**: Built using a GUI or PowerShell. Examples include:  
-  - `Pass through all claims` (e.g., to copy attributes like Role).  
-  - `Send claims using a custom rule` (e.g., set access based on the user’s department).  
+| Term | Definition |
+|------|------------|
+| **Identity Provider (IdP)** | The entity that authenticates the user and issues security tokens containing claims. |
+| **Relying Party (RP)** | The application or service that consumes claims from an IdP to make authorization decisions. |
+| **Claim** | A statement made by an IdP about a subject (e.g., email address, group membership, or role). |
+| **Security Token Service (STS)** | The functional component that issues, validates, and renews security tokens based on established trust. |
+| **Federation Metadata** | An XML document containing the configuration, certificates, and endpoints required to establish a trust relationship. |
+| **Claims Provider Trust** | A configuration that allows the federation service to accept claims from an external IdP. |
+| **Relying Party Trust** | A configuration that defines how the federation service issues claims to a specific application. |
+| **Home Realm Discovery (HRD)** | The process by which the federation service determines which IdP a user should use for authentication. |
 
-#### 5. **Supported Protocols**  
-AD FS supports:  
-- **SAML 2.0**: Standard for secure web-based authentication.  
-- **WS-Federation**: Used for on-premises SSO (e.g., SharePoint).  
-- **OAuth 2.0/OpenID Connect**: For modern web and mobile apps.  
+## Core Concepts
 
-#### 6. **Key Scenarios**  
-- **SSO for Microsoft 365**: Federating identities from on-premises AD to the cloud.  
-- **Third-Party SaaS Integration**: Onboarding vendors like Salesforce or SAP via SAML.  
-- **Application Access Control**: Restricting access to apps based on attributes (e.g., `User is in the Finance` department).  
+### Claims-Based Identity
+The core of [Federation AD FS](02 Azure Active Directory/Federation AD FS.md) is the abstraction of identity into "claims." Instead of an application querying a database for a user's password, the application receives a digitally signed token. This token contains specific attributes (claims) that the application trusts because they were issued by a known, trusted authority.
 
----
+### The Trust Anchor
+Federation relies on a "Chain of Trust." Both the IdP and the RP must exchange cryptographic material (usually X.509 certificates) to ensure that tokens cannot be forged or tampered with in transit. This trust is typically established via the exchange of Federation Metadata.
 
-### Examples  
+### Claims Pipeline
+The Claims Pipeline is the logical engine that processes identity data. It consists of three primary stages:
+1.  **Acceptance Rules:** Determining which claims to accept from the incoming source.
+2.  **Authorization Rules:** Determining if the user is permitted to receive a token for the requested resource.
+3.  **Issuance Rules:** Determining which claims will be included in the final outgoing token and how they are formatted.
 
-#### Example 1: Configuring AD FS for SSO to Office 365  
-1. **Install AD FS Role**: Deploy the AD FS server farm on Windows Server.  
-2. **Create a Federation Trust**: Link AD FS to Office 365 in Azure AD.  
-3. **Set Relying Party Trust**:  
-   - Add Office 365 as a new relying party.  
-   - Configure claims rules to map `UPN` (User Principal Name) to a SAML `NameID`.  
-4. **Test Sign-On**: Users log in to AD and access Office 365 without re-authenticating.  
+## Standard Model
 
-#### Example 2: Using Claims Rules to Grant Conditional Access  
-**Problem**: Restrict access to the Sales app only to users in the "Sales" department.  
-**Solution**:  
-1. In AD FS, edit claims rules for the Sales app Relying Party Trust.  
-2. Add a **SendClaimsRule** such as:  
-   ```powershell
-   c:[Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/groupsid"]  
-   => issue(store = "Active Directory", types = "department", query = ";department;{0}", param = c.Value);  
-   ```
-   This maps the user’s AD `Department` attribute to a claim.  
+The standard model for [Federation AD FS](02 Azure Active Directory/Federation AD FS.md) follows the **Passive Requestor Profile** (browser-based) or the **Active Requestor Profile** (application-based).
 
-3. On the Sales app (like an Azure Web App), set policies to require the `Sales` department claim.  
+1.  **Request:** A user attempts to access a Relying Party (RP).
+2.  **Redirection:** The RP redirects the user to the Federation Service (IdP).
+3.  **Authentication:** The user authenticates against the local directory (e.g., Active Directory) or a secondary Claims Provider.
+4.  **Token Issuance:** The Federation Service generates a signed security token (SAML/JWT) containing the requested claims.
+5.  **Submission:** The user's browser/client submits the token to the RP.
+6.  **Consumption:** The RP validates the signature, extracts the claims, and grants access based on its internal logic.
 
-#### Example 3: Multi-Federation Server Farm for Redundancy  
-To avoid downtime:  
-1. Deploy at least two AD FS servers in a farm.  
-2. Configure a SQL Server to host the configuration database.  
-3. Use DNS load balancing or an Azure Load Balancer to distribute traffic.  
-4. Test failover by shutting down one server and verifying authentication remains functional.  
+## Common Patterns
 
-#### Example 4: SSO for a Non-Microsoft SaaS Application (e.g., Salesforce)  
-1. **Obtain Salesforce SAML Metadata**: Export the SP’s metadata (format: XML).  
-2. **Create AD FS Relying Party Trust**:  
-   - Import Salesforce metadata.  
-   - Configure a `SAML 2.0` profile with token lifetime (e.g., 24 hours).  
-3. **Define Claims Rules**:  
-   - Pass `Email` and `First/Last Name` claims as required by Salesforce.  
-4. **Test**: Use the Salesforce login URL and redirect users to their AD FS server for authentication.  
+### Web Single Sign-On (SSO)
+The most frequent pattern where a user logs in once to their corporate network and gains access to multiple internal and external web applications without re-entering credentials.
 
----
+### Federation Provider (IdP Proxy)
+AD FS acts as an intermediary. It accepts claims from an external IdP (like a partner organization or a social provider) and transforms them into claims that internal applications can understand.
 
-### Summary  
-- AD FS is Microsoft’s primary tool for federated identity management, enabling secure SSO and access control across heterogeneous environments.  
-- Key concepts include trust relationships, claims-based authorization, and integration with protocols like SAML and WS-Federation.  
-- Use cases span hybrid IT scenarios, third-party SaaS integration, and fine-grained access control via custom claims rules.  
-- Organizations leverage AD FS to centrally manage user access while reducing reliance on siloed identity systems, ensuring compliance and scalability in modern IT ecosystems.  
+### OAuth 2.0 / OpenID Connect (OIDC)
+Modern applications use AD FS as an Authorization Server to issue Access Tokens and ID Tokens, enabling secure access to Web APIs and modern mobile/single-page applications.
 
-This guide provides a foundational understanding of AD FS architecture, components, and implementations, enabling professionals to design effective identity solutions in cloud-hybrid environments.
+## Anti-Patterns
 
----
-*Generated by Puter.js & Qwen*
+*   **Over-Provisioning Claims:** Issuing more user data than the Relying Party requires. This violates the principle of least privilege and increases the risk of data exposure.
+*   **Bypassing MFA for Internal Users:** Assuming that "internal" network status is a sufficient proxy for identity verification. Multi-Factor Authentication (MFA) should be enforced at the Federation layer regardless of location.
+*   **Hardcoding Claims Logic:** Creating complex, non-standard claim rules that are difficult to audit or migrate.
+*   **Using AD FS as a Primary User Store:** Attempting to use the federation service to manage user accounts directly, rather than acting as a gateway to an authoritative directory.
+
+## Edge Cases
+
+### Home Realm Discovery (HRD) Loops
+In complex environments with multiple Claims Providers, a user may be bounced between providers if HRD is not correctly configured, leading to an "infinite redirect" loop.
+
+### Clock Skew
+Security tokens have a "Not Before" and "Not On Or After" timestamp. If the system clocks of the IdP and RP are out of sync by more than the allowed threshold (usually 5 minutes), the token will be rejected as invalid.
+
+### Certificate Rollover
+When the Token-Signing or Token-Decrypting certificates expire, the trust relationship breaks immediately unless the Relying Party is capable of automatically consuming updated Federation Metadata.
+
+## Related Topics
+*   **SAML (Security Assertion Markup Language):** The XML-based standard for exchanging authentication and authorization data.
+*   **OAuth 2.0 / OIDC:** The industry-standard protocol for authorization and identity layers.
+*   **Directory Services (LDAP/Active Directory):** The authoritative source of identity data.
+*   **Public Key Infrastructure (PKI):** The underlying system for managing the certificates used in federation.
+
+## Change Log
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0 | 2026-01-20 | Initial AI-generated canonical documentation |
