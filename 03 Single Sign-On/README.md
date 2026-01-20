@@ -1,142 +1,86 @@
-# README
+# [README](03 Single Sign-On/README.md)
 
-### Introduction  
-A README file is a critical documentation artifact in software development projects. It serves as the first point of contact for anyone visiting a repository, providing essential information to newcomers or contributors. Effective READMEs enhance project usability, encourage collaboration, and reduce onboarding friction for users, developers, or potential contributors. Theyare particularly vital for open-source projects, libraries, APIs, and shared tools. This guide outlines best practices, core components, and examples to help craft clear and comprehensive READMEs.
+Canonical documentation for [README](03 Single Sign-On/README.md). This document defines concepts, terminology, and standard usage.
 
----
+## Purpose
+The [README](03 Single Sign-On/README.md) exists as the primary entry point and orientation layer for a project, repository, or directory. It addresses the problem of information discovery by providing immediate context, intent, and utility to a human reader. In the absence of a [README](03 Single Sign-On/README.md), a project remains a collection of opaque files; the [README](03 Single Sign-On/README.md) transforms these files into a coherent, navigable product or resource.
 
-### Core Concepts  
-A well-structured README should typically include the following sections and practices:  
+> [!NOTE]
+> This documentation is intended to be implementation-agnostic and authoritative.
 
-#### 1. **Purpose/Description**  
-   - **Objective**: Briefly describe the project, its goals, and core functionality.  
-   - **Audience**: Clarify who benefits from the project (e.g., "This CLI tool simplifies data analysis for researchers").  
+## Scope
+Clarify what is in scope and out of scope for this topic.
 
-#### 2. **Installation/Setup**  
-   - Detail precise steps to set up the project (e.g., cloning the repo, dependencies, environment variables).  
-   - Example syntax:  
-     ```markdown
-     ### Installation  
-     ```bash  
-     git clone https://github.com/your/repo.git  
-     cd repo  
-     npm install  
-     ```  
+**In scope:**
+* The conceptual role of the [README](03 Single Sign-On/README.md) as a gateway document.
+* Structural components and information architecture of a standard [README](03 Single Sign-On/README.md).
+* Best practices for project orientation and onboarding.
+* The relationship between the [README](03 Single Sign-On/README.md) and the underlying codebase or data.
 
-#### 3. **Usage/Examples**  
-   - Provide commands, API endpoints, or workflows for interacting with the project.  
-   - Include code snippets or screenshots if applicable.  
+**Out of scope:**
+* Specific markup language syntax (e.g., Markdown, reStructuredText, AsciiDoc).
+* Platform-specific features (e.g., GitHub-specific badges, GitLab-specific CI/CD integrations).
+* Automated documentation generation from source code (API docs).
 
-#### 4. **Contribution Guidelines**  
-   - Outline how to report issues, submit pull requests, or conform to project standards.  
-   - Example clause:  
-     > Contributions are welcome! Submit bug reports with clear steps to reproduce or feature requests through the GitHub Issues tab.  
+## Definitions
+Provide precise definitions for key terms.
 
-#### 5. **Dependencies**  
-   - List required frameworks, libraries, and tools (e.g., Python v3.8+).  
+| Term | Definition |
+|------|------------|
+| [README](03 Single Sign-On/README.md) | A file (traditionally named `[README](03 Single Sign-On/README.md)` or `README.md`) located at the root of a project that provides an overview and instructions. |
+| Entry Point | The first location a user or contributor is expected to visit to understand a project. |
+| Onboarding | The process of moving a user from "zero knowledge" to "functional utility" via documentation. |
+| Manifest | A high-level summary of what is included in the repository and why. |
+| Bootstrap | The specific set of instructions required to initialize a project environment. |
+| Metadata | Information about the project (version, license, status) often found at the top of the document. |
 
-#### 6. **Testing**  
-   - Include instructions for running tests (e.g., `pytest` for Python).  
+## Core Concepts
+The [README](03 Single Sign-On/README.md) is governed by three fundamental principles:
 
-#### 7. **License**  
-   - Specify the license (e.g., MIT, Apache) and relevant copyright information.  
+1.  **Immediate Context:** A [README](03 Single Sign-On/README.md) must answer "What is this?" and "Why does it exist?" within the first few sentences.
+2.  **The "Time-to-Value" Metric:** A primary goal of a [README](03 Single Sign-On/README.md) is to minimize the time it takes for a user to achieve a successful outcome (e.g., running the code, understanding the data).
+3.  **Single Source of Truth (Orientation):** While it may not contain all information, the [README](03 Single Sign-On/README.md) serves as the authoritative map that points to all other documentation (e.g., CHANGELOG, CONTRIBUTING, LICENSE).
 
-#### 8. **Contact/Authors**  
-   - Provide a way to reach maintainers (email, social links) or acknowledge contributors.  
+## Standard Model
+The generally accepted model for a [README](03 Single Sign-On/README.md) follows a hierarchical flow of information from general to specific:
 
-#### 9. **Additional Sections**  
-   - Philosophy/Design Choices: Explain rationale behind technical decisions.  
-   - FAQ: Common questions and answers.  
-   - Roadmap: Future features or improvements.  
+1.  **Identity:** Project name and a concise one-sentence summary.
+2.  **Visual/Status Indicators:** Optional badges or graphics indicating build status, version, or stability.
+3.  **Value Proposition:** A deeper explanation of the problem the project solves.
+4.  **Prerequisites:** The environmental requirements (software, hardware, access) needed before interaction.
+5.  **Getting Started:** A "Quick Start" guide or installation steps.
+6.  **Usage:** Examples of common use cases or command-line execution.
+7.  **Navigation:** Links to deeper documentation, such as architecture diagrams or API references.
+8.  **Governance:** Information on how to contribute and the legal framework (License) governing the work.
 
----
+## Common Patterns
+*   **The Minimalist:** Used for small utilities; contains only Title, Description, and Installation.
+*   **The Library/SDK:** Focuses heavily on API examples and integration snippets.
+*   **The Application:** Focuses on deployment, configuration, and user-facing features.
+*   **The Monorepo:** A "Master [README](03 Single Sign-On/README.md)" at the root that delegates specific details to sub-directory [README](03 Single Sign-On/README.md)s.
+*   **The Awesome List:** A [README](03 Single Sign-On/README.md) that serves as a curated directory of links rather than a functional codebase.
 
-### Best Practices  
-- **Clarity**: Use simple, jargon-free language.  
-- **Structure**: Organize content with logical headers and bullet points.  
-- **Markdown**: Leverage syntax for code blocks, links, tables, and images.  
-- **ToC**: Add a table of contents for long READMEs.  
-- **Visual Aids**: Include diagrams or screenshots for complex setups.  
-- **Stay Updated**: Regularly revise the README as the project evolves.  
+## Anti-Patterns
+*   **The Wall of Text:** Large blocks of unformatted text that discourage scanning and quick comprehension.
+*   **The Stale Document:** Instructions that no longer match the current state of the project, leading to "broken" onboarding.
+*   **The Mystery Meat:** A [README](03 Single Sign-On/README.md) that describes *how* to install something without ever explaining *what* it is.
+*   **The Internal-Only:** Using acronyms, jargon, or links to private intranets that are inaccessible to the intended audience.
+*   **The Over-Documentation:** Including information that belongs in a wiki or API reference, making the [README](03 Single Sign-On/README.md) difficult to maintain.
 
----
+## Edge Cases
+*   **Empty Repositories:** A [README](03 Single Sign-On/README.md) in a repository with no code (used for planning or RFCs).
+*   **Non-Code Projects:** Using a [README](03 Single Sign-On/README.md) for a collection of legal documents, assets, or research data where "Installation" is not applicable.
+*   **Internationalization (i18n):** Managing multiple [README](03 Single Sign-On/README.md) files for different languages (e.g., `[README](03 Single Sign-On/README.md).zh.md`, `[README](03 Single Sign-On/README.md).es.md`) and keeping them synchronized.
+*   **Hidden [README](03 Single Sign-On/README.md)s:** Files located in sub-directories to explain local context that are not intended for the primary project landing page.
 
-### Examples  
-#### Example 1: Simple Project (CLI Tool)  
-```markdown
-# 🚀 Awesome CLI  
-A minimal command-line tool for time tracking.  
+## Related Topics
+*   **Version Control Systems (VCS):** The environment where [README](03 Single Sign-On/README.md)s are typically hosted and rendered.
+*   **Markup Languages:** The syntax used to format the [README](03 Single Sign-On/README.md) (Markdown, AsciiDoc).
+*   **CONTRIBUTING.md:** A specialized document for contributor workflows.
+*   **LICENSE:** The legal document referenced by the [README](03 Single Sign-On/README.md).
+*   **CHANGELOG:** The historical record of modifications referenced by the [README](03 Single Sign-On/README.md).
 
-## Installation  
-```bash  
-npm install -g awesome-cli  
-```  
-
-## Usage  
-Track time:  
-```bash  
-awesome track "Project X"  
-```  
-
-See help:  
-```bash  
-awesome --help  
-```  
-
-## Contributing  
-Report bugs or suggest features on [GitHub Issues](https://github.com/your-repo/issues).  
-
-## License  
-MIT License © 2023 Your Name  
-```  
-
-#### Example 2: API Documentation  
-```markdown
-# 🌐 Social Media API  
-Endpoints to fetch and update user profiles.  
-
-## Installation  
-```bash  
-npm install social-api  
-```  
-
-## Endpoints  
-| Endpoint               | Method | Description          |  
-|------------------------|--------|----------------------|  
-| `/users/{id}`          | GET    | Fetch user profile   |  
-| `/posts`               | POST   | Create a new post    |  
-
-## Environment Variables  
-Set `API_TOKEN` in `.env` before deployment.  
-
-## License  
-GPL-3.0 License (see LICENSE.md)  
-```  
-
-#### Example 3: Contribution Guidelines  
-```markdown
-## Contributing  
-We welcome contributions! Follow these steps:  
-1. Fork the repository.  
-2. Create a branch: `git checkout -b feature/new-feature`.  
-3. Write code with PEP8 compliance.  
-4. Submit a Pull Request.  
-
-### Code of Conduct  
-All interactions must adhere to our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).  
-```  
-
----
-
-### Summary  
-A well-crafted README is indispensable for project success. Key takeaways include:  
-1. **Prioritize usability**: Ensure clarity and completeness in descriptions, setup, and usage.  
-2. **Structure with headers**: Use markdown to create organized sections.  
-3. **Include essential metadata**: License, contributors, and copyright details.  
-4. **Engage contributors**: Provide clear contribution paths to foster community growth.  
-5. **Adapt to context**: Tailor content based on project complexity and audience needs.  
-
-Ultimately, the README should serve as both a guide and a reflection of the project's professionalism. Consistency, brevity, and relevance are critical to minimizing friction for users and contributors alike.
-
----
-*Generated by Puter.js & Qwen*
+## Change Log
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0 | 2026-01-20 | Initial AI-generated canonical documentation |
