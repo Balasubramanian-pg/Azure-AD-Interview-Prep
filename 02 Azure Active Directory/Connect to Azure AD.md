@@ -1,4 +1,4 @@
-# [Connect to Azure AD](02 Azure Active Directory/Connect to Azure AD.md)
+# Connect To Azure AD
 
 Canonical documentation for [Connect to Azure AD](02 Azure Active Directory/Connect to Azure AD.md). This document defines concepts, terminology, and standard usage.
 
