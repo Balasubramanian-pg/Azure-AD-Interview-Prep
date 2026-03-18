@@ -1,4 +1,4 @@
-# MFA FOR ADMINS
+# Mfa For ADmins
 
 # Introduction  
 Multi-Factor Authentication (MFA) is a security protocol that requires users to provide **two or more verification factors** to access accounts or systems. For administrators, MFA is a critical tool to mitigate risks, protect privileged accounts, and comply with security standards. Admins often manage sensitive systems, making them prime targets for credential theft. MFA adds a layered defense, reducing the impact of compromised credentials. According to Microsoft’s 2023 Security Baseline report, over 99% of breaches involving compromised credentials could have been prevented with MFA.  
