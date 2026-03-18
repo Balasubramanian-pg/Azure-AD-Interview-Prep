@@ -1,4 +1,4 @@
-# [Azure AD Connect](02 Azure Active Directory/Azure AD Connect.md)
+# Azure AD Connect
 
 Canonical documentation for [Azure AD Connect](02 Azure Active Directory/Azure AD Connect.md). This document defines concepts, terminology, and standard usage.
 
