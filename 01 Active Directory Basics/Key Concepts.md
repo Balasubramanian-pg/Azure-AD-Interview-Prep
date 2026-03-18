@@ -1,4 +1,4 @@
-# Topic: Key Concepts
+# Key Concepts
 
 ## One-line definition
 Key concepts are fundamental ideas and principles.
