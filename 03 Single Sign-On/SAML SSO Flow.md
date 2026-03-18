@@ -1,4 +1,4 @@
-# [SAML SSO Flow](03 Single Sign-On/SAML SSO Flow.md)
+# SAML SSO Flow
 
 Canonical documentation for [SAML SSO Flow](03 Single Sign-On/SAML SSO Flow.md). This document defines concepts, terminology, and standard usage.
 
