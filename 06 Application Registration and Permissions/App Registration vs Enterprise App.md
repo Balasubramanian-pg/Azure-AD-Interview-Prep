@@ -1,1 +1,1 @@
-# TODO: Add content
+# App Registration Vs Enterprise App
