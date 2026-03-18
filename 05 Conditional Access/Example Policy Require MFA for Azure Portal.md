@@ -1,4 +1,4 @@
-# EXAMPLE POLICY REQUIRE MFA FOR AZURE PORTAL
+# Example Policy Require Mfa For Azure Portal
 
 ## Introduction  
 The "Require MFA for Azure Portal" policy enforces Multi-Factor Authentication (MFA) for users accessing the Azure portal (portal.azure.com). This policy is critical for enhancing security by adding an additional authentication step, reducing the risk of unauthorized access even if passwords are compromised. It aligns with compliance standards such as ISO 27001 and NIST guidelines while ensuring organizational policies for user access adherence.  
