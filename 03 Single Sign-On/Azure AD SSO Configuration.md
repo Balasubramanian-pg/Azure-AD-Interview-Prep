@@ -1,4 +1,4 @@
-# [Azure AD SSO Configuration](03 Single Sign-On/Azure AD SSO Configuration.md)
+# Azure AD SSO Configuration
 
 Canonical documentation for [Azure AD SSO Configuration](03 Single Sign-On/Azure AD SSO Configuration.md). This document defines concepts, terminology, and standard usage.
 
