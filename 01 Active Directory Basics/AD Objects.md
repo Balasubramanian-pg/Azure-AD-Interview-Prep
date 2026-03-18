@@ -1,4 +1,4 @@
-# Topic: AD Objects
+# AD Objects
 
 ## One-line definition
 Active Directory objects are digital representations.
