@@ -1,4 +1,4 @@
-# Topic: Group Types
+# Group Types
 
 ## One-line definition
 Group types categorize objects based on shared characteristics.
