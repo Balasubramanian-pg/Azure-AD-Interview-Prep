@@ -1,4 +1,4 @@
-# Topic: Group Policy Objects
+# Group Policy Objects
 
 ## One-line definition
 Group Policy Objects manage Windows settings.
