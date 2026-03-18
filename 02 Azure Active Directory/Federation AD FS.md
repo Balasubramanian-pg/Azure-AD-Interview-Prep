@@ -1,4 +1,4 @@
-# [Federation AD FS](02 Azure Active Directory/Federation AD FS.md)
+# Federation AD Fs
 
 Canonical documentation for [Federation AD FS](02 Azure Active Directory/Federation AD FS.md). This document defines concepts, terminology, and standard usage.
 
