@@ -1,4 +1,4 @@
-# [MFA Prompt Loop](03 Single Sign-On/MFA Prompt Loop.md)
+# Mfa Prompt Loop
 
 Canonical documentation for [MFA Prompt Loop](03 Single Sign-On/MFA Prompt Loop.md). This document defines concepts, terminology, and standard usage.
 
