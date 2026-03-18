@@ -1,4 +1,4 @@
-# [OAuth 2.0 Flow](03 Single Sign-On/OAuth 2.0 Flow.md)
+# OAuth 2.0 Flow
 
 Canonical documentation for [OAuth 2.0 Flow](03 Single Sign-On/OAuth 2.0 Flow.md). This document defines concepts, terminology, and standard usage.
 
