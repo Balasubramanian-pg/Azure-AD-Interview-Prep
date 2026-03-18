@@ -1,4 +1,4 @@
-# Topic: Domain Local Groups
+# Domain Local Groups
 
 ## One-line definition
 Domain Local Groups manage access.
