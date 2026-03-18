@@ -1,4 +1,4 @@
-# [Global Catalog SSL Port 3269](11 Key Ports for AD and Azure AD/Global Catalog SSL Port 3269.md)
+# Global CAtalog Ssl Port 3269
 
 Canonical documentation for [Global Catalog SSL Port 3269](11 Key Ports for AD and Azure AD/Global Catalog SSL Port 3269.md). This document defines concepts, terminology, and standard usage.
 
