@@ -1,4 +1,4 @@
-# Topic: Forest
+# Forest
 ## One-line definition
 A forest is a large ecosystem of trees and wildlife.
 
