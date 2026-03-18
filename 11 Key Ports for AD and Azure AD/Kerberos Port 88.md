@@ -1,4 +1,4 @@
-# [Kerberos Port 88](11 Key Ports for AD and Azure AD/Kerberos Port 88.md)
+# Kerberos Port 88
 
 Canonical documentation for [Kerberos Port 88](11 Key Ports for AD and Azure AD/Kerberos Port 88.md). This document defines concepts, terminology, and standard usage.
 
