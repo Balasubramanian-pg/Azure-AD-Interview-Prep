@@ -1,4 +1,4 @@
-# USER ADMINISTRATOR
+# User ADministrator
 
 # Introduction  
 A User Administrator is responsible for managing user accounts, permissions, and security within an organization's IT infrastructure. Their role ensures users have appropriate access to resources while adhering to compliance standards and organizational policies. Key responsibilities include:  
