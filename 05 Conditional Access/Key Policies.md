@@ -1,4 +1,4 @@
-# KEY POLICIES
+# Key Policies
 
 ## Introduction  
 Key policies are formalized rules or procedures designed to guide decision-making, define behavior, and ensure compliance with legal, ethical, or organizational standards. They are foundational to maintaining structure, consistency, and accountability within organizations, governments, or communities. Policies address a broad range of areas, including governance, safety, equity, and operational efficiency. This guide explores their core concepts, real-world applications, and overarching purpose.  
