@@ -1,4 +1,4 @@
-# JUST IN TIME ACCESS
+# Just In Time Access
 
 ## Introduction  
 Just In Time (JIT) Access is a security framework that dynamically grants users temporary, role-specific access to systems, applications, or data only when required to perform a specific task. This approach replaces static, long-term access models, minimizing the attack surface and reducing the risk of unauthorized data exposure. JIT Access aligns with regulatory compliance requirements, such as GDPR and HIPAA, by ensuring data access adheres to the **principle of least privilege (PoLP)** and **need-to-know** principles.  
