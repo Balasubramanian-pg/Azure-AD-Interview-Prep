@@ -1,1 +1,1 @@
-# TODO: Add content
+# Global CAtalog Purpose
