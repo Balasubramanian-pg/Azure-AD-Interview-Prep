@@ -1,4 +1,4 @@
-# [LDAP Port 389](11 Key Ports for AD and Azure AD/LDAP Port 389.md)
+# Ldap Port 389
 
 Canonical documentation for [LDAP Port 389](11 Key Ports for AD and Azure AD/LDAP Port 389.md). This document defines concepts, terminology, and standard usage.
 
