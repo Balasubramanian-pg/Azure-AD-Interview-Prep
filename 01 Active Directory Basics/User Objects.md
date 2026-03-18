@@ -1,4 +1,4 @@
-# Topic: User Objects
+# User Objects
 
 ## One-line definition
 User objects represent individual users in a system.
