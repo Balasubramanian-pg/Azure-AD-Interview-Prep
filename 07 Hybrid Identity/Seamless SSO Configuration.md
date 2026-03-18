@@ -1,1 +1,1 @@
-# TODO: Add content
+# Seamless SSO Configuration
