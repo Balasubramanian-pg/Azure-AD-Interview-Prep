@@ -1,4 +1,4 @@
-# [LDAP SSL Port 636](11 Key Ports for AD and Azure AD/LDAP SSL Port 636.md)
+# Ldap Ssl Port 636
 
 Canonical documentation for [LDAP SSL Port 636](11 Key Ports for AD and Azure AD/LDAP SSL Port 636.md). This document defines concepts, terminology, and standard usage.
 
