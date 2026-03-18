@@ -1,4 +1,4 @@
-# [List All Users](02 Azure Active Directory/List All Users.md)
+# List All Users
 
 Canonical documentation for [List All Users](02 Azure Active Directory/List All Users.md). This document defines concepts, terminology, and standard usage.
 
