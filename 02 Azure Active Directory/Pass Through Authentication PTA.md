@@ -1,4 +1,4 @@
-# [Pass Through Authentication PTA](02 Azure Active Directory/Pass Through Authentication PTA.md)
+# Pass Through Authentication Pta
 
 Canonical documentation for [Pass Through Authentication PTA](02 Azure Active Directory/Pass Through Authentication PTA.md). This document defines concepts, terminology, and standard usage.
 
