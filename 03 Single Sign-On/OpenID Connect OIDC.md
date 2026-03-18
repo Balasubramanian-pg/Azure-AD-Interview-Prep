@@ -1,4 +1,4 @@
-# [OpenID Connect OIDC](03 Single Sign-On/OpenID Connect OIDC.md)
+# Openid Connect Oidc
 
 Canonical documentation for [OpenID Connect OIDC](03 Single Sign-On/OpenID Connect OIDC.md). This document defines concepts, terminology, and standard usage.
 
