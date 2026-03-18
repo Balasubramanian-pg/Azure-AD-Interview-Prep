@@ -1,4 +1,4 @@
-# Topic: Sites
+# Sites
 
 ## One-line definition
 Sites are web locations with related content.
