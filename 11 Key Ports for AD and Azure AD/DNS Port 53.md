@@ -1,4 +1,4 @@
-# [DNS Port 53](11 Key Ports for AD and Azure AD/DNS Port 53.md)
+# Dns Port 53
 
 Canonical documentation for [DNS Port 53](11 Key Ports for AD and Azure AD/DNS Port 53.md). This document defines concepts, terminology, and standard usage.
 
