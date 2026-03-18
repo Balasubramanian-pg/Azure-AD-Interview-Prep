@@ -1,4 +1,4 @@
-# Topic: Domain Controller
+# Domain Controller
 
 ## One-line definition
 Manages network security and authentication services.
