@@ -1,4 +1,4 @@
-# [Password Hash Sync PHS](02 Azure Active Directory/Password Hash Sync PHS.md)
+# Password Hash Sync Phs
 
 Canonical documentation for [Password Hash Sync PHS](02 Azure Active Directory/Password Hash Sync PHS.md). This document defines concepts, terminology, and standard usage.
 
