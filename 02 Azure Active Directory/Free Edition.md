@@ -1,4 +1,4 @@
-# [Free Edition](02 Azure Active Directory/Free Edition.md)
+# Free Edition
 
 Canonical documentation for [Free Edition](02 Azure Active Directory/Free Edition.md). This document defines concepts, terminology, and standard usage.
 
