@@ -1,4 +1,4 @@
-# Topic: Global Groups
+# Global Groups
 
 ## One-line definition
 Global Groups are security entities.
