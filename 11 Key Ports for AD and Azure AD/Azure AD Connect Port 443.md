@@ -1,4 +1,4 @@
-# [Azure AD Connect Port 443](11 Key Ports for AD and Azure AD/Azure AD Connect Port 443.md)
+# Azure AD Connect Port 443
 
 Canonical documentation for [Azure AD Connect Port 443](11 Key Ports for AD and Azure AD/Azure AD Connect Port 443.md). This document defines concepts, terminology, and standard usage.
 
