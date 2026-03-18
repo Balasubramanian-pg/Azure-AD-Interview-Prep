@@ -1,4 +1,4 @@
-# [Create User](02 Azure Active Directory/Create User.md)
+# Create User
 
 Canonical documentation for [Create User](02 Azure Active Directory/Create User.md). This document defines concepts, terminology, and standard usage.
 
