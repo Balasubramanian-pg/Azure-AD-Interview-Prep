@@ -1,4 +1,4 @@
-# PRIVILEGED IDENTITY MANAGEMENT PIM
+# Privileged IDentity Management Pim
 
 # Introduction  
 Privileged Identity Management (PIM) is a cybersecurity framework focused on controlling access to privileged accounts, systems, and resources within an organization. Privileged accounts (e.g., administrative, root, or service accounts) have elevated permissions and are prime targets for cyberattacks. PIM reduces risks by implementing strict controls, ensuring compliance, and minimizing the attack surface. Unlike traditional Identity and Access Management (IAM), which handles general user identities and roles, PIM specifically addresses the unique challenges of managing high-risk accounts.  
