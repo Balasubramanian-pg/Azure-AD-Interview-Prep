@@ -1,4 +1,4 @@
-# Topic: Schema
+# Schema
 ## One-line definition
 Schema is a database structure blueprint.
 
