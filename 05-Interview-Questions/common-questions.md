@@ -1,4 +1,4 @@
-# Common Interview Questions
+# Common Questions
 
 ## Active Directory
 
