@@ -1,4 +1,4 @@
-# Topic: Domain
+# Domain
 
 ## One-line definition
 Domain is a unique internet address identifier.
