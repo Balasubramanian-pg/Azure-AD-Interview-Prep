@@ -1,4 +1,4 @@
-# [Assign Users and Groups](03 Single Sign-On/Assign Users and Groups.md)
+# Assign Users And Groups
 
 Canonical documentation for [Assign Users and Groups](03 Single Sign-On/Assign Users and Groups.md). This document defines concepts, terminology, and standard usage.
 
