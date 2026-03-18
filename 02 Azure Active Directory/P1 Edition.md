@@ -1,4 +1,4 @@
-# [P1 Edition](02 Azure Active Directory/P1 Edition.md)
+# P1 Edition
 
 Canonical documentation for [P1 Edition](02 Azure Active Directory/P1 Edition.md). This document defines concepts, terminology, and standard usage.
 
