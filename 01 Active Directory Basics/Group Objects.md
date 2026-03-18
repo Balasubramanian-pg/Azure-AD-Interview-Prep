@@ -1,4 +1,4 @@
-# Topic: Group Objects
+# Group Objects
 
 ## One-line definition
 Objects grouped by shared characteristics.
