@@ -1,4 +1,4 @@
-# Topic: Security Groups
+# Security Groups
 
 ## One-line definition
 Security Groups control network access rules.
