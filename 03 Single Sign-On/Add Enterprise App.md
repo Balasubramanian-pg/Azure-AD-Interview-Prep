@@ -1,4 +1,4 @@
-# [Add Enterprise App](03 Single Sign-On/Add Enterprise App.md)
+# ADd Enterprise App
 
 Canonical documentation for [Add Enterprise App](03 Single Sign-On/Add Enterprise App.md). This document defines concepts, terminology, and standard usage.
 
