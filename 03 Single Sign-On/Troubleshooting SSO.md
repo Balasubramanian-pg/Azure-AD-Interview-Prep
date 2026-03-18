@@ -1,4 +1,4 @@
-# [Troubleshooting SSO](03 Single Sign-On/Troubleshooting SSO.md)
+# Troubleshooting SSO
 
 Canonical documentation for [Troubleshooting SSO](03 Single Sign-On/Troubleshooting SSO.md). This document defines concepts, terminology, and standard usage.
 
