@@ -1,4 +1,4 @@
-# [Azure AD Editions](02 Azure Active Directory/Azure AD Editions.md)
+# Azure AD Editions
 
 Canonical documentation for [Azure AD Editions](02 Azure Active Directory/Azure AD Editions.md). This document defines concepts, terminology, and standard usage.
 
