@@ -1,4 +1,4 @@
-# [Configure SSO](03 Single Sign-On/Configure SSO.md)
+# Configure SSO
 
 Canonical documentation for [Configure SSO](03 Single Sign-On/Configure SSO.md). This document defines concepts, terminology, and standard usage.
 
