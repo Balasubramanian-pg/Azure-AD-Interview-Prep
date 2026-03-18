@@ -1,4 +1,4 @@
-# Topic: Universal Groups
+# Universal Groups
 
 ## One-line definition
 Universal groups are security principals.
