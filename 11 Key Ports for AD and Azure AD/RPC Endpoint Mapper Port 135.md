@@ -1,4 +1,4 @@
-# [RPC Endpoint Mapper Port 135](11 Key Ports for AD and Azure AD/RPC Endpoint Mapper Port 135.md)
+# Rpc Endpoint Mapper Port 135
 
 Canonical documentation for [RPC Endpoint Mapper Port 135](11 Key Ports for AD and Azure AD/RPC Endpoint Mapper Port 135.md). This document defines concepts, terminology, and standard usage.
 
