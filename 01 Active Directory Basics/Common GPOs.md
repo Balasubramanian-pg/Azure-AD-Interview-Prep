@@ -1,4 +1,4 @@
-# Topic: Common GPOs
+# Common Gpos
 
 ## One-line definition
 Group Policy Objects manage Windows settings.
