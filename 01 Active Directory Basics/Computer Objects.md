@@ -1,4 +1,4 @@
-# Topic: Computer Objects
+# Computer Objects
 
 ## One-line definition
 Computer objects represent real-world entities in code.
