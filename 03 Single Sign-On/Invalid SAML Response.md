@@ -1,4 +1,4 @@
-# [Invalid SAML Response](03 Single Sign-On/Invalid SAML Response.md)
+# Invalid SAML Response
 
 Canonical documentation for [Invalid SAML Response](03 Single Sign-On/Invalid SAML Response.md). This document defines concepts, terminology, and standard usage.
 
