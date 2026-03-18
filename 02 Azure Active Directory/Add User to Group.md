@@ -1,4 +1,4 @@
-# [Add User to Group](02 Azure Active Directory/Add User to Group.md)
+# ADd User To Group
 
 Canonical documentation for [Add User to Group](02 Azure Active Directory/Add User to Group.md). This document defines concepts, terminology, and standard usage.
 
