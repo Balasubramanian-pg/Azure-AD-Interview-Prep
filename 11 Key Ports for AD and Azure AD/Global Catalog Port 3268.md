@@ -1,4 +1,4 @@
-# [Global Catalog Port 3268](11 Key Ports for AD and Azure AD/Global Catalog Port 3268.md)
+# Global CAtalog Port 3268
 
 Canonical documentation for [Global Catalog Port 3268](11 Key Ports for AD and Azure AD/Global Catalog Port 3268.md). This document defines concepts, terminology, and standard usage.
 
