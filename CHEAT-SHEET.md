@@ -1,4 +1,4 @@
-# Active Directory & Azure AD Cheat Sheet
+# Cheat Sheet
 
 ## Quick Reference
 
