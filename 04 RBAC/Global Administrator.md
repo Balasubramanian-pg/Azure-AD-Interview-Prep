@@ -1,4 +1,4 @@
-# GLOBAL ADMINISTRATOR
+# Global ADministrator
 
 ```markdown
 ## Introduction  
