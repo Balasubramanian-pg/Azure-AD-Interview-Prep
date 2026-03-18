@@ -1,4 +1,4 @@
-# Topic: Global Catalog
+# Global CAtalog
 ## One-line definition
 Global Catalog is a distributed repository.
 
