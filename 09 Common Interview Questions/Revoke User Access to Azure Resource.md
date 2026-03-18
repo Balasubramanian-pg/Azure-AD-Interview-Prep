@@ -1,1 +1,1 @@
-# TODO: Add content
+# Revoke User Access To Azure Resource
