@@ -1,4 +1,4 @@
-# [OAuth 2.0](03 Single Sign-On/OAuth 2.0.md)
+# OAuth 2.0
 
 Canonical documentation for [OAuth 2.0](03 Single Sign-On/OAuth 2.0.md). This document defines concepts, terminology, and standard usage.
 
