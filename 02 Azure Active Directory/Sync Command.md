@@ -1,4 +1,4 @@
-# [Sync Command](02 Azure Active Directory/Sync Command.md)
+# Sync Command
 
 Canonical documentation for [Sync Command](02 Azure Active Directory/Sync Command.md). This document defines concepts, terminology, and standard usage.
 
