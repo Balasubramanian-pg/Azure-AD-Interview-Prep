@@ -1,4 +1,4 @@
-# [Key Differences AD vs Azure AD](02 Azure Active Directory/Key Differences AD vs Azure AD.md)
+# Key Differences AD Vs Azure AD
 
 Canonical documentation for [Key Differences AD vs Azure AD](02 Azure Active Directory/Key Differences AD vs Azure AD.md). This document defines concepts, terminology, and standard usage.
 
