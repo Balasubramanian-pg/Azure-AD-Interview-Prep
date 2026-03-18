@@ -1,4 +1,4 @@
-# [Application Not Found](03 Single Sign-On/Application Not Found.md)
+# Application Not Found
 
 Canonical documentation for [Application Not Found](03 Single Sign-On/Application Not Found.md). This document defines concepts, terminology, and standard usage.
 
