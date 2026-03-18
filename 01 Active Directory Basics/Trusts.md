@@ -1,4 +1,4 @@
-# Topic: Trusts
+# Trusts
 
 ## One-line definition
 Trusts are **legal entities holding assets**.
