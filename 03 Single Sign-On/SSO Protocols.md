@@ -1,4 +1,4 @@
-# [SSO Protocols](03 Single Sign-On/SSO Protocols.md)
+# SSO Protocols
 
 Canonical documentation for [SSO Protocols](03 Single Sign-On/SSO Protocols.md). This document defines concepts, terminology, and standard usage.
 
