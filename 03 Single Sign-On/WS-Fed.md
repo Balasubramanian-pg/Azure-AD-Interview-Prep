@@ -1,4 +1,4 @@
-# WS Fed
+# Ws Fed
 
 Canonical documentation for WS Fed. This document defines concepts, terminology, and standard usage.
 
