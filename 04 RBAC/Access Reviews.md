@@ -1,4 +1,4 @@
-# ACCESS REVIEWS
+# Access Reviews
 
 # Introduction  
 Access Reviews are systematic evaluations of user permissions and privileges within an organization’s systems, applications, or sensitive data. These reviews ensure that access rights align with individual responsibilities, compliance requirements, and organizational policies. They are critical in industries like healthcare (e.g., HIPAA compliance), finance (data privacy laws), and government (national security protocols).  
