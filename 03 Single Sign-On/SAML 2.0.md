@@ -1,4 +1,4 @@
-# [SAML 2.0](03 Single Sign-On/SAML 2.0.md)
+# SAML 2.0
 
 Canonical documentation for [SAML 2.0](03 Single Sign-On/SAML 2.0.md). This document defines concepts, terminology, and standard usage.
 
