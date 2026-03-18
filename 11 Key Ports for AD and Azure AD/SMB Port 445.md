@@ -1,4 +1,4 @@
-# [SMB Port 445](11 Key Ports for AD and Azure AD/SMB Port 445.md)
+# Smb Port 445
 
 Canonical documentation for [SMB Port 445](11 Key Ports for AD and Azure AD/SMB Port 445.md). This document defines concepts, terminology, and standard usage.
 
