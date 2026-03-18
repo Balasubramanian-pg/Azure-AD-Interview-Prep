@@ -1,4 +1,4 @@
-# [AD FS Port 443](11 Key Ports for AD and Azure AD/AD FS Port 443.md)
+# AD Fs Port 443
 
 Canonical documentation for [AD FS Port 443](11 Key Ports for AD and Azure AD/AD FS Port 443.md). This document defines concepts, terminology, and standard usage.
 
