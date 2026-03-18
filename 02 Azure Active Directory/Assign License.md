@@ -1,4 +1,4 @@
-# [Assign License](02 Azure Active Directory/Assign License.md)
+# Assign License
 
 Canonical documentation for [Assign License](02 Azure Active Directory/Assign License.md). This document defines concepts, terminology, and standard usage.
 
