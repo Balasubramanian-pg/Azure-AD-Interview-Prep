@@ -1,4 +1,4 @@
-# Topic: GPO Inheritance
+# Gpo Inheritance
 
 ## One-line definition
 GPO Inheritance applies group policies to nested objects.
