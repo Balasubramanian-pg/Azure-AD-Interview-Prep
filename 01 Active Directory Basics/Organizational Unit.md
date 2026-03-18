@@ -1,4 +1,4 @@
-# Topic: Organizational Unit
+# Organizational Unit
 
 ## One-line definition
 An Organizational Unit is a subdivision of an organization.
