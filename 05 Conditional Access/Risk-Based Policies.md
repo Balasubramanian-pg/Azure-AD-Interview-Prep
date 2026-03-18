@@ -1,4 +1,4 @@
-# RISK BASED POLICIES
+# Risk Based Policies
 
 ## Introduction  
 Risk-based policies are strategic frameworks that guide decision-making and resource allocation based on the assessment, prioritization, and mitigation of risks. They ensure organizations proactively address threats and opportunities in ways proportional to their likelihood and potential impact. Unlike traditional policies derived from checklists or rigid compliance requirements, risk-based approaches enable tailored, dynamic management strategies. These policies are critical in environments where resources are limited and objectives require balancing multiple competing priorities.  
