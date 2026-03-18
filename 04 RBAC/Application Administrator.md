@@ -1,4 +1,4 @@
-# APPLICATION ADMINISTRATOR
+# Application ADministrator
 
 # Introduction  
 Application Administrators are IT professionals responsible for managing the deployment, maintenance, and optimization of software applications within an organization. They ensure applications operate efficiently, securely, and reliably while addressing performance bottlenecks, user access, and integration challenges. The role bridges technical execution and business outcomes, requiring a blend of technical expertise and problem-solving skills. Key responsibilities include:  
