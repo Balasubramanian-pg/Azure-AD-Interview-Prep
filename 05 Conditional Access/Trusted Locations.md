@@ -1,4 +1,4 @@
-# TRUSTED LOCATIONS
+# Trusted Locations
 
 ```markdown
 ## Introduction  
