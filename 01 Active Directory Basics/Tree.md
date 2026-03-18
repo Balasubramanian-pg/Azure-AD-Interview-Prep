@@ -1,4 +1,4 @@
-# Topic: Tree
+# Tree
 ## One-line definition
 A tree is a hierarchical data structure.
 
