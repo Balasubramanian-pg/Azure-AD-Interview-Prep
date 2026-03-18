@@ -1,4 +1,4 @@
-# PRIVILEGED ROLE ADMINISTRATOR
+# Privileged Role ADministrator
 
 # Introduction  
 The **Privileged Role Administrator (PRA)** is responsible for managing access to sensitive systems, data, and applications within an organization. This role ensures that permissions align with business needs while adhering to security standards, compliance mandates, and risk mitigation strategies. PRAs are critical in preventing unauthorized access, mitigating insider threats, and safeguarding against external attacks by implementing robust governance frameworks. Their work balances the necessity of granting access to perform essential tasks with minimizing exposure to potential breaches.  
