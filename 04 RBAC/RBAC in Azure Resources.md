@@ -1,4 +1,4 @@
-# RBAC IN AZURE RESOURCES
+# RBAC In Azure Resources
 
 ## Introduction  
 Role-Based Access Control (RBAC) in Azure is a security framework that manages access to cloud resources by defining permissions based on roles assigned to users, groups, or applications. RBAC adheres to the **principle of least privilege**, ensuring that entities are granted only the permissions necessary to perform their required tasks. It replaces legacy access models (such as subscription-wide permissions) with a granular, hierarchical system that scales with cloud environments. Azure RBAC helps organizations enforce compliance, simplify governance, and minimize security risks by compartmentalizing access to resources, services, and data.  
