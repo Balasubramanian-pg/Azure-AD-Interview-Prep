@@ -1,4 +1,4 @@
-# Topic: Distribution Groups
+# Distribution Groups
 
 ## One-line definition
 Distribution Groups are email-enabled groups.
