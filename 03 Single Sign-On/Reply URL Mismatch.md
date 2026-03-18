@@ -1,4 +1,4 @@
-# [Reply URL Mismatch](03 Single Sign-On/Reply URL Mismatch.md)
+# Reply URL Mismatch
 
 Canonical documentation for [Reply URL Mismatch](03 Single Sign-On/Reply URL Mismatch.md). This document defines concepts, terminology, and standard usage.
 
