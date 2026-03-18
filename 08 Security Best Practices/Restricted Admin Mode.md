@@ -1,1 +1,1 @@
-# TODO: Add content
+# Restricted ADmin Mode
