@@ -1,4 +1,4 @@
-# [Kerberos](03 Single Sign-On/Kerberos.md)
+# Kerberos
 
 Canonical documentation for [Kerberos](03 Single Sign-On/Kerberos.md). This document defines concepts, terminology, and standard usage.
 
