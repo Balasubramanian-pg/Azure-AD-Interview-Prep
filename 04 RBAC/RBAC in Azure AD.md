@@ -1,4 +1,4 @@
-# RBAC IN AZURE AD
+# RBAC In Azure AD
 
 ```markdown
 # Study Guide: RBAC in Azure AD
