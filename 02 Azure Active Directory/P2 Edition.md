@@ -1,4 +1,4 @@
-# [P2 Edition](02 Azure Active Directory/P2 Edition.md)
+# P2 Edition
 
 Canonical documentation for [P2 Edition](02 Azure Active Directory/P2 Edition.md). This document defines concepts, terminology, and standard usage.
 
