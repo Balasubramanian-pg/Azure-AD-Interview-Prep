@@ -1,4 +1,4 @@
-# Topic: GPO Link Order
+# Gpo Link Order
 
 ## One-line definition
 GPO Link Order determines policy application order.
