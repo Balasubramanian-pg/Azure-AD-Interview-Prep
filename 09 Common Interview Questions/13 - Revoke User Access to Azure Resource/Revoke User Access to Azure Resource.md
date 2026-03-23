@@ -1,0 +1,1 @@
+# Revoke User Access To Azure Resource
