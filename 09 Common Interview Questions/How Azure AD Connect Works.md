@@ -1,1 +1,0 @@
-# How Azure AD Connect Works
