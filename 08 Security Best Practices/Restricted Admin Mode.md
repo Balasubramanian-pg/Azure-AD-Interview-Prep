@@ -1,1 +1,0 @@
-# Restricted ADmin Mode
