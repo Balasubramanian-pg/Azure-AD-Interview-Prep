@@ -3,7 +3,6 @@
 ## Introduction  
 Custom roles are user-defined permissions or access configurations that allow organizations to granularly control access to resources within cloud environments, enterprise systems, or applications. Unlike predefined or built-in roles provided by platforms (e.g., AWS, Azure, or GCP), custom roles let administrators tailor permissions to fit specific business needs. These roles are critical for implementing the **principle of least privilege**, where users and systems are granted only the permissions necessary to perform their tasks. This guide explores the core concepts, practical examples, and best practices for managing custom roles effectively.
 
----
 
 ## Core Concepts  
 
@@ -30,7 +29,6 @@ Custom roles are user-defined permissions or access configurations that allow or
 - **Version Control**: Track changes to policies to enable audits and rollbacks.  
 - **Regular Reviews**: Audit custom roles periodically to remove outdated permissions.  
 
----
 
 ## Examples  
 
