@@ -3,7 +3,6 @@
 ## Introduction  
 Role-Based Access Control (RBAC) in Azure is a security framework that manages access to cloud resources by defining permissions based on roles assigned to users, groups, or applications. RBAC adheres to the **principle of least privilege**, ensuring that entities are granted only the permissions necessary to perform their required tasks. It replaces legacy access models (such as subscription-wide permissions) with a granular, hierarchical system that scales with cloud environments. Azure RBAC helps organizations enforce compliance, simplify governance, and minimize security risks by compartmentalizing access to resources, services, and data.  
 
----
 
 ## Core Concepts  
 
@@ -23,7 +22,6 @@ Azure provides a catalog of **predefined roles**, including:
 
 Users can also define **custom roles** to align with unique organizational requirements.  
 
----
 
 ### 2. **Role Inheritance and Deny Assignments**  
 Roles inherit permissions from parent scopes (e.g., a user with `Reader` at the subscription level retains that access when viewing a resource group within it). To restrict permissions, use **RBAC Deny Assignments**, which block specific actions at lower scopes even if inherited from broader roles.  
