@@ -9,7 +9,6 @@ Key purposes of Access Reviews include:
 - **Optimizing resource management** by removing redundant access rights.  
 - **Enhancing accountability** through clear ownership of access grants.  
 
----
 
 # Core Concepts  
 ## 1. Roles and Permissions  
@@ -28,7 +27,6 @@ Key purposes of Access Reviews include:
 - **Legal Requirements:** Align reviews with industry-specific regulations (e.g., GDPR’s “right to access” or HIPAA’s privacy rules).  
 - **Segregation of Duties:** Ensures no single individual holds conflicting permissions that could lead to fraud (e.g., approving payments and modifying vendor bank details).  
 
----
 
 # Examples  
 ## Example 1: IT Security Access Review  
