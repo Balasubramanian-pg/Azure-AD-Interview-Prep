@@ -8,7 +8,6 @@ Multi-Factor Authentication (MFA) is a security protocol that requires users to 
 - **Brute-force, phishing, and credential-stuffing attacks** are rampant, making strong authentication essential.  
 - **Compliance requirements** (e.g., GDPR, HIPAA, ISO 27001) often mandate multi-factor authentication for privileged users.  
 
----
 
 # Core Concepts  
 
@@ -44,7 +43,6 @@ Common protocols used by admins include:
 - **Security logging and monitoring**: Track authentication attempts to detect anomalies (e.g., failed MFA verifications).  
 - **Backup authentication methods**: Admins should have fallback options (e.g., emergency codes) for unavailability of primary factors.  
 
----
 
 # Examples of MFA Implementation  
 
