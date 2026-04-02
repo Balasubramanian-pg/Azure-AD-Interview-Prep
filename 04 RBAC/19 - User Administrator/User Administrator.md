@@ -10,7 +10,6 @@ A User Administrator is responsible for managing user accounts, permissions, and
 
 The role is critical for maintaining system integrity, minimizing risks from insider threats, and ensuring organizational alignment with cybersecurity best practices.
 
----
 
 # Core Concepts  
 
@@ -41,7 +40,6 @@ The role is critical for maintaining system integrity, minimizing risks from ins
 - **Forensic Analysis**: Tracing unauthorized access to identify vulnerabilities.  
 - **Post-Incident Review**: Updating policies and training procedures to prevent future breaches.  
 
----
 
 # Examples  
 
