@@ -3,7 +3,6 @@
 ## Introduction  
 A **contributor role** refers to an individual’s function within a collaborative project or organization where they actively add value, expertise, or resources to achieve shared goals. Contributors are integral to collective success, whether they hold formal authority, operate as volunteers, or work within hierarchical structures. Their responsibilities often include generating ideas, executing tasks, providing feedback, and adhering to ethical and procedural standards. This role is central to fields such as open-source software development, academic research, nonprofit initiatives, and cross-functional teams. Effective contributors enhance productivity and innovation through structured collaboration, clear communication, and accountability to the project’s vision.  
 
----
 
 ## Core Concepts  
 
@@ -46,7 +45,6 @@ A **contributor role** refers to an individual’s function within a collaborati
 - **Conflict Resolution**: Addressing disagreements respectfully or escalating them to appropriate parties.  
 - **Sustainability**: Ensuring contributions align with long-term project goals rather than short-term gains.  
 
----
 
 ## Examples  
 
