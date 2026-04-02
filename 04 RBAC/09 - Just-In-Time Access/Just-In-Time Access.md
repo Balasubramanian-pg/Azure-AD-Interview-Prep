@@ -35,7 +35,6 @@ Just In Time (JIT) Access is a security framework that dynamically grants users 
 - **Latency**: Potential delays in access validation if workflows are too rigid.  
 - **Overhead**: Requires ongoing maintenance of policies and audit processes.  
 
----
 
 ## Examples  
 
@@ -67,7 +66,6 @@ Just In Time (JIT) Access is a security framework that dynamically grants users 
 - Access is granted only during their scheduled shift and revoked afterward.  
 - Physical authentication (e.g., biometric scan) is added for on-site validation.  
 
----
 
 ## Summary  
 Just In Time Access operationalizes the principle of least privilege by dynamically granting users temporary access only when necessary. It reduces security risks, enhances compliance, and improves operational visibility through automated workflows, MFA, and granular permissions. Key components include time-bound policies, self-service portals, and audit logging. While challenges like integration complexity and user adaptation exist, the benefits—such as minimized attack surfaces and audit simplification—make JIT Access a critical component of modern security strategies. Organizations implementing JIT Access must balance convenience with security, ensuring policies are both stringent and user-friendly.
