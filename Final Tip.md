@@ -65,5 +65,4 @@ This isn't a configurable feature within Azure AD itself, but rather a methodolo
 *   Azure Architecture Center (docs.microsoft.com/azure/architecture)
 *   Microsoft Tech Community (techcommunity.microsoft.com - for Azure AD specific blogs and forums)
 
----
 *Updated via Automation*
