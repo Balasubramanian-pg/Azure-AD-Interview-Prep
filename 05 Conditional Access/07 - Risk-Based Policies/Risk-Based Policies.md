@@ -5,7 +5,6 @@ Risk-based policies are strategic frameworks that guide decision-making and reso
 
 Effective risk-based policies require integration with governance structures, alignment with organizational goals, and continuous updates to reflect evolving risks and evidence-based insights. They are foundational in sectors such as finance, healthcare, cybersecurity, and environmental management, where systemic or operational risks pose significant consequences.  
 
----
 
 ## Core Concepts  
 
@@ -32,7 +31,6 @@ Effective risk-based policies require integration with governance structures, al
 ### 5. Proportionality Principle  
 - Responses must be proportional to the scale of risks (e.g., minor risks may require monitoring, while critical risks demand immediate mitigation investments). This ensures cost-effective resource utilization.  
 
----
 
 ## Examples  
 
