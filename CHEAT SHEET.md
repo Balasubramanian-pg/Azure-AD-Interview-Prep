@@ -68,5 +68,4 @@ When NOT to use: As a substitute for deep understanding during complex design, a
 - Conditional Access documentation (docs.microsoft.com/azure/active-directory/conditional-access/)
 - Azure AD troubleshooting guides (docs.microsoft.com/azure/active-directory/troubleshoot/)
 
----
 *Updated via Automation*
