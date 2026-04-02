@@ -65,5 +65,4 @@ Configuring "Readme" information involves populating metadata fields directly on
 *   [Azure AD PowerShell module documentation](https://learn.microsoft.com/en-us/powershell/module/azuread/)
 *   [Microsoft Graph PowerShell SDK documentation](https://learn.microsoft.com/en-us/powershell/microsoftgraph/overview?view=graph-powershell-1.0)
 
----
 *Updated via Automation*
