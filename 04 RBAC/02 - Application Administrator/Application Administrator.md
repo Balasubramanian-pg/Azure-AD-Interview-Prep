@@ -10,7 +10,6 @@ Application Administrators are IT professionals responsible for managing the dep
 
 Core competencies include familiarity with operating systems, scripting languages (Python, Bash), configuration management tools, and a deep understanding of application ecosystems.  
 
----
 
 # Core Concepts  
 This section covers foundational knowledge areas critical for Application Administrators:  
@@ -72,7 +71,6 @@ This section covers foundational knowledge areas critical for Application Admini
 - **Multi-Factor Authentication (MFA)**:  
   - Implementing MFA for user access to sensitive applications.  
 
----
 
 # Examples  
 ### Example 1: Scaling an E-commerce Platform  
