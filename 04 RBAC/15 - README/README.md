@@ -3,7 +3,6 @@
 ## Introduction  
 A `README` file serves as the first point of contact for users and contributors exploring a project. It provides essential information about the project’s purpose, setup, usage, and how to engage with it. A well-structured `README` enhances collaboration, reduces ambiguity, and establishes trust by demonstrating clarity and professionalism. This guide outlines best practices, key components, and examples to create an effective `README` file.  
 
----
 
 ## Core Concepts  
 
@@ -41,7 +40,6 @@ Include licensing details (e.g., MIT, GPL) and note permissions or restrictions 
 - **Prioritize Readability**: Avoid jargon; use examples and code snippets sparingly.  
 - **Consistency**: Align formatting and terminology with project needs.  
 
----
 
 ## Examples  
 
