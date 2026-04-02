@@ -3,7 +3,6 @@
 # Introduction  
 "Block Legacy Authentication" (or "Legacy Auth Blocking") refers to the process of disabling or restricting outdated authentication protocols and methods to mitigate security risks. Legacy authentication mechanisms, such as HTTP Basic Auth, NTLM, or deprecated passwords, are prone to breaches due to weak encryption, lack of multi-factor authentication (MFA), and susceptibility to brute-force or credential-stuffing attacks. Implementing this practice aligns with modern security standards (e.g., OWASP, NIST) and regulatory requirements (e.g., GDPR, PCI-DSS). This guide outlines the principles, key concepts, and practical examples of implementing Legacy Auth Blocking.
 
----
 
 # Core Concepts  
 
@@ -53,7 +52,6 @@ Legacy authentication exposes organizations to:
 - **Penetration Testing:** Validate defenses against legacy protocol exploits.  
 - **Automated Scans:** Use tools like Nikto, nmap, or commercial scanners to detect exposed legacy endpoints.  
 
----
 
 # Examples  
 
