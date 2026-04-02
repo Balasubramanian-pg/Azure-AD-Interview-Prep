@@ -9,7 +9,6 @@ Conditional Access is a critical component of modern Identity and Access Managem
 
 This guide outlines core concepts, practical examples, and a summary to help administrators master Conditional Access administration effectively.  
 
----
 
 ## Core Concepts  
 
@@ -61,7 +60,6 @@ Policies follow an **if...then** structure:
 - **Azure AD Reports**: Analyze sign-ins, policy placement, and failed access attempts.  
 - **Azure AD logs**: Use **Sign-in logs** and **Audit logs** to trace policy effects.  
 
----
 
 ## Examples  
 
