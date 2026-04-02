@@ -3,7 +3,6 @@
 # Introduction
 A **Security Administrator** is responsible for maintaining the security posture of an organization by protecting IT infrastructure, data, and digital assets. This role involves implementing security policies, monitoring networks, detecting threats, responding to incidents, and ensuring compliance with regulations. Security Administrators must balance technical expertise with strategic planning, adapting to evolving cyber threats and technological advancements. Core responsibilities include threat detection, vulnerability management, authentication protocols, incident response, and access control enforcement.
 
----
 
 ## Core Concepts
 
@@ -47,7 +46,6 @@ A **Security Administrator** is responsible for maintaining the security posture
 - **Network Monitoring Tools**: Wireshark or SolarWinds for traffic analysis.
 - **System Hardening**: Restricting unnecessary services, disabling ports, and enforcing strong password policies.
 
----
 
 ## Examples
 
